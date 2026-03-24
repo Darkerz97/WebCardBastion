@@ -1,59 +1,299 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Card Bastion Server - Fase 1
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Servidor central para Card Bastion construido con Laravel 12, MySQL/MariaDB y Laravel Sanctum.
 
-## About Laravel
+## Objetivo
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Esta fase entrega una base funcional para:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- autenticacion web y API
+- productos
+- clientes
+- ventas, items y pagos
+- dispositivos POS
+- logs de sincronizacion
+- dashboard administrativo con Blade
+- API REST preparada para sincronizacion futura
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+La arquitectura evita dependencias de WebSockets, Redis o procesos persistentes para poder correr primero en hosting tradicional y migrar despues a VPS sin rehacer el backend.
 
-## Learning Laravel
+## Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP 8.2+
+- Laravel 12
+- MySQL o MariaDB
+- Laravel Sanctum
+- Blade para panel administrativo
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Estructura recomendada
 
-## Laravel Sponsors
+```text
+app/
+  Http/
+    Controllers/
+      Api/
+      Web/
+    Middleware/
+    Requests/
+    Resources/
+  Models/
+  Services/
+  Support/
+database/
+  migrations/
+  seeders/
+    Demo/
+resources/
+  views/
+    auth/
+    customers/
+    dashboard/
+    layouts/
+    products/
+    sales/
+routes/
+  api.php
+  web.php
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Modulos incluidos
 
-### Premium Partners
+### Autenticacion
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- login API con Sanctum
+- logout API
+- `/api/me`
+- login web para panel Blade
+- roles base: `admin`, `manager`, `cashier`
+- seeder de admin inicial
 
-## Contributing
+### Catalogo
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- CRUD completo de productos
+- CRUD completo de clientes
+- busqueda y filtros basicos
+- soft deletes en productos y clientes
+- importacion masiva por plantilla CSV compatible con Excel para productos y clientes
 
-## Code of Conduct
+### Ventas
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- ventas con items y pagos
+- recalculo de subtotal, descuento y total
+- actualizacion automatica de `payment_status`
+- control de stock negativo bloqueado
+- transacciones de base de datos para ventas y pagos
+- importacion masiva por plantilla CSV compatible con Excel para ventas
 
-## Security Vulnerabilities
+### Sincronizacion
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- `POST /api/sync/upload-sales`
+- `GET /api/sync/products`
+- `GET /api/sync/customers`
+- `POST /api/sync/heartbeat`
+- `sync_logs` para auditoria y trazabilidad
 
-## License
+## Instalacion local
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Instala dependencias:
+
+```bash
+composer install
+```
+
+2. Crea el archivo de entorno:
+
+```bash
+copy .env.example .env
+```
+
+3. Genera la llave:
+
+```bash
+php artisan key:generate
+```
+
+4. Configura MySQL o MariaDB en `.env`.
+
+5. Ejecuta migraciones y seeders:
+
+```bash
+php artisan migrate --seed
+```
+
+6. Levanta el servidor:
+
+```bash
+php artisan serve
+```
+
+## Variables de entorno utiles
+
+```env
+APP_NAME="Card Bastion Server"
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=card_bastion
+DB_USERNAME=root
+DB_PASSWORD=
+
+ADMIN_NAME="Card Bastion Admin"
+ADMIN_EMAIL=admin@cardbastion.test
+ADMIN_PASSWORD=password
+ADMIN_PHONE=5550000000
+```
+
+## Credenciales demo
+
+Despues de `php artisan migrate --seed`:
+
+- Admin web/API: `admin@cardbastion.test` / `password`
+- Caja demo: `cashier@cardbastion.test` / `password`
+
+## Rutas principales
+
+### Web
+
+- `/login`
+- `/dashboard`
+- `/products`
+- `/customers`
+- `/sales`
+- `/products/template`
+- `/products/import`
+- `/customers/template`
+- `/customers/import`
+- `/sales/template`
+- `/sales/import`
+
+### API
+
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET /api/me`
+- `GET /api/products`
+- `GET /api/customers`
+- `GET /api/sales`
+- `POST /api/sales`
+- `POST /api/sales/{sale}/payments`
+- `GET /api/devices`
+- `POST /api/sync/heartbeat`
+- `GET /api/sync/products`
+- `GET /api/sync/customers`
+- `POST /api/sync/upload-sales`
+
+## Arquitectura implementada
+
+- **Controllers Web y API separados** para mantener clara la capa HTTP y facilitar crecimiento a POS, app movil y e-commerce.
+- **Form Requests** para centralizar validacion.
+- **API Resources** para respuestas JSON consistentes.
+- **Services** para encapsular logica transaccional de ventas y sincronizacion.
+- **Eloquent relationships** completas entre usuarios, roles, ventas, items, pagos, dispositivos y logs.
+- **UUIDs unicos** en entidades clave para interoperabilidad futura con POS local y sincronizacion offline-first.
+- **Blade admin simple** para operacion inmediata en hosting tradicional.
+- **Importacion CSV reutilizable** con un lector comun para cargas masivas desde plantillas editables en Excel.
+
+## Carga masiva desde Excel
+
+Las pantallas de `Productos`, `Clientes` y `Ventas` incluyen dos acciones:
+
+- `Descargar plantilla` para bajar un archivo `.csv`
+- `Importar` para subir el archivo ya capturado
+
+Aunque el formato es `.csv`, se puede abrir y editar directamente en Excel sin problema.
+
+### Productos
+
+La plantilla de productos usa estas columnas:
+
+- `name`
+- `sku`
+- `barcode`
+- `description`
+- `category`
+- `cost`
+- `price`
+- `stock`
+- `image_path`
+- `active`
+
+Reglas importantes:
+
+- `sku` identifica el producto para crear o actualizar
+- `barcode` debe ser unico si se captura
+- `active` acepta `1` o `0`
+
+### Clientes
+
+La plantilla de clientes usa estas columnas:
+
+- `name`
+- `phone`
+- `email`
+- `notes`
+- `credit_balance`
+- `active`
+
+Reglas importantes:
+
+- si coincide `email` o `phone`, el cliente se actualiza
+- si no existe coincidencia, se crea un cliente nuevo
+- `active` acepta `1` o `0`
+
+### Ventas
+
+La plantilla de ventas usa estas columnas:
+
+- `sale_number`
+- `customer_email`
+- `customer_phone`
+- `device_code`
+- `sold_at`
+- `status`
+- `discount`
+- `product_sku`
+- `quantity`
+- `unit_price`
+- `payment_method`
+- `payment_amount`
+- `payment_reference`
+- `payment_notes`
+- `payment_paid_at`
+
+Reglas importantes:
+
+- repite el mismo `sale_number` en varias filas cuando una venta tenga varios productos
+- `product_sku` debe existir previamente
+- `customer_email` o `customer_phone` deben existir si se capturan
+- `payment_method` y `payment_amount` deben capturarse juntos
+- `status` acepta `draft`, `completed` o `cancelled`
+
+## Despliegue
+
+### Hosting tradicional
+
+- apunta el dominio a `public/`
+- configura `.env` con MySQL real
+- ejecuta `php artisan migrate --force --seed`
+- asegurate de que `storage/` y `bootstrap/cache/` tengan permisos de escritura
+
+### VPS futuro
+
+La app ya queda lista para migrar a VPS sin cambiar la arquitectura base. Solo sera necesario ajustar:
+
+- variables de entorno
+- permisos de sistema
+- cache/queue si mas adelante se activan servicios adicionales
+- proxy web y SSL
+
+## Siguientes fases sugeridas
+
+- sincronizacion bidireccional incremental
+- control fino por permisos
+- imagenes de productos
+- reportes y exportaciones
+- rewards y creditos
+- e-commerce y preventas
+- torneos y eventos
