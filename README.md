@@ -19,9 +19,16 @@ Plataforma Laravel 12 para `tienda virtual`, `portal de jugadores` y `panel admi
 - API basica de categorias y productos con Sanctum
 - base previa reutilizada para clientes, ventas, dashboard y sincronizacion
 
+### Fase 2 implementada
+
+- carrito de compras por sesion
+- checkout autenticado
+- creacion de pedidos reutilizando `sales`
+- registro inicial de pagos en checkout
+- historial de compras en portal de jugador
+
 ### Siguientes fases pendientes
 
-- Fase 2: carrito, checkout, pedidos, pagos, historial de compras
 - Fase 3: perfiles de jugador completos, torneos, resultados, estadisticas
 - Fase 4: creditos, recompensas, dashboard avanzado y API extendida
 
@@ -42,8 +49,11 @@ Plataforma Laravel 12 para `tienda virtual`, `portal de jugadores` y `panel admi
 - `/` y `/tienda`
 - filtros por categoria
 - detalle `/tienda/{slug}`
+- `/carrito`
+- `/checkout`
 - login y registro de jugadores
 - portal base del jugador en `/mi-cuenta`
+- historial de compras en `/mi-cuenta/compras`
 
 ### Admin
 
@@ -62,10 +72,17 @@ Plataforma Laravel 12 para `tienda virtual`, `portal de jugadores` y `panel admi
 - `GET /api/categories`
 - endpoints previos de clientes, ventas, dispositivos y sync
 
-## Base de datos agregada en Fase 1
+## Base de datos agregada
 
 - `categories`
 - `product_images`
+- nueva relacion `customers.user_id`
+- nuevos campos ecommerce en `sales`:
+  - `order_channel`
+  - `contact_name`
+  - `contact_email`
+  - `contact_phone`
+  - `notes`
 - nuevas columnas en `products`:
   - `category_id`
   - `slug`
@@ -193,7 +210,11 @@ php artisan view:cache
 - `app/Http/Controllers/Web/ProductController.php`
 - `app/Http/Controllers/Web/AuthController.php`
 - `app/Http/Controllers/Web/AccountController.php`
+- `app/Http/Controllers/Web/CartController.php`
+- `app/Http/Controllers/Web/CheckoutController.php`
+- `app/Http/Controllers/Web/AccountOrderController.php`
 - `app/Http/Controllers/Api/CategoryController.php`
+- `app/Services/CartService.php`
 
 ### Frontend Blade
 
@@ -202,6 +223,9 @@ php artisan view:cache
 - `resources/views/layouts/app.blade.php`
 - `resources/views/store/index.blade.php`
 - `resources/views/store/show.blade.php`
+- `resources/views/store/cart.blade.php`
+- `resources/views/store/checkout.blade.php`
+- `resources/views/account/orders.blade.php`
 - `resources/views/categories/*`
 - `resources/views/products/*`
 
@@ -213,6 +237,7 @@ php artisan view:cache
 - `database/migrations/2026_03_24_020000_create_categories_table.php`
 - `database/migrations/2026_03_24_020100_update_products_table_for_storefront.php`
 - `database/migrations/2026_03_24_020200_create_product_images_table.php`
+- `database/migrations/2026_03_24_030000_update_customers_and_sales_for_store_orders.php`
 
 ## Validaciones realizadas en esta fase
 
@@ -225,4 +250,4 @@ php artisan view:cache
 
 - La importacion masiva CSV de productos existente sigue disponible y ahora soporta campos de tienda.
 - Clientes y ventas del sistema previo se conservaron para no perder operacion ya construida.
-- El carrito, checkout, pedidos, torneos y recompensas aun no estan implementados en esta fase.
+- Torneos, recompensas, creditos avanzados y el dashboard ampliado siguen pendientes para las siguientes fases.

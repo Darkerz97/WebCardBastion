@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Customer;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -48,7 +49,7 @@ class AdminUserSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            User::query()->updateOrCreate(
+            $createdUser = User::query()->updateOrCreate(
                 ['email' => $user['email']],
                 [
                     ...$user,
@@ -57,6 +58,21 @@ class AdminUserSeeder extends Seeder
                     'email_verified_at' => now(),
                 ],
             );
+
+            if ($createdUser->hasRole(User::ROLE_PLAYER)) {
+                Customer::query()->updateOrCreate(
+                    ['user_id' => $createdUser->id],
+                    [
+                        'uuid' => (string) Str::uuid(),
+                        'name' => $createdUser->name,
+                        'phone' => $createdUser->phone,
+                        'email' => $createdUser->email,
+                        'notes' => 'Perfil de jugador demo.',
+                        'credit_balance' => 0,
+                        'active' => true,
+                    ],
+                );
+            }
         }
     }
 }

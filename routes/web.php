@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Web\AccountOrderController;
 use App\Http\Controllers\Web\AccountController;
 use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CategoryController;
+use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\CustomerController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ProductController;
@@ -14,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [StorefrontController::class, 'index'])->name('store.home');
 Route::get('/tienda', [StorefrontController::class, 'index'])->name('store.catalog');
 Route::get('/tienda/{product:slug}', [StorefrontController::class, 'show'])->name('store.products.show');
+Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
+Route::post('/carrito', [CartController::class, 'store'])->name('cart.store');
+Route::patch('/carrito/{product}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/carrito/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'create'])->name('login');
@@ -25,6 +32,9 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
     Route::get('/mi-cuenta', AccountController::class)->name('account.dashboard');
+    Route::get('/mi-cuenta/compras', [AccountOrderController::class, 'index'])->name('account.orders.index');
+    Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
     Route::middleware('role:'.User::ROLE_ADMIN.','.User::ROLE_MANAGER.','.User::ROLE_CASHIER)->group(function (): void {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');

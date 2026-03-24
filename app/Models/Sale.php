@@ -12,6 +12,9 @@ class Sale extends Model
 {
     use HasFactory;
 
+    public const CHANNEL_POS = 'pos';
+    public const CHANNEL_STOREFRONT = 'storefront';
+
     public const STATUS_DRAFT = 'draft';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
@@ -26,6 +29,11 @@ class Sale extends Model
         'user_id',
         'device_id',
         'sale_number',
+        'order_channel',
+        'contact_name',
+        'contact_email',
+        'contact_phone',
+        'notes',
         'subtotal',
         'discount',
         'total',

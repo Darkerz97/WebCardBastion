@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Sale;
 use Illuminate\View\View;
 
 class AccountController extends Controller
@@ -25,8 +26,18 @@ class AccountController extends Controller
         return view('account.dashboard', [
             'user' => $user,
             'customerProfile' => $customer,
+            'recentOrders' => $customer
+                ? Sale::query()
+                    ->where('customer_id', $customer->id)
+                    ->where('order_channel', Sale::CHANNEL_STOREFRONT)
+                    ->latest('sold_at')
+                    ->limit(5)
+                    ->get()
+                : collect(),
             'stats' => [
-                'orders' => $customer?->sales_count ?? 0,
+                'orders' => $customer
+                    ? Sale::query()->where('customer_id', $customer->id)->where('order_channel', Sale::CHANNEL_STOREFRONT)->count()
+                    : 0,
                 'credits' => (float) ($customer?->credit_balance ?? 0),
                 'tournaments' => 0,
                 'win_rate' => 'Proximamente',

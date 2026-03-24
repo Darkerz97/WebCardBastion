@@ -52,5 +52,34 @@
                 </dl>
             </div>
         </div>
+
+        <div class="panel mt-6">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-xl font-black uppercase tracking-[0.08em] text-stone-900">Compras recientes</h2>
+                    <p class="mt-2 text-sm text-stone-500">Resumen rapido de tus pedidos en la tienda virtual.</p>
+                </div>
+                <a class="btn btn-secondary" href="{{ route('account.orders.index') }}">Ver historial completo</a>
+            </div>
+
+            <div class="mt-5 space-y-3">
+                @forelse ($recentOrders as $order)
+                    <div class="rounded-2xl border border-stone-200 px-4 py-4">
+                        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <p class="font-semibold text-stone-900">{{ $order->sale_number }}</p>
+                                <p class="mt-1 text-sm text-stone-500">{{ optional($order->sold_at)->format('d/m/Y H:i') }}</p>
+                            </div>
+                            <div class="text-sm text-stone-600">
+                                <span class="badge">{{ $order->payment_status }}</span>
+                                <span class="ml-3 font-semibold text-stone-900">${{ number_format($order->total, 2) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-sm text-stone-500">Aun no tienes compras registradas en la tienda.</p>
+                @endforelse
+            </div>
+        </div>
     </section>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\PlayerRegisterRequest;
+use App\Models\Customer;
 use App\Http\Requests\Auth\WebLoginRequest;
 use App\Models\Role;
 use App\Models\User;
@@ -60,6 +61,19 @@ class AuthController extends Controller
             'email_verified_at' => now(),
         ]);
 
+        Customer::query()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'uuid' => (string) Str::uuid(),
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'notes' => null,
+                'credit_balance' => 0,
+                'active' => true,
+            ],
+        );
+
         Auth::login($user);
         request()->session()->regenerate();
 
@@ -78,9 +92,9 @@ class AuthController extends Controller
     private function redirectByRole(User $user): RedirectResponse
     {
         if ($user->hasRole(User::ROLE_PLAYER)) {
-            return redirect()->route('account.dashboard')->with('success', 'Bienvenido a tu portal de jugador.');
+            return redirect()->intended(route('account.dashboard'))->with('success', 'Bienvenido a tu portal de jugador.');
         }
 
-        return redirect()->route('dashboard')->with('success', 'Bienvenido de nuevo.');
+        return redirect()->intended(route('dashboard'))->with('success', 'Bienvenido de nuevo.');
     }
 }

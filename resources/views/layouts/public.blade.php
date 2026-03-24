@@ -19,6 +19,7 @@
 
             <nav class="hidden items-center gap-5 text-sm font-medium text-stone-600 lg:flex">
                 <a href="{{ route('store.catalog') }}" class="transition hover:text-[color:var(--color-brand-600)]">Tienda</a>
+                <a href="{{ route('cart.index') }}" class="transition hover:text-[color:var(--color-brand-600)]">Carrito</a>
                 @auth
                     <a href="{{ route('account.dashboard') }}" class="transition hover:text-[color:var(--color-brand-600)]">Mi cuenta</a>
                     @if (auth()->user()?->isBackofficeUser())
@@ -28,6 +29,7 @@
             </nav>
 
             <div class="flex items-center gap-3">
+                <a class="btn btn-secondary" href="{{ route('cart.index') }}">Carrito ({{ $cartItemCount ?? 0 }})</a>
                 @auth
                     <span class="hidden text-sm text-stone-500 sm:inline">{{ auth()->user()->name }}</span>
                     <form method="POST" action="{{ route('logout') }}">

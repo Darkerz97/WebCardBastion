@@ -66,7 +66,8 @@
 
                 <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                     @forelse ($products as $product)
-                        <a href="{{ route('store.products.show', $product) }}" class="panel block overflow-hidden">
+                        <div class="panel overflow-hidden">
+                            <a href="{{ route('store.products.show', $product) }}" class="block">
                             <div class="aspect-[4/3] rounded-2xl bg-stone-100">
                                 @if ($product->primary_image_url)
                                     <img class="h-full w-full rounded-2xl object-cover" src="{{ $product->primary_image_url }}" alt="{{ $product->name }}">
@@ -86,7 +87,16 @@
                                 <span class="text-xl font-black text-[color:var(--color-brand-600)]">${{ number_format($product->price, 2) }}</span>
                                 <span class="text-sm text-stone-500">{{ $product->stock }} disponibles</span>
                             </div>
-                        </a>
+                            </a>
+                            <form method="POST" action="{{ route('cart.store') }}" class="mt-4">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button class="btn btn-primary w-full {{ $product->stock <= 0 ? 'pointer-events-none opacity-50' : '' }}" type="submit">
+                                    {{ $product->stock <= 0 ? 'Sin stock' : 'Agregar al carrito' }}
+                                </button>
+                            </form>
+                        </div>
                     @empty
                         <div class="panel sm:col-span-2 xl:col-span-3">
                             <p class="text-sm text-stone-500">No encontramos productos con esos filtros.</p>

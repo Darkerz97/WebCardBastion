@@ -46,7 +46,12 @@
                 </div>
 
                 <div class="mt-8 flex flex-wrap gap-3">
-                    <button class="btn btn-primary" type="button" disabled>Carrito en Fase 2</button>
+                    <form method="POST" action="{{ route('cart.store') }}" class="flex flex-wrap gap-3">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input class="w-24 rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm" type="number" name="quantity" min="1" max="{{ max($product->stock, 1) }}" value="1" {{ $product->stock <= 0 ? 'disabled' : '' }}>
+                        <button class="btn btn-primary {{ $product->stock <= 0 ? 'pointer-events-none opacity-50' : '' }}" type="submit">{{ $product->stock <= 0 ? 'Sin stock' : 'Agregar al carrito' }}</button>
+                    </form>
                     <a class="btn btn-secondary" href="{{ route('store.catalog') }}">Volver al catalogo</a>
                 </div>
             </div>
