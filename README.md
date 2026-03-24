@@ -251,3 +251,9 @@ php artisan view:cache
 - La importacion masiva CSV de productos existente sigue disponible y ahora soporta campos de tienda.
 - Clientes y ventas del sistema previo se conservaron para no perder operacion ya construida.
 - Torneos, recompensas, creditos avanzados y el dashboard ampliado siguen pendientes para las siguientes fases.
+
+## Correcciones recientes
+
+- Se agrego un acceso directo desde `login` hacia `registro` para que los jugadores nuevos puedan crear su cuenta mas facilmente.
+- La plantilla de autenticacion ahora muestra mensajes visibles de validacion y exito en `login` y `registro`.
+- Para los cambios de torneos y portal de jugador, es necesario ejecutar `php artisan migrate` para crear tablas como `tournament_registrations` y evitar errores SQL por tablas faltantes.
