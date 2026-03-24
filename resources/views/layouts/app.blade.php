@@ -22,6 +22,7 @@
                 @if (auth()->user()?->hasRole([\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_MANAGER]))
                     <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('categories.*') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('categories.index') }}">Categorias</a>
                     <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('products.*') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('products.index') }}">Productos</a>
+                    <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('tournaments.*') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('tournaments.index') }}">Torneos</a>
                 @endif
                 <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('customers.*') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('customers.index') }}">Clientes</a>
                 <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('sales.*') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('sales.index') }}">Ventas</a>

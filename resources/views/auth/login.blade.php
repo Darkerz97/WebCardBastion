@@ -18,6 +18,13 @@
         <button class="btn btn-primary w-full" type="submit">Entrar</button>
     </form>
 
+    <a
+        href="{{ route('register') }}"
+        class="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[color:var(--color-brand-200)] bg-white px-5 py-3 text-sm font-semibold text-[color:var(--color-brand-600)] transition hover:border-[color:var(--color-brand-400)] hover:bg-[color:var(--color-brand-50)]"
+    >
+        Registrarme como nuevo usuario
+    </a>
+
     <div class="mt-6 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-4 text-sm text-stone-600">
         <p class="font-semibold text-stone-800">Demo rapido</p>
         <p class="mt-2">Admin: <code>admin@cardbastion.test</code> / <code>password</code></p>
@@ -26,6 +33,6 @@
 
     <p class="mt-6 text-sm text-stone-600">
         ¿Eres jugador nuevo?
-        <a href="{{ route('register') }}" class="font-semibold text-[color:var(--color-brand-600)]">Crea tu cuenta</a>
+        <a href="{{ route('register') }}" class="font-semibold text-[color:var(--color-brand-600)]">Crea tu cuenta aqui</a>
     </p>
 @endsection

@@ -21,6 +21,7 @@
                 <a href="{{ route('store.catalog') }}" class="transition hover:text-[color:var(--color-brand-600)]">Tienda</a>
                 <a href="{{ route('cart.index') }}" class="transition hover:text-[color:var(--color-brand-600)]">Carrito</a>
                 @auth
+                    <a href="{{ route('account.tournaments.index') }}" class="transition hover:text-[color:var(--color-brand-600)]">Torneos</a>
                     <a href="{{ route('account.dashboard') }}" class="transition hover:text-[color:var(--color-brand-600)]">Mi cuenta</a>
                     @if (auth()->user()?->isBackofficeUser())
                         <a href="{{ route('dashboard') }}" class="transition hover:text-[color:var(--color-brand-600)]">Admin</a>

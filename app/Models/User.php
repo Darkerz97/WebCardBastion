@@ -73,6 +73,11 @@ class User extends Authenticatable
         return $this->hasMany(Sale::class);
     }
 
+    public function tournamentRegistrations(): HasMany
+    {
+        return $this->hasMany(TournamentRegistration::class);
+    }
+
     public function hasRole(string|array $roles): bool
     {
         if (! $this->relationLoaded('role')) {

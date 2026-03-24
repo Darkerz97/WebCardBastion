@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Sale;
+use App\Models\TournamentRegistration;
 use Illuminate\View\View;
 
 class AccountController extends Controller
@@ -34,14 +35,39 @@ class AccountController extends Controller
                     ->limit(5)
                     ->get()
                 : collect(),
+            'recentTournaments' => TournamentRegistration::query()
+                ->with('tournament')
+                ->where('user_id', $user->id)
+                ->latest()
+                ->limit(4)
+                ->get(),
             'stats' => [
                 'orders' => $customer
                     ? Sale::query()->where('customer_id', $customer->id)->where('order_channel', Sale::CHANNEL_STOREFRONT)->count()
                     : 0,
                 'credits' => (float) ($customer?->credit_balance ?? 0),
-                'tournaments' => 0,
-                'win_rate' => 'Proximamente',
+                'tournaments' => TournamentRegistration::query()->where('user_id', $user->id)->count(),
+                'win_rate' => $this->calculateWinRate($user->id),
             ],
         ]);
+    }
+
+    private function calculateWinRate(int $userId): string
+    {
+        $registration = TournamentRegistration::query()
+            ->where('user_id', $userId)
+            ->selectRaw('SUM(wins) as wins, SUM(losses) as losses, SUM(draws) as draws')
+            ->first();
+
+        $wins = (int) ($registration?->wins ?? 0);
+        $losses = (int) ($registration?->losses ?? 0);
+        $draws = (int) ($registration?->draws ?? 0);
+        $total = $wins + $losses + $draws;
+
+        if ($total === 0) {
+            return '0%';
+        }
+
+        return number_format(($wins / $total) * 100, 1).'%';
     }
 }

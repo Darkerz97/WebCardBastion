@@ -7,7 +7,7 @@
                 <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[color:var(--color-brand-500)]">Portal del jugador</p>
                 <h1 class="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-stone-900">{{ $user->name }}</h1>
                 <p class="mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-                    Este panel ya queda listo como base para historial de compras, torneos, estadisticas y creditos en las siguientes fases.
+                    Este panel concentra tu actividad como jugador: compras, torneos, estadisticas iniciales y creditos disponibles.
                 </p>
 
                 <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -78,6 +78,36 @@
                     </div>
                 @empty
                     <p class="text-sm text-stone-500">Aun no tienes compras registradas en la tienda.</p>
+                @endforelse
+            </div>
+        </div>
+
+        <div class="panel mt-6">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-xl font-black uppercase tracking-[0.08em] text-stone-900">Actividad en torneos</h2>
+                    <p class="mt-2 text-sm text-stone-500">Seguimiento rapido de tus inscripciones y resultados registrados.</p>
+                </div>
+                <a class="btn btn-secondary" href="{{ route('account.tournaments.index') }}">Ver torneos</a>
+            </div>
+
+            <div class="mt-5 space-y-3">
+                @forelse ($recentTournaments as $registration)
+                    <div class="rounded-2xl border border-stone-200 px-4 py-4">
+                        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <p class="font-semibold text-stone-900">{{ $registration->tournament?->name ?? 'Torneo' }}</p>
+                                <p class="mt-1 text-sm text-stone-500">
+                                    Estado {{ str_replace('_', ' ', $registration->status) }} · {{ $registration->wins }}W / {{ $registration->draws }}D / {{ $registration->losses }}L
+                                </p>
+                            </div>
+                            <div class="text-sm text-stone-600">
+                                <span class="badge">{{ $registration->points }} pts</span>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-sm text-stone-500">Aun no tienes torneos registrados. Desde esta misma cuenta ya puedes inscribirte a los eventos publicados.</p>
                 @endforelse
             </div>
         </div>
