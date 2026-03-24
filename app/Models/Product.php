@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -15,15 +17,20 @@ class Product extends Model
     protected $fillable = [
         'uuid',
         'name',
+        'slug',
         'sku',
         'barcode',
+        'category_id',
         'description',
+        'short_description',
         'category',
         'cost',
         'price',
         'stock',
         'image_path',
         'active',
+        'featured',
+        'publish_to_store',
     ];
 
     protected function casts(): array
@@ -33,7 +40,19 @@ class Product extends Model
             'price' => 'decimal:2',
             'stock' => 'int',
             'active' => 'boolean',
+            'featured' => 'boolean',
+            'publish_to_store' => 'boolean',
         ];
+    }
+
+    public function categoryModel(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('sort_order')->orderBy('id');
     }
 
     public function saleItems(): HasMany
@@ -50,8 +69,31 @@ class Product extends Model
         return $query->where(function (Builder $builder) use ($term): void {
             $builder
                 ->where('name', 'like', "%{$term}%")
+                ->orWhere('slug', 'like', "%{$term}%")
                 ->orWhere('sku', 'like', "%{$term}%")
-                ->orWhere('barcode', 'like', "%{$term}%");
+                ->orWhere('barcode', 'like', "%{$term}%")
+                ->orWhere('short_description', 'like', "%{$term}%")
+                ->orWhere('description', 'like', "%{$term}%");
         });
+    }
+
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('active', true)->where('publish_to_store', true);
+    }
+
+    public function getPrimaryImageUrlAttribute(): ?string
+    {
+        $path = $this->image_path ?: $this->images->firstWhere('is_primary', true)?->path ?: $this->images->first()?->path;
+
+        if (! $path) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        return Storage::disk('public')->url($path);
     }
 }

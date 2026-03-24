@@ -20,6 +20,7 @@ class User extends Authenticatable
     public const ROLE_ADMIN = 'admin';
     public const ROLE_MANAGER = 'manager';
     public const ROLE_CASHIER = 'cashier';
+    public const ROLE_PLAYER = 'player';
 
     /**
      * The attributes that are mass assignable.
@@ -81,5 +82,14 @@ class User extends Authenticatable
         $allowedRoles = is_array($roles) ? $roles : [$roles];
 
         return in_array($this->role?->code, $allowedRoles, true);
+    }
+
+    public function isBackofficeUser(): bool
+    {
+        return $this->hasRole([
+            self::ROLE_ADMIN,
+            self::ROLE_MANAGER,
+            self::ROLE_CASHIER,
+        ]);
     }
 }

@@ -14,17 +14,22 @@ class RoleSeeder extends Seeder
             [
                 'name' => 'Administrador',
                 'code' => User::ROLE_ADMIN,
-                'description' => 'Acceso total al sistema y configuración general.',
+                'description' => 'Acceso total al sistema y configuracion general.',
             ],
             [
                 'name' => 'Gerente',
                 'code' => User::ROLE_MANAGER,
-                'description' => 'Gestión operativa, reportes y supervisión.',
+                'description' => 'Gestion operativa, reportes y supervision.',
             ],
             [
                 'name' => 'Cajero',
                 'code' => User::ROLE_CASHIER,
                 'description' => 'Registro de ventas y consulta operativa.',
+            ],
+            [
+                'name' => 'Jugador',
+                'code' => User::ROLE_PLAYER,
+                'description' => 'Usuario del portal de jugador y tienda virtual.',
             ],
         ];
 

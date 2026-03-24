@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Product\ProductRequest;
+use App\Http\Requests\Product\AdminProductRequest;
+use App\Models\Category;
 use App\Models\Product;
 use App\Support\CsvReader;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -20,25 +23,34 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         $products = Product::query()
+            ->with('categoryModel')
             ->search($request->string('search')->toString())
             ->when($request->filled('active'), fn ($query) => $query->where('active', $request->boolean('active')))
+            ->when($request->filled('category_id'), fn ($query) => $query->where('category_id', $request->integer('category_id')))
+            ->orderByDesc('featured')
             ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
 
-        return view('products.index', compact('products'));
+        return view('products.index', [
+            'products' => $products,
+            'categories' => Category::query()->active()->orderBy('sort_order')->orderBy('name')->get(),
+        ]);
     }
 
     public function create(): View
     {
-        return view('products.create', ['product' => new Product()]);
+        return view('products.create', [
+            'product' => new Product(['active' => true, 'featured' => false, 'publish_to_store' => true]),
+            'categories' => Category::query()->active()->orderBy('sort_order')->orderBy('name')->get(),
+        ]);
     }
 
     public function template(): StreamedResponse
     {
-        $headers = ['name', 'sku', 'barcode', 'description', 'category', 'cost', 'price', 'stock', 'image_path', 'active'];
+        $headers = ['name', 'slug', 'sku', 'barcode', 'category', 'short_description', 'description', 'cost', 'price', 'stock', 'image_path', 'active', 'featured', 'publish_to_store'];
         $rows = [
-            ['Mica templada', 'MIC-001', '750100000001', 'Proteccion frontal premium', 'Accesorios', '35.00', '89.00', '25', '', '1'],
+            ['Mica templada', 'mica-templada', 'MIC-001', '750100000001', 'Accesorios', 'Proteccion premium para el frente del display.', 'Proteccion frontal premium', '35.00', '89.00', '25', '', '1', '1', '1'],
         ];
 
         return response()->streamDownload(function () use ($headers, $rows): void {
@@ -77,15 +89,19 @@ class ProductController extends Controller
 
                     $validator = Validator::make($row, [
                         'name' => ['required', 'string', 'max:255'],
+                        'slug' => ['nullable', 'string', 'max:255'],
                         'sku' => ['required', 'string', 'max:100'],
                         'barcode' => ['nullable', 'string', 'max:100'],
-                        'description' => ['nullable', 'string'],
                         'category' => ['nullable', 'string', 'max:100'],
+                        'short_description' => ['nullable', 'string', 'max:280'],
+                        'description' => ['nullable', 'string'],
                         'cost' => ['required', 'numeric', 'min:0'],
                         'price' => ['required', 'numeric', 'min:0'],
                         'stock' => ['required', 'integer', 'min:0'],
                         'image_path' => ['nullable', 'string', 'max:255'],
                         'active' => ['nullable'],
+                        'featured' => ['nullable'],
+                        'publish_to_store' => ['nullable'],
                     ]);
 
                     if ($validator->fails()) {
@@ -93,8 +109,11 @@ class ProductController extends Controller
                     }
 
                     $data = $validator->validated();
-                    $active = $this->parseBoolean($data['active'] ?? null, true, $line);
+                    $active = $this->parseBoolean($data['active'] ?? null, true, $line, 'active');
+                    $featured = $this->parseBoolean($data['featured'] ?? null, false, $line, 'featured');
+                    $publishToStore = $this->parseBoolean($data['publish_to_store'] ?? null, true, $line, 'publish_to_store');
                     $product = Product::withTrashed()->where('sku', $data['sku'])->first();
+                    $category = $this->resolveCategory($data['category'] ?? null);
 
                     if (! empty($data['barcode'])) {
                         $barcodeOwner = Product::withTrashed()
@@ -107,28 +126,34 @@ class ProductController extends Controller
                         }
                     }
 
+                    $payload = [
+                        'name' => $data['name'],
+                        'slug' => $data['slug'] ?: Str::slug($data['name']),
+                        'sku' => $data['sku'],
+                        'barcode' => $data['barcode'] ?: null,
+                        'category_id' => $category?->id,
+                        'category' => $category?->name,
+                        'short_description' => $data['short_description'] ?: null,
+                        'description' => $data['description'] ?: null,
+                        'cost' => $data['cost'],
+                        'price' => $data['price'],
+                        'stock' => $data['stock'],
+                        'image_path' => $data['image_path'] ?: null,
+                        'active' => $active,
+                        'featured' => $featured,
+                        'publish_to_store' => $publishToStore,
+                    ];
+
                     if ($product) {
                         if ($product->trashed()) {
                             $product->restore();
                         }
 
-                        $product->update([
-                            ...$data,
-                            'barcode' => $data['barcode'] ?: null,
-                            'description' => $data['description'] ?: null,
-                            'category' => $data['category'] ?: null,
-                            'image_path' => $data['image_path'] ?: null,
-                            'active' => $active,
-                        ]);
+                        $product->update($payload);
                     } else {
                         Product::create([
-                            ...$data,
+                            ...$payload,
                             'uuid' => (string) Str::uuid(),
-                            'barcode' => $data['barcode'] ?: null,
-                            'description' => $data['description'] ?: null,
-                            'category' => $data['category'] ?: null,
-                            'image_path' => $data['image_path'] ?: null,
-                            'active' => $active,
                         ]);
                     }
 
@@ -142,29 +167,39 @@ class ProductController extends Controller
         }
     }
 
-    public function store(ProductRequest $request): RedirectResponse
+    public function store(AdminProductRequest $request): RedirectResponse
     {
-        Product::create([
-            ...$request->validated(),
+        $product = Product::create([
+            ...$this->payload($request),
             'uuid' => (string) Str::uuid(),
         ]);
+
+        $this->syncGalleryImages($request, $product);
 
         return redirect()->route('products.index')->with('success', 'Producto creado correctamente.');
     }
 
     public function show(Product $product): View
     {
+        $product->load(['categoryModel', 'images']);
+
         return view('products.show', compact('product'));
     }
 
     public function edit(Product $product): View
     {
-        return view('products.edit', compact('product'));
+        $product->load('images');
+
+        return view('products.edit', [
+            'product' => $product,
+            'categories' => Category::query()->active()->orderBy('sort_order')->orderBy('name')->get(),
+        ]);
     }
 
-    public function update(ProductRequest $request, Product $product): RedirectResponse
+    public function update(AdminProductRequest $request, Product $product): RedirectResponse
     {
-        $product->update($request->validated());
+        $product->update($this->payload($request, $product));
+        $this->syncGalleryImages($request, $product);
 
         return redirect()->route('products.index')->with('success', 'Producto actualizado correctamente.');
     }
@@ -176,7 +211,91 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Producto eliminado correctamente.');
     }
 
-    private function parseBoolean(mixed $value, bool $default, int $line): bool
+    private function payload(AdminProductRequest $request, ?Product $product = null): array
+    {
+        $data = $request->validated();
+        $category = ! empty($data['category_id']) ? Category::query()->find($data['category_id']) : null;
+        $imagePath = $product?->image_path;
+
+        if ($request->hasFile('cover_image')) {
+            if ($imagePath) {
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            $imagePath = $this->storeImage($request->file('cover_image'));
+        }
+
+        return [
+            'name' => $data['name'],
+            'slug' => $data['slug'] ?: Str::slug($data['name']),
+            'sku' => $data['sku'],
+            'barcode' => $data['barcode'] ?? null,
+            'category_id' => $category?->id,
+            'category' => $category?->name,
+            'short_description' => $data['short_description'] ?? null,
+            'description' => $data['description'] ?? null,
+            'cost' => $data['cost'],
+            'price' => $data['price'],
+            'stock' => $data['stock'],
+            'image_path' => $imagePath,
+            'active' => (bool) $data['active'],
+            'featured' => (bool) $data['featured'],
+            'publish_to_store' => (bool) $data['publish_to_store'],
+        ];
+    }
+
+    private function syncGalleryImages(AdminProductRequest $request, Product $product): void
+    {
+        if (! $request->hasFile('gallery_images')) {
+            return;
+        }
+
+        $nextSort = (int) $product->images()->max('sort_order') + 1;
+
+        foreach ($request->file('gallery_images', []) as $file) {
+            if (! $file instanceof UploadedFile) {
+                continue;
+            }
+
+            $path = $this->storeImage($file);
+            $isPrimary = ! $product->images()->exists() && ! $product->image_path;
+
+            $product->images()->create([
+                'path' => $path,
+                'alt_text' => $product->name,
+                'sort_order' => $nextSort++,
+                'is_primary' => $isPrimary,
+            ]);
+
+            if ($isPrimary) {
+                $product->update(['image_path' => $path]);
+            }
+        }
+    }
+
+    private function storeImage(UploadedFile $file): string
+    {
+        return $file->store('products', 'public');
+    }
+
+    private function resolveCategory(?string $categoryName): ?Category
+    {
+        if (! $categoryName) {
+            return null;
+        }
+
+        return Category::query()->firstOrCreate(
+            ['slug' => Str::slug($categoryName)],
+            [
+                'name' => $categoryName,
+                'description' => null,
+                'sort_order' => 999,
+                'active' => true,
+            ],
+        );
+    }
+
+    private function parseBoolean(mixed $value, bool $default, int $line, string $field): bool
     {
         if ($value === null || $value === '') {
             return $default;
@@ -187,7 +306,7 @@ class ProductController extends Controller
         return match ($normalized) {
             '1', 'true', 'si', 'sí', 'yes', 'activo' => true,
             '0', 'false', 'no', 'inactivo' => false,
-            default => throw new InvalidArgumentException("Fila {$line}: el campo active debe ser 1 o 0."),
+            default => throw new InvalidArgumentException("Fila {$line}: el campo {$field} debe ser 1 o 0."),
         };
     }
 }

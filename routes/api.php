@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\ProductController;
@@ -26,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
 
     Route::apiResource('products', ProductController::class)->names('api.products');
     Route::patch('products/{product}/stock', [ProductController::class, 'updateStock']);
+    Route::apiResource('categories', CategoryController::class)->only(['index', 'show'])->names('api.categories');
 
     Route::apiResource('customers', CustomerController::class)->names('api.customers');
     Route::apiResource('devices', DeviceController::class)->names('api.devices');

@@ -12,18 +12,51 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         $adminRole = Role::query()->where('code', User::ROLE_ADMIN)->firstOrFail();
+        $managerRole = Role::query()->where('code', User::ROLE_MANAGER)->firstOrFail();
+        $cashierRole = Role::query()->where('code', User::ROLE_CASHIER)->firstOrFail();
+        $playerRole = Role::query()->where('code', User::ROLE_PLAYER)->firstOrFail();
 
-        User::query()->updateOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'admin@cardbastion.test')],
+        $users = [
             [
-                'uuid' => (string) Str::uuid(),
+                'email' => env('ADMIN_EMAIL', 'admin@cardbastion.test'),
                 'name' => env('ADMIN_NAME', 'Card Bastion Admin'),
                 'phone' => env('ADMIN_PHONE', '5550000000'),
                 'password' => env('ADMIN_PASSWORD', 'password'),
                 'role_id' => $adminRole->id,
-                'active' => true,
-                'email_verified_at' => now(),
-            ]
-        );
+            ],
+            [
+                'email' => 'manager@cardbastion.test',
+                'name' => 'Card Bastion Manager',
+                'phone' => '5550000001',
+                'password' => 'password',
+                'role_id' => $managerRole->id,
+            ],
+            [
+                'email' => 'cashier@cardbastion.test',
+                'name' => 'Card Bastion Cashier',
+                'phone' => '5550000002',
+                'password' => 'password',
+                'role_id' => $cashierRole->id,
+            ],
+            [
+                'email' => 'player@cardbastion.test',
+                'name' => 'Demo Player',
+                'phone' => '5550000003',
+                'password' => 'password',
+                'role_id' => $playerRole->id,
+            ],
+        ];
+
+        foreach ($users as $user) {
+            User::query()->updateOrCreate(
+                ['email' => $user['email']],
+                [
+                    ...$user,
+                    'uuid' => (string) Str::uuid(),
+                    'active' => true,
+                    'email_verified_at' => now(),
+                ],
+            );
+        }
     }
 }

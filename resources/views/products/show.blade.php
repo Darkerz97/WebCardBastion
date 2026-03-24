@@ -1,17 +1,52 @@
-@extends('layouts.app', ['title' => $product->name, 'heading' => $product->name, 'subheading' => 'Detalle de producto en catálogo central.'])
+@extends('layouts.app', ['title' => $product->name, 'heading' => $product->name, 'subheading' => 'Detalle del producto dentro del panel administrativo.'])
 
 @section('content')
-    <div class="panel card-stack">
-        <div class="grid grid-2">
-            <div><strong>SKU:</strong> {{ $product->sku }}</div>
-            <div><strong>Barcode:</strong> {{ $product->barcode ?: 'N/D' }}</div>
-            <div><strong>Categoría:</strong> {{ $product->category ?: 'N/D' }}</div>
-            <div><strong>Estado:</strong> {{ $product->active ? 'Activo' : 'Inactivo' }}</div>
-            <div><strong>Costo:</strong> ${{ number_format($product->cost, 2) }}</div>
-            <div><strong>Precio:</strong> ${{ number_format($product->price, 2) }}</div>
-            <div><strong>Stock:</strong> {{ $product->stock }}</div>
-            <div><strong>UUID:</strong> <span class="muted">{{ $product->uuid }}</span></div>
+    <div class="grid gap-6 xl:grid-cols-[1fr_0.95fr]">
+        <div class="panel">
+            <div class="aspect-[4/3] rounded-3xl bg-stone-100">
+                @if ($product->primary_image_url)
+                    <img class="h-full w-full rounded-3xl object-cover" src="{{ $product->primary_image_url }}" alt="{{ $product->name }}">
+                @else
+                    <div class="flex h-full items-center justify-center rounded-3xl bg-gradient-to-br from-amber-100 to-stone-200 text-center text-sm font-semibold uppercase tracking-[0.25em] text-stone-500">{{ $product->name }}</div>
+                @endif
+            </div>
+
+            @if ($product->images->isNotEmpty())
+                <div class="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                    @foreach ($product->images as $image)
+                        <img class="aspect-square w-full rounded-2xl border border-stone-200 object-cover" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($image->path) }}" alt="{{ $image->alt_text ?: $product->name }}">
+                    @endforeach
+                </div>
+            @endif
         </div>
-        <div><strong>Descripción</strong><p class="muted">{{ $product->description ?: 'Sin descripción.' }}</p></div>
+
+        <div class="panel">
+            <div class="flex flex-wrap gap-2">
+                @if ($product->publish_to_store)
+                    <span class="badge">Publicado</span>
+                @endif
+                @if ($product->featured)
+                    <span class="badge">Destacado</span>
+                @endif
+            </div>
+
+            <dl class="mt-6 grid gap-4 text-sm">
+                <div><dt class="font-semibold text-stone-500">Categoria</dt><dd class="mt-1 text-stone-900">{{ $product->categoryModel?->name ?? 'Sin categoria' }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">SKU</dt><dd class="mt-1 text-stone-900">{{ $product->sku }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Slug</dt><dd class="mt-1 text-stone-900">{{ $product->slug }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Precio</dt><dd class="mt-1 text-stone-900">${{ number_format($product->price, 2) }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Costo</dt><dd class="mt-1 text-stone-900">${{ number_format($product->cost, 2) }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Stock</dt><dd class="mt-1 text-stone-900">{{ $product->stock }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Resumen</dt><dd class="mt-1 text-stone-900">{{ $product->short_description ?: 'Sin resumen corto' }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Descripcion</dt><dd class="mt-1 text-stone-900">{{ $product->description ?: 'Sin descripcion' }}</dd></div>
+            </dl>
+
+            <div class="mt-6 flex flex-wrap gap-3">
+                <a class="btn btn-primary" href="{{ route('products.edit', $product) }}">Editar producto</a>
+                @if ($product->publish_to_store)
+                    <a class="btn btn-secondary" href="{{ route('store.products.show', $product) }}" target="_blank">Ver en tienda</a>
+                @endif
+            </div>
+        </div>
     </div>
 @endsection

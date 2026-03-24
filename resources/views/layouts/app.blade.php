@@ -3,79 +3,70 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Card Bastion Server' }}</title>
-    <style>
-        :root { --bg:#f4f1ea; --panel:#fffdf8; --accent:#8a3d16; --text:#1f1f1f; --muted:#666; --border:#ddd2c5; --success:#20744a; --danger:#a4332b; }
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: Georgia, "Times New Roman", serif; background: linear-gradient(135deg, #efe7db 0%, #f8f4ed 55%, #e7dccb 100%); color: var(--text); }
-        a { color: inherit; text-decoration: none; }
-        .app { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
-        .sidebar { background: #2b211d; color: #f8f1e6; padding: 24px; }
-        .brand { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
-        .subtitle { color: #d4c2ae; margin-bottom: 24px; }
-        .nav-link { display: block; padding: 12px 14px; border-radius: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.04); }
-        .nav-link.active, .nav-link:hover { background: rgba(229,184,143,0.18); }
-        .content { padding: 28px; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 12px; }
-        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 20px; box-shadow: 0 8px 30px rgba(43,33,29,0.06); }
-        .grid { display: grid; gap: 18px; }
-        .grid-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-        .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .metric { padding: 18px; border-radius: 16px; background: linear-gradient(180deg, #fff8ef, #f6ede1); border: 1px solid var(--border); }
-        .metric small { color: var(--muted); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .08em; }
-        .metric strong { font-size: 1.8rem; }
-        .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .btn { display: inline-block; padding: 10px 16px; border-radius: 10px; border: 1px solid transparent; background: var(--accent); color: white; cursor: pointer; }
-        .btn.secondary { background: #f5ede4; color: var(--text); border-color: var(--border); }
-        .btn.danger { background: var(--danger); }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-        th { font-size: .85rem; text-transform: uppercase; color: var(--muted); letter-spacing: .08em; }
-        form.inline { display: inline; }
-        input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: white; font: inherit; }
-        label { font-size: .92rem; margin-bottom: 6px; display: block; color: var(--muted); }
-        .field { margin-bottom: 14px; }
-        .flash { padding: 14px 16px; border-radius: 12px; margin-bottom: 18px; }
-        .flash.success { background: #e6f3eb; color: var(--success); border: 1px solid #b8dfc5; }
-        .flash.error { background: #faecea; color: var(--danger); border: 1px solid #e3b9b4; }
-        .badge { display: inline-block; padding: 6px 10px; border-radius: 999px; background: #efe4d6; color: #7a5435; font-size: .82rem; }
-        .search-bar { display: grid; grid-template-columns: 1fr 180px auto; gap: 12px; align-items: end; margin-bottom: 18px; }
-        .pagination { margin-top: 16px; }
-        .muted { color: var(--muted); }
-        .card-stack { display: grid; gap: 18px; }
-        @media (max-width: 980px) { .app,.grid-5,.grid-2,.search-bar { grid-template-columns: 1fr; } }
-    </style>
+    <title>{{ $title ?? 'Admin | Card Bastion' }}</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-<div class="app">
-    <aside class="sidebar">
-        <div class="brand">Card Bastion</div>
-        <div class="subtitle">Servidor central Fase 1</div>
-        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
-        <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">Productos</a>
-        <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="{{ route('customers.index') }}">Clientes</a>
-        <a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">Ventas</a>
-        <div style="margin-top: 24px;">
-            <div class="muted" style="margin-bottom: 10px;">{{ auth()->user()?->name }}</div>
-            <form method="POST" action="{{ route('logout') }}">@csrf <button class="btn secondary" type="submit">Cerrar sesión</button></form>
-        </div>
-    </aside>
-    <main class="content">
-        <div class="topbar">
-            <div>
-                <h1 style="margin: 0 0 6px;">{{ $heading ?? 'Panel administrativo' }}</h1>
-                <div class="muted">{{ $subheading ?? 'Gestión central de productos, clientes, ventas y sincronización.' }}</div>
+<body class="min-h-screen bg-stone-100">
+    <div class="grid min-h-screen lg:grid-cols-[280px_1fr]">
+        <aside class="bg-[color:var(--color-night)] px-6 py-8 text-stone-200">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-300 text-lg font-black tracking-[0.25em] text-[color:var(--color-night)]">CB</span>
+                <div>
+                    <div class="text-base font-black uppercase tracking-[0.25em]">Card Bastion</div>
+                    <div class="text-xs uppercase tracking-[0.2em] text-stone-400">Admin Suite</div>
+                </div>
+            </a>
+
+            <nav class="mt-10 space-y-2 text-sm">
+                <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('dashboard') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('dashboard') }}">Dashboard</a>
+                @if (auth()->user()?->hasRole([\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_MANAGER]))
+                    <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('categories.*') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('categories.index') }}">Categorias</a>
+                    <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('products.*') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('products.index') }}">Productos</a>
+                @endif
+                <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('customers.*') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('customers.index') }}">Clientes</a>
+                <a class="block rounded-2xl px-4 py-3 transition {{ request()->routeIs('sales.*') ? 'bg-white/10 text-white' : 'text-stone-300 hover:bg-white/5 hover:text-white' }}" href="{{ route('sales.index') }}">Ventas</a>
+                <a class="block rounded-2xl px-4 py-3 text-stone-300 transition hover:bg-white/5 hover:text-white" href="{{ route('store.home') }}">Ver tienda</a>
+            </nav>
+
+            <div class="mt-10 rounded-3xl border border-white/10 bg-white/5 p-4">
+                <p class="text-xs uppercase tracking-[0.22em] text-stone-400">Sesion actual</p>
+                <p class="mt-3 text-lg font-semibold text-white">{{ auth()->user()?->name }}</p>
+                <p class="text-sm text-stone-400">{{ auth()->user()?->role?->name }}</p>
+                <form method="POST" action="{{ route('logout') }}" class="mt-4">
+                    @csrf
+                    <button class="btn btn-secondary w-full" type="submit">Cerrar sesion</button>
+                </form>
             </div>
-        </div>
-        @if (session('success')) <div class="flash success">{{ session('success') }}</div> @endif
-        @if ($errors->any())
-            <div class="flash error">
-                <strong>Hay datos por corregir.</strong>
-                <ul style="margin: 8px 0 0 18px;">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+        </aside>
+
+        <main class="px-4 py-6 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl">
+                <div class="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[color:var(--color-brand-500)]">{{ $eyebrow ?? 'Panel administrativo' }}</p>
+                        <h1 class="mt-2 text-3xl font-black tracking-[0.06em] text-stone-900">{{ $heading ?? 'Card Bastion' }}</h1>
+                        <p class="mt-2 max-w-3xl text-sm leading-7 text-stone-600">{{ $subheading ?? 'Operacion central del ecosistema Card Bastion.' }}</p>
+                    </div>
+                </div>
+
+                @if (session('success'))
+                    <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('success') }}</div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                        <p class="font-semibold">Hay datos por corregir.</p>
+                        <ul class="mt-2 list-disc space-y-1 pl-5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @yield('content')
             </div>
-        @endif
-        @yield('content')
-    </main>
-</div>
+        </main>
+    </div>
 </body>
 </html>

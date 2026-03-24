@@ -5,7 +5,7 @@ namespace App\Http\Requests\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ProductRequest extends FormRequest
+class AdminProductRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -22,16 +22,17 @@ class ProductRequest extends FormRequest
             'sku' => ['required', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($productId)],
             'barcode' => ['nullable', 'string', 'max:100', Rule::unique('products', 'barcode')->ignore($productId)],
             'category_id' => ['nullable', 'exists:categories,id'],
-            'description' => ['nullable', 'string'],
             'short_description' => ['nullable', 'string', 'max:280'],
-            'category' => ['nullable', 'string', 'max:100'],
+            'description' => ['nullable', 'string'],
             'cost' => ['required', 'numeric', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
             'stock' => ['required', 'integer', 'min:0'],
-            'image_path' => ['nullable', 'string', 'max:255'],
+            'cover_image' => ['nullable', 'image', 'max:4096'],
+            'gallery_images' => ['nullable', 'array'],
+            'gallery_images.*' => ['nullable', 'image', 'max:4096'],
             'active' => ['required', 'boolean'],
-            'featured' => ['nullable', 'boolean'],
-            'publish_to_store' => ['nullable', 'boolean'],
+            'featured' => ['required', 'boolean'],
+            'publish_to_store' => ['required', 'boolean'],
         ];
     }
 }

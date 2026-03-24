@@ -1,55 +1,103 @@
-@extends('layouts.app', ['title' => 'Productos', 'heading' => 'Productos', 'subheading' => 'Catálogo central para POS, panel y sincronización.'])
+@extends('layouts.app', ['title' => 'Productos', 'heading' => 'Productos', 'subheading' => 'Inventario central y catalogo publico del ecommerce.'])
 
 @section('content')
-    <div class="panel">
-        <div class="actions" style="justify-content:space-between; margin-bottom:18px; align-items:flex-start;">
-            <div>
-                <strong>Carga masiva</strong>
-                <div class="muted" style="margin-top:6px;">Descarga la plantilla CSV, llenala en Excel y vuelve a subirla para crear o actualizar productos por SKU.</div>
+    <div class="space-y-6">
+        <div class="panel space-y-5">
+            <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--color-brand-500)]">Carga masiva</p>
+                    <p class="mt-2 max-w-2xl text-sm leading-7 text-stone-600">Descarga la plantilla CSV, llenala en Excel y vuelve a subirla para crear o actualizar productos por SKU, categoria, slug y visibilidad en tienda.</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <a class="btn btn-secondary" href="{{ route('products.template') }}">Descargar plantilla</a>
+                    <a class="btn btn-primary" href="{{ route('products.create') }}">Nuevo producto</a>
+                </div>
             </div>
-            <div class="actions">
-                <a class="btn secondary" href="{{ route('products.template') }}">Descargar plantilla</a>
-                <form method="POST" action="{{ route('products.import') }}" enctype="multipart/form-data" class="actions">
-                    @csrf
-                    <input type="file" name="file" accept=".csv,text/csv" style="max-width:260px;">
-                    <button class="btn" type="submit">Importar productos</button>
-                </form>
-            </div>
+
+            <form method="POST" action="{{ route('products.import') }}" enctype="multipart/form-data" class="grid gap-4 lg:grid-cols-[1fr_auto]">
+                @csrf
+                <input type="file" name="file" accept=".csv,text/csv">
+                <button class="btn btn-secondary" type="submit">Importar productos</button>
+            </form>
+
+            <form method="GET" class="grid gap-4 lg:grid-cols-[1fr_240px_220px_auto]">
+                <div class="field">
+                    <label for="search">Buscar</label>
+                    <input id="search" type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, slug, SKU o descripcion">
+                </div>
+                <div class="field">
+                    <label for="category_id">Categoria</label>
+                    <select id="category_id" name="category_id">
+                        <option value="">Todas</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" @selected((string) request('category_id') === (string) $category->id)>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="active">Estado</label>
+                    <select id="active" name="active">
+                        <option value="">Todos</option>
+                        <option value="1" @selected(request('active') === '1')>Activos</option>
+                        <option value="0" @selected(request('active') === '0')>Inactivos</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary self-end" type="submit">Filtrar</button>
+            </form>
         </div>
-        <form method="GET" class="search-bar">
-            <div class="field" style="margin:0;"><label for="search">Buscar</label><input id="search" type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, SKU o barcode"></div>
-            <div class="field" style="margin:0;">
-                <label for="active">Estado</label>
-                <select id="active" name="active">
-                    <option value="">Todos</option>
-                    <option value="1" @selected(request('active') === '1')>Activos</option>
-                    <option value="0" @selected(request('active') === '0')>Inactivos</option>
-                </select>
-            </div>
-            <button class="btn secondary" type="submit">Filtrar</button>
-        </form>
-        <div class="actions" style="justify-content:flex-end; margin-bottom:14px;"><a class="btn" href="{{ route('products.create') }}">Nuevo producto</a></div>
-        <table>
-            <thead><tr><th>Nombre</th><th>SKU</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th></th></tr></thead>
-            <tbody>
-            @forelse ($products as $product)
-                <tr>
-                    <td><a href="{{ route('products.show', $product) }}">{{ $product->name }}</a></td>
-                    <td>{{ $product->sku }}</td>
-                    <td>{{ $product->category ?: 'Sin categoría' }}</td>
-                    <td>${{ number_format($product->price, 2) }}</td>
-                    <td>{{ $product->stock }}</td>
-                    <td><span class="badge">{{ $product->active ? 'Activo' : 'Inactivo' }}</span></td>
-                    <td class="actions">
-                        <a class="btn secondary" href="{{ route('products.edit', $product) }}">Editar</a>
-                        <form class="inline" method="POST" action="{{ route('products.destroy', $product) }}">@csrf @method('DELETE') <button class="btn danger" type="submit" onclick="return confirm('¿Eliminar producto?')">Eliminar</button></form>
-                    </td>
-                </tr>
-            @empty
-                <tr><td colspan="7" class="muted">No hay productos registrados.</td></tr>
-            @endforelse
-            </tbody>
-        </table>
-        <div class="pagination">{{ $products->links() }}</div>
+
+        <div class="table-shell">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoria</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Tienda</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($products as $product)
+                        <tr>
+                            <td>
+                                <a class="font-semibold text-[color:var(--color-brand-600)]" href="{{ route('products.show', $product) }}">{{ $product->name }}</a>
+                                <p class="mt-1 text-sm text-stone-500">{{ $product->sku }} · {{ $product->slug }}</p>
+                            </td>
+                            <td>{{ $product->categoryModel?->name ?? 'Sin categoria' }}</td>
+                            <td>${{ number_format($product->price, 2) }}</td>
+                            <td>{{ $product->stock }}</td>
+                            <td>
+                                <div class="flex flex-wrap gap-2">
+                                    @if ($product->publish_to_store)
+                                        <span class="badge">Publicado</span>
+                                    @endif
+                                    @if ($product->featured)
+                                        <span class="badge">Destacado</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex flex-wrap justify-end gap-2">
+                                    <a class="btn btn-secondary" href="{{ route('products.edit', $product) }}">Editar</a>
+                                    <form method="POST" action="{{ route('products.destroy', $product) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger" type="submit" onclick="return confirm('¿Eliminar producto?')">Eliminar</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-stone-500">No hay productos registrados.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div>{{ $products->links() }}</div>
     </div>
 @endsection

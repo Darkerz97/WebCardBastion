@@ -1,31 +1,31 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login | Card Bastion</title>
-    <style>
-        body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at top, #f0ddc6, #e9e0d0 45%, #d8c7b3 100%); font-family: Georgia, "Times New Roman", serif; }
-        .card { width: min(440px, calc(100vw - 32px)); background: rgba(255,252,246,.95); padding: 32px; border-radius: 24px; border: 1px solid #d7c6b4; box-shadow: 0 16px 40px rgba(53,33,15,.12); }
-        h1 { margin-top: 0; } label { display:block; margin-bottom:6px; color:#6b594d; } input { width:100%; padding:11px 12px; border-radius:12px; border:1px solid #d7c6b4; margin-bottom:14px; font:inherit; }
-        button { width:100%; padding:12px; border:0; border-radius:12px; background:#8a3d16; color:white; font:inherit; cursor:pointer; } .muted { color:#6b594d; } .error { color:#a4332b; margin-bottom:14px; } .success { color:#20744a; margin-bottom:14px; }
-    </style>
-</head>
-<body>
-<div class="card">
-    <div class="muted">Servidor central</div>
-    <h1>Card Bastion</h1>
-    <p class="muted">Ingresa con tu usuario administrador o de operación.</p>
-    @if (session('success')) <div class="success">{{ session('success') }}</div> @endif
-    @if ($errors->any()) <div class="error">{{ $errors->first() }}</div> @endif
-    <form method="POST" action="{{ route('login.store') }}">
+@extends('layouts.auth', ['title' => 'Login | Card Bastion'])
+
+@section('content')
+    <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[color:var(--color-brand-500)]">Acceso</p>
+    <h1 class="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-stone-900">Entrar a Card Bastion</h1>
+    <p class="mt-3 text-sm leading-7 text-stone-600">Administra la operacion o entra a tu cuenta de jugador desde el mismo proyecto.</p>
+
+    <form method="POST" action="{{ route('login.store') }}" class="mt-8 space-y-5">
         @csrf
-        <label for="email">Correo</label>
-        <input id="email" type="email" name="email" value="{{ old('email') }}" required>
-        <label for="password">Contraseña</label>
-        <input id="password" type="password" name="password" required>
-        <button type="submit">Entrar al panel</button>
+        <div class="field">
+            <label for="email">Correo</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required>
+        </div>
+        <div class="field">
+            <label for="password">Contrasena</label>
+            <input id="password" type="password" name="password" required>
+        </div>
+        <button class="btn btn-primary w-full" type="submit">Entrar</button>
     </form>
-</div>
-</body>
-</html>
+
+    <div class="mt-6 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-4 text-sm text-stone-600">
+        <p class="font-semibold text-stone-800">Demo rapido</p>
+        <p class="mt-2">Admin: <code>admin@cardbastion.test</code> / <code>password</code></p>
+        <p>Jugador: <code>player@cardbastion.test</code> / <code>password</code></p>
+    </div>
+
+    <p class="mt-6 text-sm text-stone-600">
+        ¿Eres jugador nuevo?
+        <a href="{{ route('register') }}" class="font-semibold text-[color:var(--color-brand-600)]">Crea tu cuenta</a>
+    </p>
+@endsection

@@ -1,21 +1,29 @@
-# Card Bastion Server - Fase 1
+# Card Bastion Platform
 
-Servidor central para Card Bastion construido con Laravel 12, MySQL/MariaDB y Laravel Sanctum.
+Plataforma Laravel 12 para `tienda virtual`, `portal de jugadores` y `panel administrativo`, compatible con `Hostinger compartido` usando Blade, Tailwind, Vite, MySQL/MariaDB y Sanctum.
 
-## Objetivo
+## Estado actual
 
-Esta fase entrega una base funcional para:
+### Fase 1 implementada
 
-- autenticacion web y API
-- productos
-- clientes
-- ventas, items y pagos
-- dispositivos POS
-- logs de sincronizacion
-- dashboard administrativo con Blade
-- API REST preparada para sincronizacion futura
+- autenticacion web
+- registro de jugadores
+- roles: `admin`, `manager`, `cashier`, `player`
+- layout publico, auth y admin con Blade + Tailwind + Vite
+- categorias
+- productos con slug, publicacion en tienda y galeria de imagenes
+- catalogo publico
+- detalle publico de producto
+- panel admin de categorias
+- panel admin de productos
+- API basica de categorias y productos con Sanctum
+- base previa reutilizada para clientes, ventas, dashboard y sincronizacion
 
-La arquitectura evita dependencias de WebSockets, Redis o procesos persistentes para poder correr primero en hosting tradicional y migrar despues a VPS sin rehacer el backend.
+### Siguientes fases pendientes
+
+- Fase 2: carrito, checkout, pedidos, pagos, historial de compras
+- Fase 3: perfiles de jugador completos, torneos, resultados, estadisticas
+- Fase 4: creditos, recompensas, dashboard avanzado y API extendida
 
 ## Stack
 
@@ -23,277 +31,198 @@ La arquitectura evita dependencias de WebSockets, Redis o procesos persistentes 
 - Laravel 12
 - MySQL o MariaDB
 - Laravel Sanctum
-- Blade para panel administrativo
+- Blade
+- Tailwind CSS 4
+- Vite
 
-## Estructura recomendada
+## Modulos activos
 
-```text
-app/
-  Http/
-    Controllers/
-      Api/
-      Web/
-    Middleware/
-    Requests/
-    Resources/
-  Models/
-  Services/
-  Support/
-database/
-  migrations/
-  seeders/
-    Demo/
-resources/
-  views/
-    auth/
-    customers/
-    dashboard/
-    layouts/
-    products/
-    sales/
-routes/
-  api.php
-  web.php
-```
+### Publico
 
-## Modulos incluidos
+- `/` y `/tienda`
+- filtros por categoria
+- detalle `/tienda/{slug}`
+- login y registro de jugadores
+- portal base del jugador en `/mi-cuenta`
 
-### Autenticacion
+### Admin
 
-- login API con Sanctum
-- logout API
-- `/api/me`
-- login web para panel Blade
-- roles base: `admin`, `manager`, `cashier`
-- seeder de admin inicial
-
-### Catalogo
-
-- CRUD completo de productos
-- CRUD completo de clientes
-- busqueda y filtros basicos
-- soft deletes en productos y clientes
-- importacion masiva por plantilla CSV compatible con Excel para productos y clientes
-
-### Ventas
-
-- ventas con items y pagos
-- recalculo de subtotal, descuento y total
-- actualizacion automatica de `payment_status`
-- control de stock negativo bloqueado
-- transacciones de base de datos para ventas y pagos
-- importacion masiva por plantilla CSV compatible con Excel para ventas
-
-### Sincronizacion
-
-- `POST /api/sync/upload-sales`
-- `GET /api/sync/products`
-- `GET /api/sync/customers`
-- `POST /api/sync/heartbeat`
-- `sync_logs` para auditoria y trazabilidad
-
-## Instalacion local
-
-1. Instala dependencias:
-
-```bash
-composer install
-```
-
-2. Crea el archivo de entorno:
-
-```bash
-copy .env.example .env
-```
-
-3. Genera la llave:
-
-```bash
-php artisan key:generate
-```
-
-4. Configura MySQL o MariaDB en `.env`.
-
-5. Ejecuta migraciones y seeders:
-
-```bash
-php artisan migrate --seed
-```
-
-6. Levanta el servidor:
-
-```bash
-php artisan serve
-```
-
-## Variables de entorno utiles
-
-```env
-APP_NAME="Card Bastion Server"
-APP_URL=http://localhost:8000
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=card_bastion
-DB_USERNAME=root
-DB_PASSWORD=
-
-ADMIN_NAME="Card Bastion Admin"
-ADMIN_EMAIL=admin@cardbastion.test
-ADMIN_PASSWORD=password
-ADMIN_PHONE=5550000000
-```
-
-## Credenciales demo
-
-Despues de `php artisan migrate --seed`:
-
-- Admin web/API: `admin@cardbastion.test` / `password`
-- Caja demo: `cashier@cardbastion.test` / `password`
-
-## Rutas principales
-
-### Web
-
-- `/login`
 - `/dashboard`
+- `/categories`
 - `/products`
 - `/customers`
 - `/sales`
-- `/products/template`
-- `/products/import`
-- `/customers/template`
-- `/customers/import`
-- `/sales/template`
-- `/sales/import`
 
 ### API
 
 - `POST /api/auth/login`
 - `POST /api/auth/logout`
-- `GET /api/me`
+- `GET /api/auth/me`
 - `GET /api/products`
-- `GET /api/customers`
-- `GET /api/sales`
-- `POST /api/sales`
-- `POST /api/sales/{sale}/payments`
-- `GET /api/devices`
-- `POST /api/sync/heartbeat`
-- `GET /api/sync/products`
-- `GET /api/sync/customers`
-- `POST /api/sync/upload-sales`
+- `GET /api/categories`
+- endpoints previos de clientes, ventas, dispositivos y sync
 
-## Arquitectura implementada
+## Base de datos agregada en Fase 1
 
-- **Controllers Web y API separados** para mantener clara la capa HTTP y facilitar crecimiento a POS, app movil y e-commerce.
-- **Form Requests** para centralizar validacion.
-- **API Resources** para respuestas JSON consistentes.
-- **Services** para encapsular logica transaccional de ventas y sincronizacion.
-- **Eloquent relationships** completas entre usuarios, roles, ventas, items, pagos, dispositivos y logs.
-- **UUIDs unicos** en entidades clave para interoperabilidad futura con POS local y sincronizacion offline-first.
-- **Blade admin simple** para operacion inmediata en hosting tradicional.
-- **Importacion CSV reutilizable** con un lector comun para cargas masivas desde plantillas editables en Excel.
+- `categories`
+- `product_images`
+- nuevas columnas en `products`:
+  - `category_id`
+  - `slug`
+  - `short_description`
+  - `featured`
+  - `publish_to_store`
 
-## Carga masiva desde Excel
+## Credenciales demo
 
-Las pantallas de `Productos`, `Clientes` y `Ventas` incluyen dos acciones:
+Despues de sembrar la base:
 
-- `Descargar plantilla` para bajar un archivo `.csv`
-- `Importar` para subir el archivo ya capturado
+- Admin: `admin@cardbastion.test` / `password`
+- Manager: `manager@cardbastion.test` / `password`
+- Cashier: `cashier@cardbastion.test` / `password`
+- Player: `player@cardbastion.test` / `password`
 
-Aunque el formato es `.csv`, se puede abrir y editar directamente en Excel sin problema.
+## Instalacion local
 
-### Productos
+1. Instala dependencias PHP:
 
-La plantilla de productos usa estas columnas:
+```bash
+composer install
+```
 
-- `name`
-- `sku`
-- `barcode`
-- `description`
-- `category`
-- `cost`
-- `price`
-- `stock`
-- `image_path`
-- `active`
+2. Instala dependencias frontend:
 
-Reglas importantes:
+```bash
+npm install
+```
 
-- `sku` identifica el producto para crear o actualizar
-- `barcode` debe ser unico si se captura
-- `active` acepta `1` o `0`
+3. Crea `.env`:
 
-### Clientes
+```bash
+copy .env.example .env
+```
 
-La plantilla de clientes usa estas columnas:
+4. Genera la app key:
 
-- `name`
-- `phone`
-- `email`
-- `notes`
-- `credit_balance`
-- `active`
+```bash
+php artisan key:generate
+```
 
-Reglas importantes:
+5. Configura MySQL/MariaDB en `.env`.
 
-- si coincide `email` o `phone`, el cliente se actualiza
-- si no existe coincidencia, se crea un cliente nuevo
-- `active` acepta `1` o `0`
+6. Ejecuta migraciones y seeders:
 
-### Ventas
+```bash
+php artisan migrate --seed
+```
 
-La plantilla de ventas usa estas columnas:
+7. Crea el enlace para archivos publicos:
 
-- `sale_number`
-- `customer_email`
-- `customer_phone`
-- `device_code`
-- `sold_at`
-- `status`
-- `discount`
-- `product_sku`
-- `quantity`
-- `unit_price`
-- `payment_method`
-- `payment_amount`
-- `payment_reference`
-- `payment_notes`
-- `payment_paid_at`
+```bash
+php artisan storage:link
+```
 
-Reglas importantes:
+8. Levanta Vite en desarrollo:
 
-- repite el mismo `sale_number` en varias filas cuando una venta tenga varios productos
-- `product_sku` debe existir previamente
-- `customer_email` o `customer_phone` deben existir si se capturan
-- `payment_method` y `payment_amount` deben capturarse juntos
-- `status` acepta `draft`, `completed` o `cancelled`
+```bash
+npm run dev
+```
 
-## Despliegue
+9. Levanta Laravel:
 
-### Hosting tradicional
+```bash
+php artisan serve
+```
 
-- apunta el dominio a `public/`
-- configura `.env` con MySQL real
-- ejecuta `php artisan migrate --force --seed`
-- asegurate de que `storage/` y `bootstrap/cache/` tengan permisos de escritura
+## Build para produccion
 
-### VPS futuro
+```bash
+npm run build
+php artisan view:cache
+php artisan config:cache
+php artisan route:cache
+```
 
-La app ya queda lista para migrar a VPS sin cambiar la arquitectura base. Solo sera necesario ajustar:
+## Despliegue en Hostinger compartido
 
-- variables de entorno
-- permisos de sistema
-- cache/queue si mas adelante se activan servicios adicionales
-- proxy web y SSL
+La implementacion esta pensada para hosting compartido, sin Redis, websockets ni supervisor.
 
-## Siguientes fases sugeridas
+### Recomendaciones
 
-- sincronizacion bidireccional incremental
-- control fino por permisos
-- imagenes de productos
-- reportes y exportaciones
-- rewards y creditos
-- e-commerce y preventas
-- torneos y eventos
+- apunta el dominio o subdominio a `public/`
+- usa MySQL/MariaDB de Hostinger
+- sube `vendor/` y `node_modules` no es necesario en produccion si ya subes `public/build`
+- asegúrate de tener `storage/` y `bootstrap/cache/` con permisos de escritura
+- ejecuta `php artisan storage:link` si el entorno lo permite
+- si no puedes usar symlink, sirve imagenes desde rutas publicas o ajusta el hosting
+
+### Flujo sugerido
+
+1. En local:
+
+```bash
+composer install
+npm install
+npm run build
+php artisan migrate --seed
+```
+
+2. Sube el proyecto al servidor con `public/build` incluido.
+
+3. Configura `.env` del servidor.
+
+4. Ejecuta en servidor:
+
+```bash
+php artisan migrate --force
+php artisan storage:link
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+## Archivos clave de Fase 1
+
+### Backend
+
+- `app/Models/Category.php`
+- `app/Models/Product.php`
+- `app/Models/ProductImage.php`
+- `app/Http/Controllers/Web/StorefrontController.php`
+- `app/Http/Controllers/Web/CategoryController.php`
+- `app/Http/Controllers/Web/ProductController.php`
+- `app/Http/Controllers/Web/AuthController.php`
+- `app/Http/Controllers/Web/AccountController.php`
+- `app/Http/Controllers/Api/CategoryController.php`
+
+### Frontend Blade
+
+- `resources/views/layouts/public.blade.php`
+- `resources/views/layouts/auth.blade.php`
+- `resources/views/layouts/app.blade.php`
+- `resources/views/store/index.blade.php`
+- `resources/views/store/show.blade.php`
+- `resources/views/categories/*`
+- `resources/views/products/*`
+
+### Infraestructura
+
+- `resources/css/app.css`
+- `routes/web.php`
+- `routes/api.php`
+- `database/migrations/2026_03_24_020000_create_categories_table.php`
+- `database/migrations/2026_03_24_020100_update_products_table_for_storefront.php`
+- `database/migrations/2026_03_24_020200_create_product_images_table.php`
+
+## Validaciones realizadas en esta fase
+
+- `php artisan route:list`
+- `php -l` sobre controladores y modelos nuevos
+- `npm run build`
+- `php artisan view:cache`
+
+## Notas
+
+- La importacion masiva CSV de productos existente sigue disponible y ahora soporta campos de tienda.
+- Clientes y ventas del sistema previo se conservaron para no perder operacion ya construida.
+- El carrito, checkout, pedidos, torneos y recompensas aun no estan implementados en esta fase.

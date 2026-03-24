@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Sale;
@@ -16,7 +17,9 @@ class DashboardController extends Controller
 
         return view('dashboard.index', [
             'metrics' => [
+                'categories' => Category::query()->count(),
                 'products' => Product::query()->count(),
+                'published_products' => Product::query()->published()->count(),
                 'customers' => Customer::query()->count(),
                 'sales' => Sale::query()->count(),
                 'sales_today' => (clone $todaySales)->count(),
@@ -26,6 +29,11 @@ class DashboardController extends Controller
                 ->with(['customer', 'user'])
                 ->latest('sold_at')
                 ->limit(8)
+                ->get(),
+            'lowStockProducts' => Product::query()
+                ->where('stock', '<=', 10)
+                ->orderBy('stock')
+                ->limit(6)
                 ->get(),
         ]);
     }

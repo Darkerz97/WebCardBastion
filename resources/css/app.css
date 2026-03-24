@@ -8,4 +8,129 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-ink: #211818;
+    --color-brand-50: #f7ede2;
+    --color-brand-100: #f2dfcf;
+    --color-brand-200: #e9c5aa;
+    --color-brand-300: #d89d69;
+    --color-brand-400: #ba6d34;
+    --color-brand-500: #91471a;
+    --color-brand-600: #783510;
+    --color-brand-700: #5f280b;
+    --color-night: #1f1411;
+    --color-gold: #d9a441;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-stone-100 text-[color:var(--color-ink)] antialiased;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    dialog::backdrop {
+        background: rgba(15, 23, 42, 0.18);
+    }
+}
+
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center rounded-xl border border-transparent px-4 py-2.5 text-sm font-semibold transition;
+    }
+
+    .btn-primary {
+        @apply bg-[color:var(--color-brand-500)] text-white hover:bg-[color:var(--color-brand-600)];
+    }
+
+    .btn-secondary {
+        @apply border-stone-300 bg-white text-stone-700 hover:border-stone-400 hover:bg-stone-50;
+    }
+
+    .btn-danger {
+        @apply bg-rose-600 text-white hover:bg-rose-700;
+    }
+
+    .panel {
+        @apply rounded-3xl border border-stone-200 bg-white/95 p-5 shadow-[0_14px_40px_rgba(36,24,18,0.08)];
+    }
+
+    .field {
+        @apply space-y-2;
+    }
+
+    .field label {
+        @apply text-sm font-medium text-stone-600;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+        @apply w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[color:var(--color-brand-400)] focus:ring-4 focus:ring-[color:var(--color-brand-100)];
+    }
+
+    .badge {
+        @apply inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-amber-800;
+    }
+
+    .metric-card {
+        @apply rounded-3xl border border-stone-200 bg-white p-5 shadow-[0_12px_34px_rgba(36,24,18,0.06)];
+    }
+
+    .actions {
+        @apply flex flex-wrap items-center gap-3;
+    }
+
+    .search-bar {
+        @apply grid gap-4 lg:grid-cols-[1fr_220px_auto];
+    }
+
+    .grid-2 {
+        @apply grid gap-5 lg:grid-cols-2;
+    }
+
+    .grid-5 {
+        @apply grid gap-4 md:grid-cols-2 xl:grid-cols-5;
+    }
+
+    .muted {
+        @apply text-stone-500;
+    }
+
+    .inline {
+        @apply inline;
+    }
+
+    .table-shell {
+        @apply overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-[0_12px_34px_rgba(36,24,18,0.06)];
+    }
+
+    .data-table {
+        @apply min-w-full divide-y divide-stone-200 text-sm;
+    }
+
+    .data-table thead {
+        @apply bg-stone-50 text-left text-xs uppercase tracking-[0.22em] text-stone-500;
+    }
+
+    .data-table th,
+    .data-table td {
+        @apply px-4 py-4 align-top;
+    }
+
+    .data-table tbody tr {
+        @apply border-t border-stone-100;
+    }
+
+    .hero-glow {
+        background:
+            radial-gradient(circle at top left, rgba(217, 164, 65, 0.25), transparent 30%),
+            radial-gradient(circle at top right, rgba(145, 71, 26, 0.18), transparent 35%),
+            linear-gradient(135deg, #fff7ee 0%, #f6efe6 48%, #efe1d0 100%);
+    }
 }
