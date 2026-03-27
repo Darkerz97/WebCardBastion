@@ -594,6 +594,29 @@ Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para 
 - el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
 - si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador
 
+## Ajuste reciente del modulo admin de torneos
+
+Se restauraron las vistas faltantes del panel de administracion para que el modulo de torneos vuelva a funcionar correctamente y ya no falle con `View [tournaments.index] not found`.
+
+### Ajuste aplicado
+
+- se recrearon las vistas `index`, `create`, `edit` y `show` del modulo admin de torneos
+- se agrego un parcial reutilizable para el formulario de alta y edicion
+- la vista de detalle muestra resumen del torneo, standings, registros, rondas y reporte de resultados
+
+### Archivos clave
+
+- `resources/views/tournaments/index.blade.php`
+- `resources/views/tournaments/create.blade.php`
+- `resources/views/tournaments/edit.blade.php`
+- `resources/views/tournaments/show.blade.php`
+- `resources/views/tournaments/_form.blade.php`
+
+### Consideraciones
+
+- no requiere migraciones nuevas
+- el controlador `TournamentController` ya puede resolver sus vistas esperadas sin errores en produccion
+
 ## Ajuste reciente critico de deploy en Hostinger
 
 Se corrigio el despliegue para que `public_html` reciba todos los archivos reales de `public/`, incluyendo archivos ocultos necesarios para Apache como `.htaccess`.
