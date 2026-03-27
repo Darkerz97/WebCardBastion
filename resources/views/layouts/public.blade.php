@@ -12,7 +12,7 @@
             <div class="surface-outline flex flex-wrap items-center justify-between gap-4 rounded-[28px] px-4 py-3 sm:px-5 lg:flex-nowrap lg:px-6">
                 <a href="{{ route('store.home') }}" class="flex min-w-0 items-center gap-3 rounded-[30px] border border-[color:var(--color-line)] bg-[linear-gradient(180deg,rgba(35,29,21,0.32),rgba(11,16,24,0.14))] px-4 py-3 shadow-[0_16px_34px_rgba(0,0,0,0.22)]">
                     <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-[linear-gradient(180deg,rgba(33,33,33,1),rgba(17,17,17,1))] shadow-[0_12px_30px_rgba(0,0,0,0.24)]">
-                        <img src="{{ asset('favicon.ico') }}" alt="Card Bastion" class="h-9 w-9 object-contain">
+                        <img src="{{ asset('cardbastion-logo.png') }}" alt="Card Bastion" class="h-10 w-10 object-contain">
                     </span>
                     <span class="min-w-0">
                         <span class="block truncate text-base font-black uppercase tracking-[0.32em] text-[color:var(--color-brand-500)]">Card Bastion</span>

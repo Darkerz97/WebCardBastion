@@ -323,10 +323,11 @@ Se integro la imagen de Card Bastion en el menu principal de la pagina publica p
 
 ### Ajustes aplicados
 
-- logo usando `public/favicon.ico` dentro del bloque de marca principal
+- logo usando `public/cardbastion-logo.png` dentro del bloque de marca principal
 - contenedor del branding con capsula oscura, borde suave y sombra para separarlo del header
 - mejor jerarquia visual entre icono, nombre `Card Bastion` y subtitulo comercial
 
 ### Archivo clave
 
+- `public/cardbastion-logo.png`
 - `resources/views/layouts/public.blade.php`
