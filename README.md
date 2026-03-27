@@ -27,6 +27,8 @@ Plataforma Laravel 12 para `tienda virtual`, `portal de jugadores` y `panel admi
 - registro inicial de pagos en checkout
 - historial de compras en portal de jugador
 - rediseño premium de la home publica de la tienda con hero comercial, beneficios, filtros refinados y mejor jerarquia visual
+- refresh visual global con tema oscuro, superficies charcoal/navy y acentos ambar inspirados en la referencia del panel POS
+- refresh visual global con tema oscuro, superficies charcoal/navy y acentos ambar inspirados en la referencia del panel POS
 
 ### Siguientes fases pendientes
 
@@ -285,3 +287,61 @@ Se rehizo la vista principal del ecommerce para que Card Bastion se perciba como
 
 - `npm run build`
 - `php artisan view:cache`
+
+## Actualizacion reciente de paleta visual
+
+Se ajusto la identidad visual base del proyecto para acercarla a una referencia de interfaz POS con tonos oscuros, dorados y alto contraste, sin cambiar la logica de negocio.
+
+### Paleta aplicada
+
+- fondo principal en navy oscuro y charcoal
+- paneles y tarjetas con superficies oscuras reutilizables
+- acentos ambar/dorado para CTA, logo, estados activos y metricas
+- textos secundarios suavizados para mantener contraste sin perder legibilidad
+
+### Alcance del cambio
+
+- panel administrativo
+- layout publico
+- pantallas de autenticacion
+- botones, inputs, tablas, tarjetas, badges y fondos globales
+
+### Archivos clave
+
+- `resources/css/app.css`
+- `resources/views/layouts/app.blade.php`
+- `resources/views/layouts/public.blade.php`
+- `resources/views/layouts/auth.blade.php`
+
+### Validacion aplicada
+
+- `npm run build`
+
+## Actualizacion reciente de paleta visual
+
+Se ajusto la identidad visual base del proyecto para acercarla a una referencia de interfaz POS con tonos oscuros, dorados y alto contraste, sin cambiar la logica de negocio.
+
+### Paleta aplicada
+
+- fondo principal en navy oscuro y charcoal
+- paneles y tarjetas con superficies oscuras reutilizables
+- acentos ambar/dorado para CTA, logo, estados activos y metricas
+- textos secundarios suavizados para mantener contraste sin perder legibilidad
+
+### Alcance del cambio
+
+- panel administrativo
+- layout publico
+- pantallas de autenticacion
+- botones, inputs, tablas, tarjetas, badges y fondos globales
+
+### Archivos clave
+
+- `resources/css/app.css`
+- `resources/views/layouts/app.blade.php`
+- `resources/views/layouts/public.blade.php`
+- `resources/views/layouts/auth.blade.php`
+
+### Validacion aplicada
+
+- `npm run build`

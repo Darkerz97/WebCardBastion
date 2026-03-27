@@ -1,5 +1,14 @@
 # Release Notes
 
+## Card Bastion Custom Changes
+
+### 2026-03-27
+
+- refreshed the global UI palette to a dark charcoal + navy theme with amber/gold accents inspired by the provided POS reference
+- updated shared frontend tokens in `resources/css/app.css` so buttons, cards, panels, tables, inputs and page backgrounds inherit the new visual language
+- aligned the admin, public and auth layouts with the new theme in `resources/views/layouts/app.blade.php`, `resources/views/layouts/public.blade.php` and `resources/views/layouts/auth.blade.php`
+- rebuilt production assets with `npm run build`
+
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
 
 ## [v12.12.1](https://github.com/laravel/laravel/compare/v12.12.0...v12.12.1) - 2026-03-10

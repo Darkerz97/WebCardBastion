@@ -10,10 +10,10 @@
     <main class="mx-auto grid min-h-screen max-w-7xl items-center px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
         <section class="hidden pr-12 lg:block">
             <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[color:var(--color-brand-500)]">Card Bastion Platform</p>
-            <h1 class="mt-5 max-w-xl text-5xl font-black uppercase leading-none tracking-[0.08em] text-stone-900">
+            <h1 class="mt-5 max-w-xl text-5xl font-black uppercase leading-none tracking-[0.08em] text-[color:var(--color-ink)]">
                 Tienda virtual, portal de jugadores y operacion central.
             </h1>
-            <p class="mt-6 max-w-2xl text-lg leading-8 text-stone-600">
+            <p class="mt-6 max-w-2xl text-lg leading-8 text-[color:var(--color-ink-soft)]">
                 Una sola base para catalogo, ventas, comunidad y panel administrativo, lista para Hostinger compartido.
             </p>
         </section>

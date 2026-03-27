@@ -7,18 +7,18 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="hero-glow min-h-screen">
-    <header class="sticky top-0 z-30 border-b border-[color:var(--color-line)] bg-[rgba(255,253,249,0.86)] backdrop-blur-xl">
+    <header class="sticky top-0 z-30 border-b border-[color:var(--color-line)] bg-[rgba(11,16,24,0.88)] backdrop-blur-xl">
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
             <div class="surface-outline flex flex-wrap items-center justify-between gap-4 rounded-[28px] px-4 py-3 sm:px-5 lg:flex-nowrap lg:px-6">
                 <a href="{{ route('store.home') }}" class="flex min-w-0 items-center gap-3">
-                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--color-night)] text-lg font-black tracking-[0.25em] text-amber-300 shadow-[0_12px_30px_rgba(31,20,17,0.18)]">CB</span>
+                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-[color:var(--color-line)] bg-[linear-gradient(180deg,rgba(33,33,33,1),rgba(17,17,17,1))] text-lg font-black tracking-[0.25em] text-[color:var(--color-brand-500)] shadow-[0_12px_30px_rgba(0,0,0,0.24)]">CB</span>
                     <span class="min-w-0">
-                        <span class="block truncate text-base font-black uppercase tracking-[0.28em] text-stone-900">Card Bastion</span>
-                        <span class="block truncate text-xs tracking-[0.22em] text-stone-500">Boutique TCG + Player Hub</span>
+                        <span class="block truncate text-base font-black uppercase tracking-[0.28em] text-[color:var(--color-brand-500)]">Card Bastion</span>
+                        <span class="block truncate text-xs tracking-[0.22em] text-[color:var(--color-ink-soft)]">Boutique TCG + Player Hub</span>
                     </span>
                 </a>
 
-                <nav class="hidden items-center gap-2 rounded-full border border-[color:var(--color-line)] bg-white/75 px-2 py-2 text-sm font-medium text-stone-600 lg:flex">
+                <nav class="hidden items-center gap-2 rounded-full border border-[color:var(--color-line)] bg-[rgba(24,24,24,0.86)] px-2 py-2 text-sm font-medium text-[color:var(--color-ink-soft)] lg:flex">
                     <a href="{{ route('store.catalog') }}" class="rounded-full px-4 py-2 transition hover:bg-[color:var(--color-brand-50)] hover:text-[color:var(--color-brand-600)]">Tienda</a>
                     <a href="{{ route('store.catalog') }}#catalogo" class="rounded-full px-4 py-2 transition hover:bg-[color:var(--color-brand-50)] hover:text-[color:var(--color-brand-600)]">Catálogo</a>
                     @auth
@@ -36,7 +36,7 @@
                         <span class="ml-2 inline-flex min-w-7 items-center justify-center rounded-full bg-[color:var(--color-brand-600)] px-2 py-1 text-xs font-bold text-white">{{ $cartItemCount ?? 0 }}</span>
                     </a>
                 @auth
-                    <span class="hidden text-sm text-stone-500 sm:inline">{{ auth()->user()->name }}</span>
+                    <span class="hidden text-sm text-[color:var(--color-ink-soft)] sm:inline">{{ auth()->user()->name }}</span>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button class="btn btn-secondary" type="submit">Salir</button>
