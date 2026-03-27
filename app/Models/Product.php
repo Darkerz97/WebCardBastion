@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use App\Support\PublicFileUrl;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Storage;
-
 class Product extends Model
 {
     use HasFactory, SoftDeletes;
@@ -91,22 +90,6 @@ class Product extends Model
 
     public static function resolveImageUrl(?string $path): ?string
     {
-        if (! $path) {
-            return null;
-        }
-
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
-        $publicDisk = Storage::disk('public');
-        $publicUrl = $publicDisk->url($path);
-        $publicStoragePath = public_path('storage/'.str_replace('/', DIRECTORY_SEPARATOR, $path));
-
-        if (is_file($publicStoragePath)) {
-            return $publicUrl;
-        }
-
-        return route('media.public', ['path' => $path]);
+        return PublicFileUrl::fromPublicDisk($path);
     }
 }

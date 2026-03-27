@@ -78,6 +78,16 @@ class User extends Authenticatable
         return $this->hasMany(TournamentRegistration::class);
     }
 
+    public function articles(): HasMany
+    {
+        return $this->hasMany(Article::class);
+    }
+
+    public function articleComments(): HasMany
+    {
+        return $this->hasMany(ArticleComment::class);
+    }
+
     public function hasRole(string|array $roles): bool
     {
         if (! $this->relationLoaded('role')) {

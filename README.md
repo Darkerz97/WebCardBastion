@@ -486,3 +486,77 @@ Se hizo mas robusta la resolucion de imagenes de producto para que la tienda y e
 
 - si el archivo no existe en `storage/app/public/products`, la imagen seguira sin mostrarse aunque la URL ya sea correcta
 - `php artisan storage:link` sigue siendo recomendable cuando el hosting lo permite
+
+## Modulo reciente de vlog y articulos
+
+Se agrego un modulo editorial completo para publicar entradas desde admin y permitir que la comunidad las lea y comente desde el portal publico.
+
+### Alcance del modulo
+
+- CRUD de articulos exclusivo para administradores
+- entradas con titulo, slug, resumen, contenido largo, portada y fecha de publicacion
+- opcion para habilitar o cerrar comentarios por entrada
+- listado publico de articulos y vista de detalle
+- comentarios disponibles para usuarios registrados y visitantes
+- revision y eliminacion de comentarios desde admin
+- acceso rapido al modulo desde dashboard admin, menu admin y portal del jugador
+
+### Archivos clave
+
+- `app/Models/Article.php`
+- `app/Models/ArticleComment.php`
+- `app/Http/Controllers/Web/ArticleController.php`
+- `app/Http/Controllers/Web/PublicArticleController.php`
+- `app/Http/Controllers/Web/ArticleCommentController.php`
+- `app/Http/Requests/Article/AdminArticleRequest.php`
+- `app/Http/Requests/Article/ArticleCommentRequest.php`
+- `database/migrations/2026_03_27_140000_create_articles_tables.php`
+- `resources/views/articles/*`
+- `resources/views/blog/*`
+- `resources/views/layouts/app.blade.php`
+- `resources/views/layouts/public.blade.php`
+- `resources/views/account/dashboard.blade.php`
+- `resources/views/dashboard/index.blade.php`
+- `routes/web.php`
+
+### Consideraciones
+
+- es necesario ejecutar `php artisan migrate` para crear las tablas `articles` y `article_comments`
+- la portada usa el mismo sistema de archivos publicos y fallback de medios ya integrado en el proyecto
+
+## Modulo reciente de vlog y articulos
+
+Se agrego un modulo editorial completo para publicar entradas desde admin y permitir que la comunidad las lea y comente desde el portal publico.
+
+### Alcance del modulo
+
+- CRUD de articulos exclusivo para administradores
+- entradas con titulo, slug, resumen, contenido largo, portada y fecha de publicacion
+- opcion para habilitar o cerrar comentarios por entrada
+- listado publico de articulos y vista de detalle
+- comentarios disponibles para usuarios registrados y visitantes
+- revision y eliminacion de comentarios desde admin
+- acceso rapido al modulo desde dashboard admin, menu admin y portal del jugador
+
+### Archivos clave
+
+- `app/Models/Article.php`
+- `app/Models/ArticleComment.php`
+- `app/Http/Controllers/Web/ArticleController.php`
+- `app/Http/Controllers/Web/PublicArticleController.php`
+- `app/Http/Controllers/Web/ArticleCommentController.php`
+- `app/Http/Requests/Article/AdminArticleRequest.php`
+- `app/Http/Requests/Article/ArticleCommentRequest.php`
+- `database/migrations/2026_03_27_140000_create_articles_tables.php`
+- `resources/views/articles/*`
+- `resources/views/blog/*`
+- `resources/views/layouts/app.blade.php`
+- `resources/views/layouts/public.blade.php`
+- `resources/views/account/dashboard.blade.php`
+- `resources/views/dashboard/index.blade.php`
+- `routes/web.php`
+
+### Consideraciones
+
+- es necesario ejecutar `php artisan migrate` para crear las tablas `articles` y `article_comments`
+- la portada usa el mismo sistema de archivos publicos y fallback de medios ya integrado en el proyecto

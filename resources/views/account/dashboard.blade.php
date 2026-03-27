@@ -111,5 +111,26 @@
                 @endforelse
             </div>
         </div>
+
+        <div class="panel mt-6">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-xl font-black uppercase tracking-[0.08em] text-stone-900">Vlog y articulos</h2>
+                    <p class="mt-2 text-sm text-stone-500">Lee novedades, recapitulaciones y contenido editorial de Card Bastion desde tu portal.</p>
+                </div>
+                <a class="btn btn-secondary" href="{{ route('blog.index') }}">Ver articulos</a>
+            </div>
+
+            <div class="mt-5 space-y-3">
+                @forelse ($latestArticles as $article)
+                    <a href="{{ route('blog.show', $article) }}" class="block rounded-2xl border border-stone-200 px-4 py-4 transition hover:border-[color:var(--color-brand-300)] hover:bg-[color:var(--color-brand-50)]">
+                        <p class="font-semibold text-stone-900">{{ $article->title }}</p>
+                        <p class="mt-2 text-sm leading-7 text-stone-600">{{ $article->excerpt ?: \Illuminate\Support\Str::limit($article->content, 140) }}</p>
+                    </a>
+                @empty
+                    <p class="text-sm text-stone-500">Todavia no hay entradas publicadas.</p>
+                @endforelse
+            </div>
+        </div>
     </section>
 @endsection

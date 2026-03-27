@@ -16,6 +16,8 @@
 - improved contrast and color separation for the three hero metric cards on the public storefront
 - darkened the public catalog summary block and gave each stat card a distinct tone for better contrast
 - added a fallback public media route plus centralized product image URL resolution so product photos can render even when `public/storage` is unavailable
+- added an admin-only articles and vlog module with public reading views, cover image uploads, and per-entry comment settings
+- added public article comments for guests and registered users, plus admin-side comment deletion and editorial shortcuts in the dashboard
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
