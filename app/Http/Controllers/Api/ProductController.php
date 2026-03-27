@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\ProductRequest;
 use App\Http\Requests\Product\UpdateStockRequest;
+use App\Http\Requests\Sync\SyncIndexRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\Sync\SyncQueryService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,22 +19,27 @@ class ProductController extends Controller
 {
     use ApiResponse;
 
-    public function index(Request $request): JsonResponse
+    public function __construct(private readonly SyncQueryService $syncQueryService)
     {
-        $products = Product::query()
+    }
+
+    public function index(SyncIndexRequest $request): JsonResponse
+    {
+        $query = Product::query()
             ->with('categoryModel')
             ->search($request->string('search')->toString())
             ->when($request->filled('active'), fn ($query) => $query->where('active', $request->boolean('active')))
-            ->when($request->filled('category_id'), fn ($query) => $query->where('category_id', $request->integer('category_id')))
-            ->orderBy('name')
-            ->paginate($request->integer('per_page', 15));
+            ->when($request->filled('category_id'), fn ($query) => $query->where('category_id', $request->integer('category_id')));
 
-        return $this->successResponse(ProductResource::collection($products), 'Productos obtenidos correctamente.', meta: [
-            'current_page' => $products->currentPage(),
-            'last_page' => $products->lastPage(),
-            'per_page' => $products->perPage(),
-            'total' => $products->total(),
+        $result = $this->syncQueryService->resolve($query, $request, [
+            'supports_soft_deletes' => true,
+            'include_deleted' => false,
+            'order_column' => 'updated_at',
+            'always_paginate' => true,
+            'default_per_page' => 15,
         ]);
+
+        return $this->successResponse(ProductResource::collection($result['records']), 'Productos obtenidos correctamente.', meta: $result['meta']);
     }
 
     public function store(ProductRequest $request): JsonResponse

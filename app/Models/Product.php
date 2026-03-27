@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSyncVersion;
 use App\Support\PublicFileUrl;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasSyncVersion, SoftDeletes;
 
     protected $fillable = [
         'uuid',
@@ -30,6 +31,7 @@ class Product extends Model
         'active',
         'featured',
         'publish_to_store',
+        'sync_version',
     ];
 
     protected function casts(): array
@@ -41,6 +43,7 @@ class Product extends Model
             'active' => 'boolean',
             'featured' => 'boolean',
             'publish_to_store' => 'boolean',
+            'sync_version' => 'int',
         ];
     }
 

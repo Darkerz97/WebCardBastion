@@ -594,6 +594,88 @@ Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para 
 - el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
 - si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador
 
+## Ajuste reciente de base de sincronizacion offline-first
+
+Se completo una base mas consistente para integrar el servidor con un POS local offline-first, manteniendo compatibilidad con los endpoints de sincronizacion ya existentes.
+
+### Ajuste aplicado
+
+- se agrego `sync_version` en `products`, `customers`, `sales` y `devices`
+- se centralizo el versionado automatico con un trait reusable para incrementarlo en altas y cambios relevantes
+- se unifico el contrato de respuesta API con `success`, `message`, `data`, `meta` y `errors`
+- se agrego soporte consistente para `updated_since`, `per_page`, `cursor` e `include_deleted`
+- se separo la logica de sync en servicios para authority, consultas, heartbeat y carga de ventas
+- el catalogo queda con autoridad del servidor y la carga de ventas del POS acepta la venta si su `uuid` no existe aun
+- los recursos sincronizables ya regresan `uuid`, fechas, `deleted_at`, `sync_version` e `is_active` o equivalente
+
+### Archivos clave
+
+- `database/migrations/2026_03_27_160000_add_sync_version_to_sync_tables.php`
+- `app/Models/Concerns/HasSyncVersion.php`
+- `app/Support/ApiResponse.php`
+- `app/Http/Requests/Sync/SyncIndexRequest.php`
+- `app/Http/Requests/Sync/UploadSalesRequest.php`
+- `app/Services/Sync/SyncAuthorityService.php`
+- `app/Services/Sync/SyncQueryService.php`
+- `app/Services/Sync/SyncHeartbeatService.php`
+- `app/Services/Sync/SyncSaleUploadService.php`
+- `app/Http/Controllers/Api/SyncController.php`
+
+### Endpoints vigentes
+
+- `POST /api/sync/heartbeat`
+- `GET /api/sync/products`
+- `GET /api/sync/customers`
+- `POST /api/sync/upload-sales`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para agregar `sync_version`
+- los endpoints existentes se mantienen
+- `GET /api/sync/products` y `GET /api/sync/customers` ahora aceptan filtros consistentes de sincronizacion
+- `POST /api/sync/upload-sales` sigue aceptando `product_id`, pero ahora tambien puede resolver productos por `product_uuid`, `product_sku` o `product_barcode`
+
+## Ajuste reciente de base de sincronizacion offline-first
+
+Se completo una base mas consistente para integrar el servidor con un POS local offline-first, manteniendo compatibilidad con los endpoints de sincronizacion ya existentes.
+
+### Ajuste aplicado
+
+- se agrego `sync_version` en `products`, `customers`, `sales` y `devices`
+- se centralizo el versionado automatico con un trait reusable para incrementarlo en altas y cambios relevantes
+- se unifico el contrato de respuesta API con `success`, `message`, `data`, `meta` y `errors`
+- se agrego soporte consistente para `updated_since`, `per_page`, `cursor` e `include_deleted`
+- se separo la logica de sync en servicios para authority, consultas, heartbeat y carga de ventas
+- el catalogo queda con autoridad del servidor y la carga de ventas del POS acepta la venta si su `uuid` no existe aun
+- los recursos sincronizables ya regresan `uuid`, fechas, `deleted_at`, `sync_version` e `is_active` o equivalente
+
+### Archivos clave
+
+- `database/migrations/2026_03_27_160000_add_sync_version_to_sync_tables.php`
+- `app/Models/Concerns/HasSyncVersion.php`
+- `app/Support/ApiResponse.php`
+- `app/Http/Requests/Sync/SyncIndexRequest.php`
+- `app/Http/Requests/Sync/UploadSalesRequest.php`
+- `app/Services/Sync/SyncAuthorityService.php`
+- `app/Services/Sync/SyncQueryService.php`
+- `app/Services/Sync/SyncHeartbeatService.php`
+- `app/Services/Sync/SyncSaleUploadService.php`
+- `app/Http/Controllers/Api/SyncController.php`
+
+### Endpoints vigentes
+
+- `POST /api/sync/heartbeat`
+- `GET /api/sync/products`
+- `GET /api/sync/customers`
+- `POST /api/sync/upload-sales`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para agregar `sync_version`
+- los endpoints existentes se mantienen
+- `GET /api/sync/products` y `GET /api/sync/customers` ahora aceptan filtros consistentes de sincronizacion
+- `POST /api/sync/upload-sales` sigue aceptando `product_id`, pero ahora tambien puede resolver productos por `product_uuid`, `product_sku` o `product_barcode`
+
 ## Ajuste reciente de endurecimiento para sincronizacion POS
 
 Se reforzo la API para dejar el servidor mejor preparado para sincronizar con un POS local sin exponer inventario, ventas o dispositivos a cualquier usuario autenticado.

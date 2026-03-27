@@ -26,6 +26,7 @@
 - split the public homepage from the storefront so `/` focuses on brand/community while `/tienda` keeps catalog search, filters, and products
 - restored the missing admin tournament Blade views so the tournaments backoffice no longer fails with `View [tournaments.index] not found`
 - hardened the POS sync API with role-gated login, token abilities, authenticated heartbeat, and product/customer resolution via stable references such as UUID, SKU, and barcode
+- added the first offline-first sync foundation with `sync_version`, uniform API envelopes, stable sync pagination/filtering, centralized sync services, and authority rules for catalog and uploaded POS sales
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)

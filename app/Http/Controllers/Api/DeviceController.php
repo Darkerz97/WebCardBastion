@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Device\DeviceRequest;
+use App\Http\Requests\Sync\SyncIndexRequest;
 use App\Http\Resources\DeviceResource;
 use App\Models\Device;
+use App\Services\Sync\SyncQueryService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,20 +17,24 @@ class DeviceController extends Controller
 {
     use ApiResponse;
 
-    public function index(Request $request): JsonResponse
+    public function __construct(private readonly SyncQueryService $syncQueryService)
     {
-        $devices = Device::query()
-            ->search($request->string('search')->toString())
-            ->when($request->filled('active'), fn ($query) => $query->where('active', $request->boolean('active')))
-            ->latest('updated_at')
-            ->paginate($request->integer('per_page', 15));
+    }
 
-        return $this->successResponse(DeviceResource::collection($devices), 'Dispositivos obtenidos correctamente.', meta: [
-            'current_page' => $devices->currentPage(),
-            'last_page' => $devices->lastPage(),
-            'per_page' => $devices->perPage(),
-            'total' => $devices->total(),
+    public function index(SyncIndexRequest $request): JsonResponse
+    {
+        $query = Device::query()
+            ->search($request->string('search')->toString())
+            ->when($request->filled('active'), fn ($query) => $query->where('active', $request->boolean('active')));
+
+        $result = $this->syncQueryService->resolve($query, $request, [
+            'supports_soft_deletes' => false,
+            'order_column' => 'updated_at',
+            'always_paginate' => true,
+            'default_per_page' => 15,
         ]);
+
+        return $this->successResponse(DeviceResource::collection($result['records']), 'Dispositivos obtenidos correctamente.', meta: $result['meta']);
     }
 
     public function store(DeviceRequest $request): JsonResponse

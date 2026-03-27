@@ -18,6 +18,8 @@ class CustomerResource extends JsonResource
             'notes' => $this->notes,
             'credit_balance' => (float) $this->credit_balance,
             'active' => $this->active,
+            'is_active' => $this->active,
+            'sync_version' => $this->sync_version,
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
             'deleted_at' => $this->deleted_at?->toIso8601String(),

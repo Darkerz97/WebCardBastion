@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSyncVersion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customer extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasSyncVersion, SoftDeletes;
 
     protected $fillable = [
         'uuid',
@@ -22,6 +23,7 @@ class Customer extends Model
         'notes',
         'credit_balance',
         'active',
+        'sync_version',
     ];
 
     protected function casts(): array
@@ -29,6 +31,7 @@ class Customer extends Model
         return [
             'credit_balance' => 'decimal:2',
             'active' => 'boolean',
+            'sync_version' => 'int',
         ];
     }
 

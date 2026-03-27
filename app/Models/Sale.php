@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSyncVersion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sale extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSyncVersion;
 
     public const CHANNEL_POS = 'pos';
     public const CHANNEL_STOREFRONT = 'storefront';
@@ -40,6 +41,7 @@ class Sale extends Model
         'status',
         'payment_status',
         'sold_at',
+        'sync_version',
     ];
 
     protected function casts(): array
@@ -49,6 +51,7 @@ class Sale extends Model
             'discount' => 'decimal:2',
             'total' => 'decimal:2',
             'sold_at' => 'datetime',
+            'sync_version' => 'int',
         ];
     }
 

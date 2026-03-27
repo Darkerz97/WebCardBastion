@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CustomerRequest;
+use App\Http\Requests\Sync\SyncIndexRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
+use App\Services\Sync\SyncQueryService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,21 +17,26 @@ class CustomerController extends Controller
 {
     use ApiResponse;
 
-    public function index(Request $request): JsonResponse
+    public function __construct(private readonly SyncQueryService $syncQueryService)
     {
-        $customers = Customer::query()
+    }
+
+    public function index(SyncIndexRequest $request): JsonResponse
+    {
+        $query = Customer::query()
             ->search($request->string('search')->toString())
             ->when($request->filled('active'), fn ($query) => $query->where('active', $request->boolean('active')))
-            ->withCount('sales')
-            ->orderBy('name')
-            ->paginate($request->integer('per_page', 15));
+            ->withCount('sales');
 
-        return $this->successResponse(CustomerResource::collection($customers), 'Clientes obtenidos correctamente.', meta: [
-            'current_page' => $customers->currentPage(),
-            'last_page' => $customers->lastPage(),
-            'per_page' => $customers->perPage(),
-            'total' => $customers->total(),
+        $result = $this->syncQueryService->resolve($query, $request, [
+            'supports_soft_deletes' => true,
+            'include_deleted' => false,
+            'order_column' => 'updated_at',
+            'always_paginate' => true,
+            'default_per_page' => 15,
         ]);
+
+        return $this->successResponse(CustomerResource::collection($result['records']), 'Clientes obtenidos correctamente.', meta: $result['meta']);
     }
 
     public function store(CustomerRequest $request): JsonResponse

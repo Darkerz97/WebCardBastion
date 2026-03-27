@@ -17,8 +17,11 @@ class DeviceResource extends JsonResource
             'type' => $this->type,
             'last_seen_at' => $this->last_seen_at?->toIso8601String(),
             'active' => $this->active,
+            'is_active' => $this->active,
+            'sync_version' => $this->sync_version,
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
+            'deleted_at' => null,
         ];
     }
 }

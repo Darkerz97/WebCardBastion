@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSyncVersion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Device extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSyncVersion;
 
     public const TYPE_POS = 'pos';
     public const TYPE_MOBILE = 'mobile';
@@ -22,6 +23,7 @@ class Device extends Model
         'type',
         'last_seen_at',
         'active',
+        'sync_version',
     ];
 
     protected function casts(): array
@@ -29,6 +31,7 @@ class Device extends Model
         return [
             'last_seen_at' => 'datetime',
             'active' => 'boolean',
+            'sync_version' => 'int',
         ];
     }
 
