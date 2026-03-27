@@ -21,6 +21,7 @@
 - added social media settings for Facebook, Instagram, and TikTok embeds plus a new homepage community section with follow buttons
 - added a Hostinger-ready `deploy.sh` that syncs `storage/app/public` into `public_html/storage` without symlinks
 - restored the main public navigation on mobile with a dedicated small-screen menu in the header
+- improved social embed containers so Facebook, Instagram, and TikTok content uses more of the available viewport and behaves better on mobile
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)

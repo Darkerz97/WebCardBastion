@@ -203,4 +203,94 @@
         content: '';
         @apply mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--color-brand-400)] align-middle;
     }
+
+    .social-embed-shell {
+        overflow: hidden;
+    }
+
+    .social-embed {
+        min-height: 24rem;
+        width: 100%;
+        overflow: auto;
+        border-radius: 1.25rem;
+    }
+
+    .social-embed iframe {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 24rem !important;
+        border: 0;
+        border-radius: 1.25rem;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .social-embed blockquote,
+    .social-embed .instagram-media,
+    .social-embed .tiktok-embed,
+    .social-embed .fb-post,
+    .social-embed .fb-page,
+    .social-embed .fb-video {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+    }
+
+    .social-embed-instagram {
+        min-height: 42rem;
+    }
+
+    .social-embed-instagram iframe,
+    .social-embed-instagram .instagram-media {
+        min-height: 42rem !important;
+    }
+
+    .social-embed-facebook {
+        min-height: 30rem;
+    }
+
+    .social-embed-facebook iframe {
+        min-height: 30rem !important;
+    }
+
+    .social-embed-tiktok {
+        min-height: 42rem;
+    }
+
+    .social-embed-tiktok iframe,
+    .social-embed-tiktok .tiktok-embed {
+        min-height: 42rem !important;
+    }
+}
+
+@media (max-width: 767px) {
+    @layer components {
+        .social-embed {
+            min-height: 20rem;
+        }
+
+        .social-embed iframe {
+            min-height: 20rem !important;
+        }
+
+        .social-embed-facebook {
+            min-height: 24rem;
+        }
+
+        .social-embed-facebook iframe {
+            min-height: 24rem !important;
+        }
+
+        .social-embed-instagram,
+        .social-embed-tiktok {
+            min-height: 34rem;
+        }
+
+        .social-embed-instagram iframe,
+        .social-embed-instagram .instagram-media,
+        .social-embed-tiktok iframe,
+        .social-embed-tiktok .tiktok-embed {
+            min-height: 34rem !important;
+        }
+    }
 }

@@ -573,23 +573,65 @@ Se reforzo el despliegue para hosting compartido sin symlinks persistentes y se 
 - el bloque de sincronizacion de `storage` corre despues de copiar `public/*` a `public_html/`
 - el script es idempotente y puede ejecutarse multiples veces sin depender de `storage:link`
 
-## Ajuste reciente de deploy e interfaz movil
+## Ajuste reciente de embeds sociales
 
-Se reforzo el despliegue para hosting compartido sin symlinks persistentes y se recupero la navegacion principal en movil.
+Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para que muestren mejor su contenido completo y se adapten mejor a movil.
 
 ### Ajuste aplicado
 
-- nuevo `deploy.sh` para Hostinger que copia `public/` a `public_html/`
-- sincronizacion fisica de `storage/app/public/` hacia `public_html/storage/` con `rsync`
-- sin uso de symlinks para archivos publicos durante deploy
-- menu principal movil agregado al header publico para pantallas pequenas
+- contenedores responsivos por red social dentro de la home publica
+- alturas minimas especificas para Facebook, Instagram y TikTok
+- iframes, blockquotes y widgets limitados al ancho disponible del contenedor
+- mejor comportamiento en pantallas pequenas para evitar recortes o cajas demasiado bajas
 
 ### Archivos clave
 
-- `deploy.sh`
-- `resources/views/layouts/public.blade.php`
+- `resources/views/store/index.blade.php`
+- `resources/css/app.css`
 
 ### Consideraciones
 
-- el bloque de sincronizacion de `storage` corre despues de copiar `public/*` a `public_html/`
-- el script es idempotente y puede ejecutarse multiples veces sin depender de `storage:link`
+- el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
+- si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador
+
+## Ajuste reciente de embeds sociales
+
+Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para que muestren mejor su contenido completo y se adapten mejor a movil.
+
+### Ajuste aplicado
+
+- contenedores responsivos por red social dentro de la home publica
+- alturas minimas especificas para Facebook, Instagram y TikTok
+- iframes, blockquotes y widgets limitados al ancho disponible del contenedor
+- mejor comportamiento en pantallas pequenas para evitar recortes o cajas demasiado bajas
+
+### Archivos clave
+
+- `resources/views/store/index.blade.php`
+- `resources/css/app.css`
+
+### Consideraciones
+
+- el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
+- si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador
+
+## Ajuste reciente de embeds sociales
+
+Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para que muestren mejor su contenido completo y se adapten mejor a movil.
+
+### Ajuste aplicado
+
+- contenedores responsivos por red social dentro de la home publica
+- alturas minimas especificas para Facebook, Instagram y TikTok
+- iframes, blockquotes y widgets limitados al ancho disponible del contenedor
+- mejor comportamiento en pantallas pequenas para evitar recortes o cajas demasiado bajas
+
+### Archivos clave
+
+- `resources/views/store/index.blade.php`
+- `resources/css/app.css`
+
+### Consideraciones
+
+- el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
+- si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador

@@ -140,9 +140,11 @@
                             <a class="badge" href="{{ $siteSettings->facebook_url }}" target="_blank" rel="noreferrer">Abrir</a>
                         @endif
                     </div>
-                    <div class="mt-5 overflow-hidden rounded-3xl border border-white/8 bg-[rgba(255,255,255,0.03)] p-3 text-sm text-[color:var(--color-ink-soft)]">
+                    <div class="social-embed-shell mt-5 rounded-3xl border border-white/8 bg-[rgba(255,255,255,0.03)] p-3 text-sm text-[color:var(--color-ink-soft)]">
                         @if (filled($siteSettings?->facebook_embed))
-                            {!! $siteSettings->facebook_embed !!}
+                            <div class="social-embed social-embed-facebook">
+                                {!! $siteSettings->facebook_embed !!}
+                            </div>
                         @else
                             <div class="flex min-h-56 items-center justify-center rounded-2xl border border-dashed border-white/10 px-6 text-center">
                                 Agrega desde admin el embed de Facebook para mostrar el album o las ultimas publicaciones.
@@ -161,9 +163,11 @@
                             <a class="badge" href="{{ $siteSettings->instagram_url }}" target="_blank" rel="noreferrer">Abrir</a>
                         @endif
                     </div>
-                    <div class="mt-5 overflow-hidden rounded-3xl border border-white/8 bg-[rgba(255,255,255,0.03)] p-3 text-sm text-[color:var(--color-ink-soft)]">
+                    <div class="social-embed-shell mt-5 rounded-3xl border border-white/8 bg-[rgba(255,255,255,0.03)] p-3 text-sm text-[color:var(--color-ink-soft)]">
                         @if (filled($siteSettings?->instagram_embed))
-                            {!! $siteSettings->instagram_embed !!}
+                            <div class="social-embed social-embed-instagram">
+                                {!! $siteSettings->instagram_embed !!}
+                            </div>
                         @else
                             <div class="flex min-h-56 items-center justify-center rounded-2xl border border-dashed border-white/10 px-6 text-center">
                                 Agrega desde admin el embed de Instagram para mostrar las ultimas publicaciones o un reel destacado.
@@ -182,9 +186,11 @@
                             <a class="badge" href="{{ $siteSettings->tiktok_url }}" target="_blank" rel="noreferrer">Abrir</a>
                         @endif
                     </div>
-                    <div class="mt-5 overflow-hidden rounded-3xl border border-white/8 bg-[rgba(255,255,255,0.03)] p-3 text-sm text-[color:var(--color-ink-soft)]">
+                    <div class="social-embed-shell mt-5 rounded-3xl border border-white/8 bg-[rgba(255,255,255,0.03)] p-3 text-sm text-[color:var(--color-ink-soft)]">
                         @if (filled($siteSettings?->tiktok_embed))
-                            {!! $siteSettings->tiktok_embed !!}
+                            <div class="social-embed social-embed-tiktok">
+                                {!! $siteSettings->tiktok_embed !!}
+                            </div>
                         @else
                             <div class="flex min-h-56 items-center justify-center rounded-2xl border border-dashed border-white/10 px-6 text-center">
                                 Agrega desde admin el embed de TikTok para mostrar clips recientes y atraer visitas al perfil.
