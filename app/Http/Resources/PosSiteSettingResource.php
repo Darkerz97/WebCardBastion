@@ -5,22 +5,20 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class PosSiteSettingResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
             'uuid' => $this->uuid,
-            'name' => $this->name,
-            'slug' => $this->slug,
-            'description' => $this->description,
-            'image_path' => $this->image_path,
-            'active' => $this->active,
-            'is_active' => $this->active,
-            'sort_order' => $this->sort_order,
-            'products_count' => $this->whenCounted('products'),
+            'site_name' => $this->site_name,
+            'site_tagline' => $this->site_tagline,
+            'announcement_text' => $this->announcement_text,
+            'catalog_heading' => $this->catalog_heading,
+            'catalog_description' => $this->catalog_description,
             'sync_version' => $this->sync_version,
+            'is_active' => true,
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
             'deleted_at' => null,

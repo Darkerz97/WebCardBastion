@@ -50,6 +50,7 @@ Route::middleware(['auth:sanctum', 'api.role:admin,manager,cashier'])->group(fun
 
     Route::prefix('sync')->group(function (): void {
         Route::post('/heartbeat', [SyncController::class, 'heartbeat'])->middleware('api.ability:sync:heartbeat');
+        Route::get('/catalog', [SyncController::class, 'catalog'])->middleware('api.ability:sync:read');
         Route::get('/products', [SyncController::class, 'products'])->middleware('api.ability:sync:read');
         Route::get('/customers', [SyncController::class, 'customers'])->middleware('api.ability:sync:read');
         Route::post('/upload-sales', [SyncController::class, 'uploadSales'])->middleware('api.ability:sync:upload-sales');

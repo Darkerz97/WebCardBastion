@@ -30,6 +30,7 @@ class ProductResource extends JsonResource
             'stock' => $this->stock,
             'image_path' => $this->image_path,
             'primary_image_url' => $this->primary_image_url,
+            'image_urls' => $this->whenLoaded('images', fn () => $this->images->pluck('url')->filter()->values()->all()),
             'active' => $this->active,
             'is_active' => $this->active,
             'featured' => $this->featured,

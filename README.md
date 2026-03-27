@@ -594,6 +594,70 @@ Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para 
 - el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
 - si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador
 
+## Ajuste reciente de sincronizacion batch de catalogo
+
+Se agrego un endpoint batch para que el POS pueda descargar el catalogo necesario en una sola llamada, con soporte para sincronizacion incremental y una respuesta compacta por entidad.
+
+### Ajuste aplicado
+
+- nuevo endpoint `GET /api/sync/catalog`
+- soporte para `updated_since` e `include[]` con `products`, `categories`, `customers` y `settings`
+- si no se envia `include`, el endpoint regresa `products`, `categories` y `customers`
+- productos incluyen categoria e imagenes en forma de URLs utiles para POS, sin blobs
+- categorias y configuracion del sitio quedaron listas para sync con `uuid` y `sync_version`
+- la respuesta incluye metadata global de sincronizacion con tiempo del servidor y conteos por entidad
+
+### Archivos clave
+
+- `app/Http/Controllers/Api/SyncController.php`
+- `app/Http/Requests/Sync/SyncCatalogRequest.php`
+- `app/Services/Sync/SyncCatalogService.php`
+- `app/Http/Resources/PosSiteSettingResource.php`
+- `app/Http/Resources/CategoryResource.php`
+- `app/Http/Resources/ProductResource.php`
+- `app/Models/Category.php`
+- `app/Models/SiteSetting.php`
+- `routes/api.php`
+- `database/migrations/2026_03_27_161000_add_sync_fields_to_categories_and_site_settings.php`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para agregar campos de sync en `categories` y `site_settings`
+- el endpoint queda protegido con `auth:sanctum` y la capa actual de permisos API
+- no rompe los endpoints previos `GET /api/sync/products` ni `GET /api/sync/customers`
+
+## Ajuste reciente de sincronizacion batch de catalogo
+
+Se agrego un endpoint batch para que el POS pueda descargar el catalogo necesario en una sola llamada, con soporte para sincronizacion incremental y una respuesta compacta por entidad.
+
+### Ajuste aplicado
+
+- nuevo endpoint `GET /api/sync/catalog`
+- soporte para `updated_since` e `include[]` con `products`, `categories`, `customers` y `settings`
+- si no se envia `include`, el endpoint regresa `products`, `categories` y `customers`
+- productos incluyen categoria e imagenes en forma de URLs utiles para POS, sin blobs
+- categorias y configuracion del sitio quedaron listas para sync con `uuid` y `sync_version`
+- la respuesta incluye metadata global de sincronizacion con tiempo del servidor y conteos por entidad
+
+### Archivos clave
+
+- `app/Http/Controllers/Api/SyncController.php`
+- `app/Http/Requests/Sync/SyncCatalogRequest.php`
+- `app/Services/Sync/SyncCatalogService.php`
+- `app/Http/Resources/PosSiteSettingResource.php`
+- `app/Http/Resources/CategoryResource.php`
+- `app/Http/Resources/ProductResource.php`
+- `app/Models/Category.php`
+- `app/Models/SiteSetting.php`
+- `routes/api.php`
+- `database/migrations/2026_03_27_161000_add_sync_fields_to_categories_and_site_settings.php`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para agregar campos de sync en `categories` y `site_settings`
+- el endpoint queda protegido con `auth:sanctum` y la capa actual de permisos API
+- no rompe los endpoints previos `GET /api/sync/products` ni `GET /api/sync/customers`
+
 ## Ajuste reciente de base de sincronizacion offline-first
 
 Se completo una base mas consistente para integrar el servidor con un POS local offline-first, manteniendo compatibilidad con los endpoints de sincronizacion ya existentes.

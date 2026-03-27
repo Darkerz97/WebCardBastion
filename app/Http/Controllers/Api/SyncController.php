@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Sync\HeartbeatRequest;
+use App\Http\Requests\Sync\SyncCatalogRequest;
 use App\Http\Requests\Sync\SyncIndexRequest;
 use App\Http\Requests\Sync\UploadSalesRequest;
 use App\Http\Resources\CustomerResource;
@@ -14,6 +15,7 @@ use App\Models\Customer;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use App\Services\Sync\SyncAuthorityService;
+use App\Services\Sync\SyncCatalogService;
 use App\Services\Sync\SyncHeartbeatService;
 use App\Services\Sync\SyncQueryService;
 use App\Services\Sync\SyncSaleUploadService;
@@ -24,6 +26,7 @@ class SyncController extends Controller
 
     public function __construct(
         private readonly SyncAuthorityService $syncAuthorityService,
+        private readonly SyncCatalogService $syncCatalogService,
         private readonly SyncHeartbeatService $syncHeartbeatService,
         private readonly SyncQueryService $syncQueryService,
         private readonly SyncSaleUploadService $syncSaleUploadService,
@@ -45,6 +48,20 @@ class SyncController extends Controller
             meta: [
                 ...$this->syncAuthorityService->forCatalog(),
                 ...$result['meta'],
+            ],
+        );
+    }
+
+    public function catalog(SyncCatalogRequest $request): JsonResponse
+    {
+        $payload = $this->syncCatalogService->build($request);
+
+        return $this->successResponse(
+            $payload['data'],
+            'Catalogo listo para sincronizacion.',
+            meta: [
+                ...$this->syncAuthorityService->forCatalog(),
+                ...$payload['meta'],
             ],
         );
     }

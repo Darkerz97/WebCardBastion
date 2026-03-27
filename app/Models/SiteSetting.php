@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSyncVersion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class SiteSetting extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSyncVersion;
 
     protected $fillable = [
+        'uuid',
         'site_name',
         'site_tagline',
         'home_kicker',
@@ -32,7 +35,15 @@ class SiteSetting extends Model
         'instagram_embed',
         'tiktok_url',
         'tiktok_embed',
+        'sync_version',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'sync_version' => 'int',
+        ];
+    }
 
     public static function defaults(): array
     {
@@ -66,7 +77,10 @@ class SiteSetting extends Model
     {
         return static::query()->firstOrCreate(
             ['id' => 1],
-            static::defaults(),
+            [
+                'uuid' => (string) Str::uuid(),
+                ...static::defaults(),
+            ],
         );
     }
 }
