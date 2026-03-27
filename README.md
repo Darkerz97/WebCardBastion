@@ -399,25 +399,38 @@ Se expandio la seccion de torneos del portal del jugador para mostrar estadistic
 - `php -l app/Http/Controllers/Web/PlayerTournamentController.php`
 - `php artisan view:cache`
 
-## Actualizacion reciente de vista de torneos del jugador
+## Actualizacion reciente de contenido y personalizacion del sitio
 
-Se expandio la seccion de torneos del portal del jugador para mostrar estadisticas reales de participacion y rendimiento con base en inscripciones y partidas confirmadas.
+Se agrego una seccion administrativa para editar contenido visible del sitio sin tocar codigo, con acceso exclusivo para usuarios con rol `admin`.
 
-### Datos visibles en la nueva vista
+### Alcance de la personalizacion
 
-- torneos asistidos
-- win streak actual
-- W/L rate
-- victorias, derrotas y empates acumulados
-- historial de torneos asistidos con record, puntos y OMW
-- torneos publicados disponibles para inscripcion
+- nombre del sitio y subtitulo
+- mensaje superior opcional del header publico
+- kicker, titular y descripcion del hero principal
+- encabezado y descripcion del bloque de catalogo
+- tres bloques de beneficios comerciales
+
+### Restriccion de acceso
+
+- solo administradores pueden ver y modificar esta seccion
+- managers y cashiers mantienen operacion del panel, pero sin permisos de personalizacion
 
 ### Archivos clave
 
-- `app/Http/Controllers/Web/PlayerTournamentController.php`
-- `resources/views/account/tournaments.blade.php`
+- `app/Models/SiteSetting.php`
+- `app/Http/Requests/SiteSettingRequest.php`
+- `app/Http/Controllers/Web/SiteSettingController.php`
+- `database/migrations/2026_03_27_130000_create_site_settings_table.php`
+- `resources/views/site-settings/edit.blade.php`
+- `routes/web.php`
+- `resources/views/layouts/app.blade.php`
+- `resources/views/layouts/public.blade.php`
+- `resources/views/layouts/auth.blade.php`
+- `resources/views/store/index.blade.php`
+- `app/Providers/AppServiceProvider.php`
 
-### Validacion aplicada
+### Consideraciones
 
-- `php -l app/Http/Controllers/Web/PlayerTournamentController.php`
-- `php artisan view:cache`
+- es necesario ejecutar `php artisan migrate` para crear la tabla `site_settings`
+- los cambios se reflejan en la tienda publica y en el branding base del sitio

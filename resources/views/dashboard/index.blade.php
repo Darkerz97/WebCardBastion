@@ -76,4 +76,21 @@
             </div>
         </div>
     </section>
+
+    @if (auth()->user()?->hasRole(\App\Models\User::ROLE_ADMIN))
+        <section class="mt-6">
+            <div class="panel">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <p class="section-kicker">Personalizacion</p>
+                        <h2 class="mt-2 text-2xl font-black uppercase tracking-[0.05em] text-stone-900">Contenido editable del sitio</h2>
+                        <p class="mt-3 max-w-3xl text-sm leading-7 text-stone-600">
+                            Administra el branding, textos comerciales y mensajes visibles de la tienda publica desde una sola pantalla de configuracion.
+                        </p>
+                    </div>
+                    <a class="btn btn-primary" href="{{ route('site-settings.edit') }}">Editar contenido</a>
+                </div>
+            </div>
+        </section>
+    @endif
 @endsection

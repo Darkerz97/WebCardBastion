@@ -3,10 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Card Bastion' }}</title>
+    <title>{{ $title ?? ($siteSettings?->site_name ?? 'Card Bastion') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="hero-glow min-h-screen">
+    @if (filled($siteSettings?->announcement_text))
+        <div class="border-b border-[color:var(--color-line)] bg-[rgba(255,171,18,0.12)] px-4 py-3 text-center text-sm font-semibold text-[color:var(--color-brand-500)]">
+            {{ $siteSettings->announcement_text }}
+        </div>
+    @endif
     <header class="sticky top-0 z-30 border-b border-[color:var(--color-line)] bg-[rgba(11,16,24,0.88)] backdrop-blur-xl">
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
             <div class="surface-outline flex flex-wrap items-center justify-between gap-4 rounded-[28px] px-4 py-3 sm:px-5 lg:flex-nowrap lg:px-6">
@@ -15,8 +20,8 @@
                         <img src="{{ asset('cardbastion-logo.png') }}" alt="Card Bastion" class="h-10 w-10 object-contain">
                     </span>
                     <span class="min-w-0">
-                        <span class="block truncate text-base font-black uppercase tracking-[0.32em] text-[color:var(--color-brand-500)]">Card Bastion</span>
-                        <span class="block truncate text-xs tracking-[0.28em] text-[color:var(--color-ink-soft)]">Boutique TCG + Player Hub</span>
+                        <span class="block truncate text-base font-black uppercase tracking-[0.32em] text-[color:var(--color-brand-500)]">{{ $siteSettings?->site_name ?? 'Card Bastion' }}</span>
+                        <span class="block truncate text-xs tracking-[0.28em] text-[color:var(--color-ink-soft)]">{{ $siteSettings?->site_tagline ?? 'Boutique TCG + Player Hub' }}</span>
                     </span>
                 </a>
 
