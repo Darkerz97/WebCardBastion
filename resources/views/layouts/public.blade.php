@@ -54,6 +54,19 @@
                     <a class="btn btn-primary" href="{{ route('register') }}">Crear cuenta</a>
                 @endauth
                 </div>
+
+                <nav class="flex w-full gap-2 overflow-x-auto rounded-[22px] border border-[color:var(--color-line)] bg-[rgba(18,18,18,0.82)] px-2 py-2 text-sm font-medium text-[color:var(--color-ink-soft)] lg:hidden">
+                    <a href="{{ route('store.catalog') }}" class="shrink-0 rounded-full px-4 py-2 transition hover:bg-[color:var(--color-brand-50)] hover:text-[color:var(--color-brand-600)]">Tienda</a>
+                    <a href="{{ route('store.catalog') }}#catalogo" class="shrink-0 rounded-full px-4 py-2 transition hover:bg-[color:var(--color-brand-50)] hover:text-[color:var(--color-brand-600)]">Catalogo</a>
+                    <a href="{{ route('blog.index') }}" class="shrink-0 rounded-full px-4 py-2 transition hover:bg-[color:var(--color-brand-50)] hover:text-[color:var(--color-brand-600)]">Articulos</a>
+                    @auth
+                        <a href="{{ route('account.tournaments.index') }}" class="shrink-0 rounded-full px-4 py-2 transition hover:bg-[color:var(--color-brand-50)] hover:text-[color:var(--color-brand-600)]">Torneos</a>
+                        <a href="{{ route('account.dashboard') }}" class="shrink-0 rounded-full px-4 py-2 transition hover:bg-[color:var(--color-brand-50)] hover:text-[color:var(--color-brand-600)]">Mi cuenta</a>
+                        @if (auth()->user()?->isBackofficeUser())
+                            <a href="{{ route('dashboard') }}" class="shrink-0 rounded-full px-4 py-2 transition hover:bg-[color:var(--color-brand-50)] hover:text-[color:var(--color-brand-600)]">Admin</a>
+                        @endif
+                    @endauth
+                </nav>
             </div>
         </div>
     </header>

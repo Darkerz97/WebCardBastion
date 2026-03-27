@@ -551,3 +551,45 @@ Se agrego una nueva seccion social en la pagina principal para mostrar contenido
 
 - es necesario ejecutar `php artisan migrate` para agregar los nuevos campos sociales en `site_settings`
 - los embeds se pegan directamente desde admin, por lo que el contenido visible depende del codigo de embebido que entregue cada plataforma
+
+## Ajuste reciente de deploy e interfaz movil
+
+Se reforzo el despliegue para hosting compartido sin symlinks persistentes y se recupero la navegacion principal en movil.
+
+### Ajuste aplicado
+
+- nuevo `deploy.sh` para Hostinger que copia `public/` a `public_html/`
+- sincronizacion fisica de `storage/app/public/` hacia `public_html/storage/` con `rsync`
+- sin uso de symlinks para archivos publicos durante deploy
+- menu principal movil agregado al header publico para pantallas pequenas
+
+### Archivos clave
+
+- `deploy.sh`
+- `resources/views/layouts/public.blade.php`
+
+### Consideraciones
+
+- el bloque de sincronizacion de `storage` corre despues de copiar `public/*` a `public_html/`
+- el script es idempotente y puede ejecutarse multiples veces sin depender de `storage:link`
+
+## Ajuste reciente de deploy e interfaz movil
+
+Se reforzo el despliegue para hosting compartido sin symlinks persistentes y se recupero la navegacion principal en movil.
+
+### Ajuste aplicado
+
+- nuevo `deploy.sh` para Hostinger que copia `public/` a `public_html/`
+- sincronizacion fisica de `storage/app/public/` hacia `public_html/storage/` con `rsync`
+- sin uso de symlinks para archivos publicos durante deploy
+- menu principal movil agregado al header publico para pantallas pequenas
+
+### Archivos clave
+
+- `deploy.sh`
+- `resources/views/layouts/public.blade.php`
+
+### Consideraciones
+
+- el bloque de sincronizacion de `storage` corre despues de copiar `public/*` a `public_html/`
+- el script es idempotente y puede ejecutarse multiples veces sin depender de `storage:link`
