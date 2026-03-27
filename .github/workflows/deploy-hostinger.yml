@@ -28,39 +28,40 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
-      - name: Install Node  dependencies
+      - name: Install Node dependencies
         run: npm install
 
       - name: Build frontend
         run: npm run build
 
+      - name: Validate secrets
+        shell: bash
+        run: |
+          test -n "${{ secrets.HOSTINGER_HOST }}" || (echo "Falta HOSTINGER_HOST" && exit 1)
+          test -n "${{ secrets.HOSTINGER_USER }}" || (echo "Falta HOSTINGER_USER" && exit 1)
+          test -n "${{ secrets.HOSTINGER_SSH_KEY }}" || (echo "Falta HOSTINGER_SSH_KEY" && exit 1)
+
       - name: Configure SSH
         shell: bash
         run: |
-            mkdir -p ~/.ssh
-            cat > ~/.ssh/id_ed25519 <<'EOF'
-            ${{ secrets.HOSTINGER_SSH_KEY }}
-             EOF
-             chmod 600 ~/.ssh/id_ed25519
-            ssh-keyscan -p 65002 "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts
+          mkdir -p ~/.ssh
+          cat > ~/.ssh/id_ed25519 <<'EOF'
+          ${{ secrets.HOSTINGER_SSH_KEY }}
+          EOF
+          chmod 600 ~/.ssh/id_ed25519
+
       - name: Upload build to server
         shell: bash
         run: |
           rsync -avz --delete \
-            -e "ssh -i ~/.ssh/id_ed25519 -p 65002" \
+            -e "ssh -i ~/.ssh/id_ed25519 -p 65002 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
             public/build/ \
             ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:/home/u769713173/domains/cardbastion.com/public/build/
-      
+
       - name: Run deploy script
         shell: bash
         run: |
           ssh -i ~/.ssh/id_ed25519 -p 65002 \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
             "${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}" \
             "bash /home/u769713173/domains/cardbastion.com/deploy.sh"
-
-      - name: Validate secrets
-        shell: bash
-        run: |
-            test -n "${{ secrets.HOSTINGER_HOST }}" || (echo "Falta HOSTINGER_HOST" && exit 1)
-            test -n "${{ secrets.HOSTINGER_USER }}" || (echo "Falta HOSTINGER_USER" && exit 1)
-            test -n "${{ secrets.HOSTINGER_SSH_KEY }}" || (echo "Falta HOSTINGER_SSH_KEY" && exit 1)
