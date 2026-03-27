@@ -808,6 +808,120 @@ Se endurecio la capa offline-first para que el POS pueda reintentar sincronizaci
 - `php artisan test` no pudo ejecutarse en este entorno por restricciones del runner local y permisos sobre `storage/logs/laravel.log`
 - las reglas de conflicto para futuros cierres de caja quedaron preparadas en la capa de autoridad, pero aun no existe un endpoint real de `upload-cash-closures` en el proyecto
 
+## Ajuste reciente de cierre QA para integracion POS
+
+Se completo el lado servidor para pruebas reales de integracion con POS local, agregando cobertura automatizada, observabilidad coherente y documentacion tecnica operativa.
+
+### Ajuste aplicado
+
+- nuevo endpoint `POST /api/sync/upload-cash-closures`
+- nueva tabla `cash_closures` con `uuid`, referencias a dispositivo/usuario, montos de apertura/cierre, diferencias y campos de sync
+- logs de sync mas claros en `SyncLogService` con eventos `info`, `warning` y `error` segun el resultado del procesamiento
+- documentacion tecnica centralizada para POS en `docs/pos-sync-api.md`
+- base de fixtures reutilizable para tests de sincronizacion y autenticacion API
+- suite feature cubriendo auth, lecturas de catalogo y uploads batch con casos de exito, validacion, duplicados y referencias rotas
+- correccion de una inconsistencia historica en la migracion de `site_settings` que estaba rompiendo la suite de pruebas
+
+### Cobertura automatizada
+
+- `tests/Feature/ApiAuthTest.php`
+- `tests/Feature/SyncReadEndpointsTest.php`
+- `tests/Feature/SyncUploadEndpointsTest.php`
+- `tests/Feature/InventoryMovementTest.php`
+- `tests/Feature/SyncConflictTest.php`
+- `tests/Concerns/CreatesSyncFixtures.php`
+
+### Endpoints POS cubiertos
+
+- `POST /api/auth/login`
+- `GET /api/sync/products`
+- `GET /api/sync/customers`
+- `GET /api/sync/catalog`
+- `POST /api/sync/upload-sales`
+- `POST /api/sync/upload-cash-closures`
+- `POST /api/sync/upload-inventory-movements`
+
+### Validacion aplicada
+
+- `php artisan test`
+- `php artisan route:list --path=api/sync`
+- `php artisan route:list --path=api/auth`
+- `php -l` en modelos, requests, servicios, controladores, migraciones y tests nuevos
+
+### Archivos clave
+
+- `database/migrations/2026_03_27_164000_create_cash_closures_table.php`
+- `app/Models/CashClosure.php`
+- `app/Http/Requests/Sync/UploadCashClosuresRequest.php`
+- `app/Http/Controllers/Api/SyncCashClosureController.php`
+- `app/Services/Sync/SyncCashClosureUploadService.php`
+- `app/Services/SyncLogService.php`
+- `docs/pos-sync-api.md`
+- `phpunit.xml`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para crear `cash_closures`
+- el backend ya queda con pruebas verdes para los flujos clave de integracion POS
+- todavia conviene limpiar warnings de autoload ambiguo en `vendor` en una pasada de mantenimiento aparte
+
+## Ajuste reciente de cierre QA para integracion POS
+
+Se completo el lado servidor para pruebas reales de integracion con POS local, agregando cobertura automatizada, observabilidad coherente y documentacion tecnica operativa.
+
+### Ajuste aplicado
+
+- nuevo endpoint `POST /api/sync/upload-cash-closures`
+- nueva tabla `cash_closures` con `uuid`, referencias a dispositivo/usuario, montos de apertura/cierre, diferencias y campos de sync
+- logs de sync mas claros en `SyncLogService` con eventos `info`, `warning` y `error` segun el resultado del procesamiento
+- documentacion tecnica centralizada para POS en `docs/pos-sync-api.md`
+- base de fixtures reutilizable para tests de sincronizacion y autenticacion API
+- suite feature cubriendo auth, lecturas de catalogo y uploads batch con casos de exito, validacion, duplicados y referencias rotas
+- correccion de una inconsistencia historica en la migracion de `site_settings` que estaba rompiendo la suite de pruebas
+
+### Cobertura automatizada
+
+- `tests/Feature/ApiAuthTest.php`
+- `tests/Feature/SyncReadEndpointsTest.php`
+- `tests/Feature/SyncUploadEndpointsTest.php`
+- `tests/Feature/InventoryMovementTest.php`
+- `tests/Feature/SyncConflictTest.php`
+- `tests/Concerns/CreatesSyncFixtures.php`
+
+### Endpoints POS cubiertos
+
+- `POST /api/auth/login`
+- `GET /api/sync/products`
+- `GET /api/sync/customers`
+- `GET /api/sync/catalog`
+- `POST /api/sync/upload-sales`
+- `POST /api/sync/upload-cash-closures`
+- `POST /api/sync/upload-inventory-movements`
+
+### Validacion aplicada
+
+- `php artisan test`
+- `php artisan route:list --path=api/sync`
+- `php artisan route:list --path=api/auth`
+- `php -l` en modelos, requests, servicios, controladores, migraciones y tests nuevos
+
+### Archivos clave
+
+- `database/migrations/2026_03_27_164000_create_cash_closures_table.php`
+- `app/Models/CashClosure.php`
+- `app/Http/Requests/Sync/UploadCashClosuresRequest.php`
+- `app/Http/Controllers/Api/SyncCashClosureController.php`
+- `app/Services/Sync/SyncCashClosureUploadService.php`
+- `app/Services/SyncLogService.php`
+- `docs/pos-sync-api.md`
+- `phpunit.xml`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para crear `cash_closures`
+- el backend ya queda con pruebas verdes para los flujos clave de integracion POS
+- todavia conviene limpiar warnings de autoload ambiguo en `vendor` en una pasada de mantenimiento aparte
+
 ## Ajuste reciente de base de sincronizacion offline-first
 
 Se completo una base mas consistente para integrar el servidor con un POS local offline-first, manteniendo compatibilidad con los endpoints de sincronizacion ya existentes.

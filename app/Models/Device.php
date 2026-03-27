@@ -50,6 +50,11 @@ class Device extends Model
         return $this->hasMany(InventoryMovement::class)->latest('occurred_at')->latest('id');
     }
 
+    public function cashClosures(): HasMany
+    {
+        return $this->hasMany(CashClosure::class)->latest('closed_at')->latest('id');
+    }
+
     public function scopeSearch(Builder $query, ?string $term): Builder
     {
         if (! $term) {

@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class InventoryMovementTest extends TestCase
@@ -39,7 +40,9 @@ class InventoryMovementTest extends TestCase
             'active' => true,
         ]);
 
-        $this->actingAs($user, 'sanctum')
+        Sanctum::actingAs($user->loadMissing('role'), ['*']);
+
+        $this
             ->postJson('/api/sales', [
                 'user_id' => $user->id,
                 'device_id' => $device->id,
@@ -86,7 +89,9 @@ class InventoryMovementTest extends TestCase
             'publish_to_store' => false,
         ]);
 
-        $this->actingAs($user, 'sanctum')
+        Sanctum::actingAs($user->loadMissing('role'), ['*']);
+
+        $this
             ->postJson('/api/inventory-movements', [
                 'product_id' => $product->id,
                 'movement_type' => InventoryMovement::TYPE_MANUAL_ADJUSTMENT,
@@ -149,12 +154,16 @@ class InventoryMovementTest extends TestCase
             ],
         ];
 
-        $this->actingAs($user, 'sanctum')
+        Sanctum::actingAs($user->loadMissing('role'), ['*']);
+
+        $this
             ->postJson('/api/sync/upload-inventory-movements', $payload)
             ->assertOk()
             ->assertJsonPath('data.0.status', 'created');
 
-        $this->actingAs($user, 'sanctum')
+        Sanctum::actingAs($user->loadMissing('role'), ['*']);
+
+        $this
             ->postJson('/api/sync/upload-inventory-movements', $payload)
             ->assertOk()
             ->assertJsonPath('data.0.status', 'skipped');

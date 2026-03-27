@@ -33,6 +33,11 @@
 - added soft deletes to synced categories plus consistent `deleted_at`, `client_generated_at`, and `received_at` fields for catalog, sales, and inventory movement reconciliation
 - improved POS idempotency so duplicate sale and inventory movement UUID uploads return `skipped` instead of creating duplicates, while broken references return classified `conflict` responses without aborting the whole batch
 - documented sync authority and conflict rules for POS integration in `docs/sync-conflict-rules.md`
+- added `POST /api/sync/upload-cash-closures` plus the `cash_closures` server model/migration for POS cash-close uploads
+- added POS integration documentation in `docs/pos-sync-api.md` with auth flow, payload examples, batch statuses, authority rules, and integration checklist
+- added feature coverage for Sanctum auth, sync reads, sales uploads, cash closure uploads, inventory movement uploads, conflict handling, and updated-since filtering
+- improved sync observability by emitting clearer application logs from `SyncLogService` for success, skipped, conflict, and failed operations
+- fixed the historical `site_settings` migration seed path so the automated test suite can boot against sqlite memory without schema drift
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)

@@ -27,4 +27,9 @@ class SyncConflictResolver
     {
         // UUID duplicates are handled as idempotent skips by the upload services.
     }
+
+    public function ensureCashClosureCanBeUploaded(array $payload): void
+    {
+        // UUID duplicates are handled as idempotent skips by the upload services.
+    }
 }

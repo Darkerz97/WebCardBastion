@@ -3,11 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\Role;
 use App\Models\Sale;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class SyncConflictTest extends TestCase
@@ -17,6 +19,18 @@ class SyncConflictTest extends TestCase
     public function test_upload_sales_marks_conflict_when_sale_number_exists_with_different_uuid(): void
     {
         $user = $this->makeUserWithRole(User::ROLE_ADMIN);
+        $product = Product::query()->create([
+            'uuid' => (string) Str::uuid(),
+            'name' => 'Producto conflicto',
+            'slug' => 'producto-conflicto',
+            'sku' => 'SKU-CONFLICT-1',
+            'barcode' => '7504444444444',
+            'cost' => 5,
+            'price' => 10,
+            'stock' => 10,
+            'active' => true,
+            'publish_to_store' => false,
+        ]);
 
         Sale::query()->create([
             'uuid' => (string) Str::uuid(),
@@ -30,7 +44,9 @@ class SyncConflictTest extends TestCase
             'sold_at' => now(),
         ]);
 
-        $this->actingAs($user, 'sanctum')
+        Sanctum::actingAs($user->loadMissing('role'), ['*']);
+
+        $this
             ->postJson('/api/sync/upload-sales', [
                 'device_code' => 'DEVICE-NOT-FOUND',
                 'sales' => [
@@ -40,7 +56,7 @@ class SyncConflictTest extends TestCase
                         'status' => Sale::STATUS_COMPLETED,
                         'items' => [
                             [
-                                'product_id' => 9999,
+                                'product_id' => $product->id,
                                 'quantity' => 1,
                             ],
                         ],
@@ -64,7 +80,9 @@ class SyncConflictTest extends TestCase
 
         $category->delete();
 
-        $response = $this->actingAs($user, 'sanctum')
+        Sanctum::actingAs($user->loadMissing('role'), ['*']);
+
+        $response = $this
             ->getJson('/api/sync/catalog?include[]=categories')
             ->assertOk();
 

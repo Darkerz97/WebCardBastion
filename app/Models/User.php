@@ -78,6 +78,11 @@ class User extends Authenticatable
         return $this->hasMany(InventoryMovement::class)->latest('occurred_at')->latest('id');
     }
 
+    public function cashClosures(): HasMany
+    {
+        return $this->hasMany(CashClosure::class)->latest('closed_at')->latest('id');
+    }
+
     public function tournamentRegistrations(): HasMany
     {
         return $this->hasMany(TournamentRegistration::class);
