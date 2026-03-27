@@ -10,6 +10,7 @@
 - integrated the Card Bastion image into the public header brand block using `public/cardbastion-logo.png` and a capsule-style menu treatment
 - added a web password recovery flow with request/reset screens and routes backed by Laravel's password broker
 - added a migration that provisions the admin account `damian97santacruz@gmail.com` with admin role assignment on migrate
+- removed demo account hints and visible test credentials from the login page to make the auth flow production-ready
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)

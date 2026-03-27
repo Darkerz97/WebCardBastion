@@ -363,33 +363,15 @@ Se agrego el flujo web para recuperar y restablecer contrasena usando el broker 
 - es necesario ejecutar `php artisan migrate` para crear la cuenta admin fija
 - el envio real del enlace de recuperacion requiere configurar correo en `.env`
 
-## Actualizacion reciente de recuperacion de contrasena
+## Ajuste reciente para produccion
 
-Se agrego el flujo web para recuperar y restablecer contrasena usando el broker nativo de Laravel y la tabla `password_reset_tokens` ya disponible en el proyecto.
+Se eliminaron del login las referencias visibles a cuentas demo y credenciales sugeridas para que la experiencia publica no exponga datos de prueba.
 
-### Flujo agregado
+### Ajuste aplicado
 
-- enlace `Olvide mi contrasena` desde la pantalla de login
-- formulario para solicitar enlace de recuperacion
-- formulario para definir nueva contrasena a partir del token
-- rutas web de recuperacion y restablecimiento integradas al modulo de autenticacion
+- se retiro el bloque de acceso demo del formulario de login
+- se dejo un mensaje neutro orientado a recuperacion segura de contrasena
 
-### Cuenta admin agregada por migracion
+### Archivo clave
 
-- nombre: `jorge damian tenorio santacruz`
-- email: `damian97santacruz@gmail.com`
-- password inicial: `2802damiaN`
-
-### Archivos clave
-
-- `app/Http/Controllers/Web/PasswordResetController.php`
 - `resources/views/auth/login.blade.php`
-- `resources/views/auth/forgot-password.blade.php`
-- `resources/views/auth/reset-password.blade.php`
-- `routes/web.php`
-- `database/migrations/2026_03_27_120000_create_damian_admin_account.php`
-
-### Consideraciones
-
-- es necesario ejecutar `php artisan migrate` para crear la cuenta admin fija
-- el envio real del enlace de recuperacion requiere configurar correo en `.env`
