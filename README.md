@@ -331,3 +331,65 @@ Se integro la imagen de Card Bastion en el menu principal de la pagina publica p
 
 - `public/cardbastion-logo.png`
 - `resources/views/layouts/public.blade.php`
+
+## Actualizacion reciente de recuperacion de contrasena
+
+Se agrego el flujo web para recuperar y restablecer contrasena usando el broker nativo de Laravel y la tabla `password_reset_tokens` ya disponible en el proyecto.
+
+### Flujo agregado
+
+- enlace `Olvide mi contrasena` desde la pantalla de login
+- formulario para solicitar enlace de recuperacion
+- formulario para definir nueva contrasena a partir del token
+- rutas web de recuperacion y restablecimiento integradas al modulo de autenticacion
+
+### Cuenta admin agregada por migracion
+
+- nombre: `jorge damian tenorio santacruz`
+- email: `damian97santacruz@gmail.com`
+- password inicial: `2802damiaN`
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/PasswordResetController.php`
+- `resources/views/auth/login.blade.php`
+- `resources/views/auth/forgot-password.blade.php`
+- `resources/views/auth/reset-password.blade.php`
+- `routes/web.php`
+- `database/migrations/2026_03_27_120000_create_damian_admin_account.php`
+
+### Consideraciones
+
+- es necesario ejecutar `php artisan migrate` para crear la cuenta admin fija
+- el envio real del enlace de recuperacion requiere configurar correo en `.env`
+
+## Actualizacion reciente de recuperacion de contrasena
+
+Se agrego el flujo web para recuperar y restablecer contrasena usando el broker nativo de Laravel y la tabla `password_reset_tokens` ya disponible en el proyecto.
+
+### Flujo agregado
+
+- enlace `Olvide mi contrasena` desde la pantalla de login
+- formulario para solicitar enlace de recuperacion
+- formulario para definir nueva contrasena a partir del token
+- rutas web de recuperacion y restablecimiento integradas al modulo de autenticacion
+
+### Cuenta admin agregada por migracion
+
+- nombre: `jorge damian tenorio santacruz`
+- email: `damian97santacruz@gmail.com`
+- password inicial: `2802damiaN`
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/PasswordResetController.php`
+- `resources/views/auth/login.blade.php`
+- `resources/views/auth/forgot-password.blade.php`
+- `resources/views/auth/reset-password.blade.php`
+- `routes/web.php`
+- `database/migrations/2026_03_27_120000_create_damian_admin_account.php`
+
+### Consideraciones
+
+- es necesario ejecutar `php artisan migrate` para crear la cuenta admin fija
+- el envio real del enlace de recuperacion requiere configurar correo en `.env`

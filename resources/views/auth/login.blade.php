@@ -15,6 +15,11 @@
             <label for="password">Contrasena</label>
             <input id="password" type="password" name="password" required>
         </div>
+        <div class="flex justify-end">
+            <a href="{{ route('password.request') }}" class="text-sm font-semibold text-[color:var(--color-brand-600)] transition hover:text-[color:var(--color-brand-500)]">
+                Olvide mi contrasena
+            </a>
+        </div>
         <button class="btn btn-primary w-full" type="submit">Entrar</button>
     </form>
 

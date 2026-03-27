@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\SaleController;
 use App\Http\Controllers\Web\StorefrontController;
 use App\Http\Controllers\Web\PlayerTournamentController;
+use App\Http\Controllers\Web\PasswordResetController;
 use App\Http\Controllers\Web\TournamentController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,10 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/login', [AuthController::class, 'store'])->name('login.store');
     Route::get('/registro', [AuthController::class, 'createRegister'])->name('register');
     Route::post('/registro', [AuthController::class, 'register'])->name('register.store');
+    Route::get('/recuperar-contrasena', [PasswordResetController::class, 'create'])->name('password.request');
+    Route::post('/recuperar-contrasena', [PasswordResetController::class, 'store'])->name('password.email');
+    Route::get('/restablecer-contrasena/{token}', [PasswordResetController::class, 'edit'])->name('password.reset');
+    Route::post('/restablecer-contrasena', [PasswordResetController::class, 'update'])->name('password.update');
 });
 
 Route::middleware('auth')->group(function (): void {
