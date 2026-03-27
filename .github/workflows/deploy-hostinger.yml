@@ -34,23 +34,33 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-
       - name: Configure SSH
+        shell: bash
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p 65002 "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts
-
+            mkdir -p ~/.ssh
+            cat > ~/.ssh/id_ed25519 <<'EOF'
+            ${{ secrets.HOSTINGER_SSH_KEY }}
+             EOF
+             chmod 600 ~/.ssh/id_ed25519
+            ssh-keyscan -p 65002 "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts
       - name: Upload build to server
+        shell: bash
         run: |
           rsync -avz --delete \
-            -e "ssh -p ${{ secrets.HOSTINGER_PORT }}" \
+            -e "ssh -i ~/.ssh/id_ed25519 -p 65002" \
             public/build/ \
             ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:/home/u769713173/domains/cardbastion.com/public/build/
-
+      
       - name: Run deploy script
+        shell: bash
         run: |
-          ssh -p "${{ secrets.HOSTINGER_PORT }}" \
+          ssh -i ~/.ssh/id_ed25519 -p 65002 \
             "${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}" \
             "bash /home/u769713173/domains/cardbastion.com/deploy.sh"
+
+      - name: Validate secrets
+        shell: bash
+        run: |
+            test -n "${{ secrets.HOSTINGER_HOST }}" || (echo "Falta HOSTINGER_HOST" && exit 1)
+            test -n "${{ secrets.HOSTINGER_USER }}" || (echo "Falta HOSTINGER_USER" && exit 1)
+            test -n "${{ secrets.HOSTINGER_SSH_KEY }}" || (echo "Falta HOSTINGER_SSH_KEY" && exit 1)
