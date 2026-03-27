@@ -594,6 +594,35 @@ Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para 
 - el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
 - si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador
 
+## Ajuste reciente de endurecimiento para sincronizacion POS
+
+Se reforzo la API para dejar el servidor mejor preparado para sincronizar con un POS local sin exponer inventario, ventas o dispositivos a cualquier usuario autenticado.
+
+### Ajuste aplicado
+
+- el login API ahora solo emite tokens a usuarios de backoffice con rol `admin`, `manager` o `cashier`
+- los tokens Sanctum se generan con abilities segun el rol para separar lectura, escritura, stock, pagos y sincronizacion
+- `api/sync/heartbeat` ya no queda publico y ahora requiere autenticacion con token valido
+- la carga de ventas del POS ya puede resolver productos por `product_uuid`, `product_sku` o `product_barcode`
+- la carga de ventas tambien puede relacionar clientes y usuarios por UUID o datos estables ademas del ID interno
+- el proceso de `upload-sales` ahora devuelve fallos por venta individual sin depender solo de excepciones de negocio
+
+### Archivos clave
+
+- `app/Http/Controllers/Api/AuthController.php`
+- `app/Http/Controllers/Api/SyncController.php`
+- `app/Http/Requests/Sync/UploadSalesRequest.php`
+- `app/Http/Middleware/EnsureApiUserCanAccessPos.php`
+- `app/Http/Middleware/EnsureApiTokenHasAbility.php`
+- `routes/api.php`
+- `bootstrap/app.php`
+
+### Consideraciones
+
+- no requiere migraciones nuevas
+- el POS debe autenticarse primero y reutilizar el bearer token en `heartbeat`, lecturas de sync y `upload-sales`
+- para una sincronizacion todavia mas avanzada de inventario entre multiples nodos, en una siguiente fase conviene agregar versionado o ledger de movimientos
+
 ## Ajuste reciente del modulo admin de torneos
 
 Se restauraron las vistas faltantes del panel de administracion para que el modulo de torneos vuelva a funcionar correctamente y ya no falle con `View [tournaments.index] not found`.

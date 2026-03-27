@@ -13,13 +13,15 @@ use App\Models\Customer;
 use App\Models\Device;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\User;
 use App\Services\SaleService;
 use App\Services\SyncLogService;
 use App\Support\ApiResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use InvalidArgumentException;
+use Throwable;
 
 class SyncController extends Controller
 {
@@ -38,7 +40,7 @@ class SyncController extends Controller
             ->orderBy('updated_at')
             ->get();
 
-        return $this->successResponse(ProductResource::collection($products), 'Productos listos para sincronización.');
+        return $this->successResponse(ProductResource::collection($products), 'Productos listos para sincronizacion.');
     }
 
     public function customers(Request $request): JsonResponse
@@ -48,7 +50,7 @@ class SyncController extends Controller
             ->orderBy('updated_at')
             ->get();
 
-        return $this->successResponse(CustomerResource::collection($customers), 'Clientes listos para sincronización.');
+        return $this->successResponse(CustomerResource::collection($customers), 'Clientes listos para sincronizacion.');
     }
 
     public function heartbeat(HeartbeatRequest $request): JsonResponse
@@ -81,7 +83,11 @@ class SyncController extends Controller
 
     public function uploadSales(UploadSalesRequest $request): JsonResponse
     {
-        $device = Device::query()->where('device_code', $request->string('device_code'))->first();
+        $device = Device::query()
+            ->where('device_code', $request->string('device_code'))
+            ->where('active', true)
+            ->first();
+
         $results = [];
 
         foreach ($request->validated('sales') as $payload) {
@@ -91,7 +97,7 @@ class SyncController extends Controller
                 $results[] = [
                     'uuid' => $existingSale->uuid,
                     'status' => 'skipped',
-                    'message' => 'La venta ya había sido sincronizada.',
+                    'message' => 'La venta ya habia sido sincronizada.',
                 ];
 
                 $this->syncLogService->log($device, 'sale', $existingSale->uuid, 'upload', 'skipped', $payload, 'Venta duplicada omitida.', now());
@@ -101,7 +107,7 @@ class SyncController extends Controller
 
             try {
                 $sale = $this->saleService->create([
-                    ...$payload,
+                    ...$this->resolveSyncPayload($payload),
                     'device_id' => $device?->id,
                 ]);
 
@@ -112,7 +118,7 @@ class SyncController extends Controller
                 ];
 
                 $this->syncLogService->log($device, 'sale', $sale->uuid, 'upload', 'success', $payload, 'Venta sincronizada correctamente.', now());
-            } catch (InvalidArgumentException $exception) {
+            } catch (Throwable $exception) {
                 $results[] = [
                     'uuid' => $payload['uuid'],
                     'status' => 'failed',
@@ -123,6 +129,104 @@ class SyncController extends Controller
             }
         }
 
-        return $this->successResponse($results, 'Proceso de sincronización completado.');
+        return $this->successResponse($results, 'Proceso de sincronizacion completado.');
+    }
+
+    private function resolveSyncPayload(array $payload): array
+    {
+        return [
+            ...$payload,
+            'customer_id' => $this->resolveCustomerId($payload),
+            'user_id' => $this->resolveUserId($payload),
+            'items' => collect($payload['items'] ?? [])
+                ->map(fn (array $item): array => [
+                    ...$item,
+                    'product_id' => $this->resolveProductId($item),
+                ])
+                ->all(),
+        ];
+    }
+
+    private function resolveCustomerId(array $payload): ?int
+    {
+        if (! empty($payload['customer_id'])) {
+            return (int) $payload['customer_id'];
+        }
+
+        if (! empty($payload['customer_uuid'])) {
+            $customerId = Customer::query()->where('uuid', $payload['customer_uuid'])->value('id');
+
+            if ($customerId) {
+                return (int) $customerId;
+            }
+        }
+
+        if (! empty($payload['customer_email'])) {
+            $customerId = Customer::query()->where('email', $payload['customer_email'])->value('id');
+
+            if ($customerId) {
+                return (int) $customerId;
+            }
+        }
+
+        if (! empty($payload['customer_phone'])) {
+            $customerId = Customer::query()->where('phone', $payload['customer_phone'])->value('id');
+
+            if ($customerId) {
+                return (int) $customerId;
+            }
+        }
+
+        return null;
+    }
+
+    private function resolveUserId(array $payload): ?int
+    {
+        if (! empty($payload['user_id'])) {
+            return (int) $payload['user_id'];
+        }
+
+        if (! empty($payload['user_uuid'])) {
+            $userId = User::query()->where('uuid', $payload['user_uuid'])->value('id');
+
+            if ($userId) {
+                return (int) $userId;
+            }
+        }
+
+        return null;
+    }
+
+    private function resolveProductId(array $item): int
+    {
+        if (! empty($item['product_id'])) {
+            return (int) $item['product_id'];
+        }
+
+        if (! empty($item['product_uuid'])) {
+            $productId = Product::query()->where('uuid', $item['product_uuid'])->value('id');
+
+            if ($productId) {
+                return (int) $productId;
+            }
+        }
+
+        if (! empty($item['product_sku'])) {
+            $productId = Product::query()->where('sku', $item['product_sku'])->value('id');
+
+            if ($productId) {
+                return (int) $productId;
+            }
+        }
+
+        if (! empty($item['product_barcode'])) {
+            $productId = Product::query()->where('barcode', $item['product_barcode'])->value('id');
+
+            if ($productId) {
+                return (int) $productId;
+            }
+        }
+
+        throw new ModelNotFoundException('No fue posible resolver el producto enviado por el POS.');
     }
 }

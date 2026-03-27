@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+            'api.role' => \App\Http\Middleware\EnsureApiUserCanAccessPos::class,
+            'api.ability' => \App\Http\Middleware\EnsureApiTokenHasAbility::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
