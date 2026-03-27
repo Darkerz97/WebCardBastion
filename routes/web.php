@@ -15,10 +15,12 @@ use App\Http\Controllers\Web\PasswordResetController;
 use App\Http\Controllers\Web\SiteSettingController;
 use App\Http\Controllers\Web\StorefrontController;
 use App\Http\Controllers\Web\TournamentController;
+use App\Http\Controllers\Web\PublicMediaController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StorefrontController::class, 'index'])->name('store.home');
+Route::get('/media/{path}', [PublicMediaController::class, 'show'])->where('path', '.*')->name('media.public');
 Route::get('/tienda', [StorefrontController::class, 'index'])->name('store.catalog');
 Route::get('/tienda/{product:slug}', [StorefrontController::class, 'show'])->name('store.products.show');
 Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');

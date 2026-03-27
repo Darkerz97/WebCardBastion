@@ -107,7 +107,7 @@
     </section>
 
     <section id="catalogo" class="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
-        <div class="mb-6 flex flex-col gap-4 rounded-[32px] border border-[color:var(--color-line)] bg-[linear-gradient(135deg,rgba(255,253,249,0.95),rgba(246,240,232,0.9))] px-6 py-6 shadow-[0_20px_50px_rgba(36,24,18,0.07)] lg:flex-row lg:items-end lg:justify-between lg:px-8">
+        <div class="mb-6 flex flex-col gap-4 rounded-[32px] border border-[rgba(255,171,18,0.22)] bg-[linear-gradient(135deg,rgba(22,22,22,0.98),rgba(15,22,33,0.96))] px-6 py-6 shadow-[0_20px_50px_rgba(0,0,0,0.28)] lg:flex-row lg:items-end lg:justify-between lg:px-8">
             <div class="max-w-2xl">
                 <p class="section-kicker">Catalogo</p>
                 <h2 class="mt-3 section-title">{{ $siteSettings?->catalog_heading ?? 'Explora la tienda con mejor contexto y menos ruido.' }}</h2>
@@ -116,17 +116,17 @@
                 </p>
             </div>
             <div class="grid gap-3 sm:grid-cols-3">
-                <div class="rounded-2xl border border-[color:var(--color-line)] bg-white/80 px-4 py-4">
-                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Resultados</p>
-                    <p class="mt-2 text-2xl font-black text-stone-900">{{ $products->total() }}</p>
+                <div class="rounded-2xl border border-[rgba(255,171,18,0.24)] bg-[linear-gradient(180deg,rgba(70,45,10,0.95),rgba(43,29,8,0.94))] px-4 py-4 shadow-[0_16px_30px_rgba(0,0,0,0.18)]">
+                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[rgba(255,214,153,0.72)]">Resultados</p>
+                    <p class="mt-2 text-2xl font-black text-[color:var(--color-ink)]">{{ $products->total() }}</p>
                 </div>
-                <div class="rounded-2xl border border-[color:var(--color-line)] bg-white/80 px-4 py-4">
-                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Vista actual</p>
-                    <p class="mt-2 text-2xl font-black text-stone-900">{{ $visibleProducts }}</p>
+                <div class="rounded-2xl border border-[rgba(99,179,237,0.2)] bg-[linear-gradient(180deg,rgba(18,39,63,0.96),rgba(14,27,44,0.94))] px-4 py-4 shadow-[0_16px_30px_rgba(0,0,0,0.18)]">
+                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[rgba(173,216,255,0.72)]">Vista actual</p>
+                    <p class="mt-2 text-2xl font-black text-[color:var(--color-ink)]">{{ $visibleProducts }}</p>
                 </div>
-                <div class="rounded-2xl border border-[color:var(--color-line)] bg-white/80 px-4 py-4">
-                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Filtro activo</p>
-                    <p class="mt-2 truncate text-base font-black uppercase tracking-[0.05em] text-stone-900">{{ $activeCategory?->name ?? 'Todos' }}</p>
+                <div class="rounded-2xl border border-[rgba(196,156,90,0.2)] bg-[linear-gradient(180deg,rgba(46,36,28,0.96),rgba(31,26,22,0.94))] px-4 py-4 shadow-[0_16px_30px_rgba(0,0,0,0.18)]">
+                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[rgba(232,205,160,0.72)]">Filtro activo</p>
+                    <p class="mt-2 truncate text-base font-black uppercase tracking-[0.05em] text-[color:var(--color-ink)]">{{ $activeCategory?->name ?? 'Todos' }}</p>
                 </div>
             </div>
         </div>

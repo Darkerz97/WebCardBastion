@@ -26,8 +26,17 @@ class ProductImage extends Model
         ];
     }
 
+    protected $appends = [
+        'url',
+    ];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getUrlAttribute(): ?string
+    {
+        return Product::resolveImageUrl($this->path);
     }
 }

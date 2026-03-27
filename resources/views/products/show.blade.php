@@ -14,7 +14,7 @@
             @if ($product->images->isNotEmpty())
                 <div class="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
                     @foreach ($product->images as $image)
-                        <img class="aspect-square w-full rounded-2xl border border-stone-200 object-cover" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($image->path) }}" alt="{{ $image->alt_text ?: $product->name }}">
+                        <img class="aspect-square w-full rounded-2xl border border-stone-200 object-cover" src="{{ $image->url }}" alt="{{ $image->alt_text ?: $product->name }}">
                     @endforeach
                 </div>
             @endif

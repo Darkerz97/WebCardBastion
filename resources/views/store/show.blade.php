@@ -18,7 +18,7 @@
                     <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
                         @foreach ($product->images as $image)
                             <div class="overflow-hidden rounded-2xl border border-stone-200 bg-white p-2">
-                                <img class="aspect-square w-full rounded-xl object-cover" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($image->path) }}" alt="{{ $image->alt_text ?: $product->name }}">
+                                <img class="aspect-square w-full rounded-xl object-cover" src="{{ $image->url }}" alt="{{ $image->alt_text ?: $product->name }}">
                             </div>
                         @endforeach
                     </div>

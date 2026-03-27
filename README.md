@@ -174,7 +174,7 @@ La implementacion esta pensada para hosting compartido, sin Redis, websockets ni
 - sube `vendor/` y `node_modules` no es necesario en produccion si ya subes `public/build`
 - asegúrate de tener `storage/` y `bootstrap/cache/` con permisos de escritura
 - ejecuta `php artisan storage:link` si el entorno lo permite
-- si no puedes usar symlink, sirve imagenes desde rutas publicas o ajusta el hosting
+- si no puedes usar symlink, la tienda ya incluye una ruta publica de respaldo para imagenes de producto, pero los archivos deben existir en `storage/app/public`
 
 ### Flujo sugerido
 
@@ -449,16 +449,40 @@ Se mejoro la legibilidad de las tarjetas de resumen dentro del hero principal de
 
 - `resources/views/store/index.blade.php`
 
-## Ajuste reciente de contraste en metricas del hero
+## Ajuste reciente en bloque de catalogo
 
-Se mejoro la legibilidad de las tarjetas de resumen dentro del hero principal de la tienda para que se distingan mejor del fondo oscuro y entre si.
+Se reforzo el contraste del encabezado del catalogo publico para integrarlo mejor con la paleta oscura del sitio y evitar que el bloque se viera demasiado claro frente al resto de la pagina.
 
 ### Ajuste aplicado
 
-- tarjeta de seleccion con tono ambar oscuro
-- tarjeta de categorias con tono azul petroleo
-- tarjeta de envio con tono carbon calido
+- contenedor principal del catalogo con fondo oscuro, borde ambar sutil y sombra mas marcada
+- tarjetas de `Resultados`, `Vista actual` y `Filtro activo` con tonos diferenciados para lectura rapida
 
 ### Archivo clave
 
 - `resources/views/store/index.blade.php`
+
+## Ajuste reciente de entrega de imagenes de productos
+
+Se hizo mas robusta la resolucion de imagenes de producto para que la tienda y el panel administrativo puedan mostrarlas incluso cuando el servidor no tenga disponible `public/storage`.
+
+### Ajuste aplicado
+
+- resolucion centralizada de URLs de imagen en los modelos `Product` y `ProductImage`
+- nueva ruta publica de respaldo para servir archivos desde el disco `public`
+- galerias y vistas de detalle actualizadas para usar la URL resuelta del modelo
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/PublicMediaController.php`
+- `app/Models/Product.php`
+- `app/Models/ProductImage.php`
+- `routes/web.php`
+- `resources/views/products/_form.blade.php`
+- `resources/views/products/show.blade.php`
+- `resources/views/store/show.blade.php`
+
+### Consideraciones
+
+- si el archivo no existe en `storage/app/public/products`, la imagen seguira sin mostrarse aunque la URL ya sea correcta
+- `php artisan storage:link` sigue siendo recomendable cuando el hosting lo permite

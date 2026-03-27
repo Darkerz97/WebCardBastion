@@ -86,6 +86,11 @@ class Product extends Model
     {
         $path = $this->image_path ?: $this->images->firstWhere('is_primary', true)?->path ?: $this->images->first()?->path;
 
+        return $path ? static::resolveImageUrl($path) : null;
+    }
+
+    public static function resolveImageUrl(?string $path): ?string
+    {
         if (! $path) {
             return null;
         }
@@ -94,6 +99,14 @@ class Product extends Model
             return $path;
         }
 
-        return Storage::disk('public')->url($path);
+        $publicDisk = Storage::disk('public');
+        $publicUrl = $publicDisk->url($path);
+        $publicStoragePath = public_path('storage/'.str_replace('/', DIRECTORY_SEPARATOR, $path));
+
+        if (is_file($publicStoragePath)) {
+            return $publicUrl;
+        }
+
+        return route('media.public', ['path' => $path]);
     }
 }
