@@ -104,6 +104,18 @@
                         <a class="btn btn-primary" href="{{ route('articles.index') }}">Gestionar articulos</a>
                     </div>
                 </div>
+                <div class="panel xl:col-span-2">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <p class="section-kicker">Redes sociales</p>
+                            <h2 class="mt-2 text-2xl font-black uppercase tracking-[0.05em] text-stone-900">Conecta Facebook, Instagram y TikTok</h2>
+                            <p class="mt-3 max-w-3xl text-sm leading-7 text-stone-600">
+                                Define los enlaces para seguir las cuentas oficiales y pega los codigos embed de albumes o publicaciones recientes para mostrarlos en la home publica.
+                            </p>
+                        </div>
+                        <a class="btn btn-primary" href="{{ route('site-settings.edit') }}#social-media">Configurar redes</a>
+                    </div>
+                </div>
             </div>
         </section>
     @endif

@@ -28,6 +28,14 @@ class SiteSettingRequest extends FormRequest
             'benefit_three_title' => ['required', 'string', 'max:255'],
             'benefit_three_description' => ['required', 'string', 'max:1000'],
             'announcement_text' => ['nullable', 'string', 'max:500'],
+            'social_heading' => ['nullable', 'string', 'max:255'],
+            'social_description' => ['nullable', 'string', 'max:1500'],
+            'facebook_url' => ['nullable', 'url', 'max:255'],
+            'facebook_embed' => ['nullable', 'string', 'max:10000'],
+            'instagram_url' => ['nullable', 'url', 'max:255'],
+            'instagram_embed' => ['nullable', 'string', 'max:10000'],
+            'tiktok_url' => ['nullable', 'url', 'max:255'],
+            'tiktok_embed' => ['nullable', 'string', 'max:10000'],
         ];
     }
 }

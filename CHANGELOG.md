@@ -18,6 +18,7 @@
 - added a fallback public media route plus centralized product image URL resolution so product photos can render even when `public/storage` is unavailable
 - added an admin-only articles and vlog module with public reading views, cover image uploads, and per-entry comment settings
 - added public article comments for guests and registered users, plus admin-side comment deletion and editorial shortcuts in the dashboard
+- added social media settings for Facebook, Instagram, and TikTok embeds plus a new homepage community section with follow buttons
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)

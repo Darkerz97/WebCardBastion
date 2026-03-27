@@ -24,6 +24,14 @@ class SiteSetting extends Model
         'benefit_three_title',
         'benefit_three_description',
         'announcement_text',
+        'social_heading',
+        'social_description',
+        'facebook_url',
+        'facebook_embed',
+        'instagram_url',
+        'instagram_embed',
+        'tiktok_url',
+        'tiktok_embed',
     ];
 
     public static function defaults(): array
@@ -43,6 +51,14 @@ class SiteSetting extends Model
             'benefit_three_title' => 'Proceso claro desde el primer clic',
             'benefit_three_description' => 'Filtros directos, fichas limpias y carrito visible para que la navegacion se sienta rapida, elegante y confiable.',
             'announcement_text' => null,
+            'social_heading' => 'Sigue la comunidad Card Bastion en tiempo real.',
+            'social_description' => 'Conecta Facebook, Instagram y TikTok para mostrar albumes, publicaciones recientes y accesos directos a tus perfiles oficiales.',
+            'facebook_url' => null,
+            'facebook_embed' => null,
+            'instagram_url' => null,
+            'instagram_embed' => null,
+            'tiktok_url' => null,
+            'tiktok_embed' => null,
         ];
     }
 

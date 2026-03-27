@@ -524,39 +524,30 @@ Se agrego un modulo editorial completo para publicar entradas desde admin y perm
 - es necesario ejecutar `php artisan migrate` para crear las tablas `articles` y `article_comments`
 - la portada usa el mismo sistema de archivos publicos y fallback de medios ya integrado en el proyecto
 
-## Modulo reciente de vlog y articulos
+## Modulo reciente de redes sociales en home
 
-Se agrego un modulo editorial completo para publicar entradas desde admin y permitir que la comunidad las lea y comente desde el portal publico.
+Se agrego una nueva seccion social en la pagina principal para mostrar contenido embebido de Facebook, Instagram y TikTok, junto con botones para seguir las cuentas oficiales.
 
 ### Alcance del modulo
 
-- CRUD de articulos exclusivo para administradores
-- entradas con titulo, slug, resumen, contenido largo, portada y fecha de publicacion
-- opcion para habilitar o cerrar comentarios por entrada
-- listado publico de articulos y vista de detalle
-- comentarios disponibles para usuarios registrados y visitantes
-- revision y eliminacion de comentarios desde admin
-- acceso rapido al modulo desde dashboard admin, menu admin y portal del jugador
+- bloque social visible en la home publica con mejor integracion visual al tema oscuro
+- espacio para album/publicaciones de Facebook
+- espacio para feed o publicaciones recientes de Instagram
+- espacio para videos recientes de TikTok
+- botones para seguir cada red social desde la home
+- configuracion centralizada desde admin dentro de contenido del sitio
+- acceso rapido desde el dashboard admin para conectar las cuentas
 
 ### Archivos clave
 
-- `app/Models/Article.php`
-- `app/Models/ArticleComment.php`
-- `app/Http/Controllers/Web/ArticleController.php`
-- `app/Http/Controllers/Web/PublicArticleController.php`
-- `app/Http/Controllers/Web/ArticleCommentController.php`
-- `app/Http/Requests/Article/AdminArticleRequest.php`
-- `app/Http/Requests/Article/ArticleCommentRequest.php`
-- `database/migrations/2026_03_27_140000_create_articles_tables.php`
-- `resources/views/articles/*`
-- `resources/views/blog/*`
-- `resources/views/layouts/app.blade.php`
-- `resources/views/layouts/public.blade.php`
-- `resources/views/account/dashboard.blade.php`
+- `database/migrations/2026_03_27_150000_add_social_fields_to_site_settings_table.php`
+- `app/Models/SiteSetting.php`
+- `app/Http/Requests/SiteSettingRequest.php`
+- `resources/views/site-settings/edit.blade.php`
+- `resources/views/store/index.blade.php`
 - `resources/views/dashboard/index.blade.php`
-- `routes/web.php`
 
 ### Consideraciones
 
-- es necesario ejecutar `php artisan migrate` para crear las tablas `articles` y `article_comments`
-- la portada usa el mismo sistema de archivos publicos y fallback de medios ya integrado en el proyecto
+- es necesario ejecutar `php artisan migrate` para agregar los nuevos campos sociales en `site_settings`
+- los embeds se pegan directamente desde admin, por lo que el contenido visible depende del codigo de embebido que entregue cada plataforma

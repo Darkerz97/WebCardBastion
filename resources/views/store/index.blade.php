@@ -106,6 +106,96 @@
         </div>
     </section>
 
+    <section class="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
+        <div class="panel overflow-hidden">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                <div class="max-w-3xl">
+                    <p class="section-kicker">Comunidad social</p>
+                    <h2 class="mt-3 section-title">{{ $siteSettings?->social_heading ?? 'Sigue la comunidad Card Bastion en tiempo real.' }}</h2>
+                    <p class="mt-4 text-sm leading-7 text-[color:var(--color-ink-soft)] sm:text-base">
+                        {{ $siteSettings?->social_description ?? 'Conecta Facebook, Instagram y TikTok para mostrar albumes, publicaciones recientes y accesos directos a tus perfiles oficiales.' }}
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    @if (filled($siteSettings?->facebook_url))
+                        <a class="btn btn-secondary" href="{{ $siteSettings->facebook_url }}" target="_blank" rel="noreferrer">Seguir en Facebook</a>
+                    @endif
+                    @if (filled($siteSettings?->instagram_url))
+                        <a class="btn btn-secondary" href="{{ $siteSettings->instagram_url }}" target="_blank" rel="noreferrer">Seguir en Instagram</a>
+                    @endif
+                    @if (filled($siteSettings?->tiktok_url))
+                        <a class="btn btn-secondary" href="{{ $siteSettings->tiktok_url }}" target="_blank" rel="noreferrer">Seguir en TikTok</a>
+                    @endif
+                </div>
+            </div>
+
+            <div class="mt-8 grid gap-5 xl:grid-cols-3">
+                <div class="rounded-[28px] border border-[rgba(99,126,255,0.16)] bg-[linear-gradient(180deg,rgba(19,28,47,0.98),rgba(12,20,35,0.96))] p-5 shadow-[0_18px_36px_rgba(0,0,0,0.24)]">
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[rgba(173,216,255,0.72)]">Facebook</p>
+                            <h3 class="mt-2 text-xl font-black uppercase tracking-[0.04em] text-[color:var(--color-ink)]">Album y publicaciones</h3>
+                        </div>
+                        @if (filled($siteSettings?->facebook_url))
+                            <a class="badge" href="{{ $siteSettings->facebook_url }}" target="_blank" rel="noreferrer">Abrir</a>
+                        @endif
+                    </div>
+                    <div class="mt-5 overflow-hidden rounded-3xl border border-white/8 bg-[rgba(255,255,255,0.03)] p-3 text-sm text-[color:var(--color-ink-soft)]">
+                        @if (filled($siteSettings?->facebook_embed))
+                            {!! $siteSettings->facebook_embed !!}
+                        @else
+                            <div class="flex min-h-56 items-center justify-center rounded-2xl border border-dashed border-white/10 px-6 text-center">
+                                Agrega desde admin el embed de Facebook para mostrar el album o las ultimas publicaciones.
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="rounded-[28px] border border-[rgba(255,171,18,0.18)] bg-[linear-gradient(180deg,rgba(46,31,16,0.98),rgba(29,22,16,0.96))] p-5 shadow-[0_18px_36px_rgba(0,0,0,0.24)]">
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[rgba(255,214,153,0.72)]">Instagram</p>
+                            <h3 class="mt-2 text-xl font-black uppercase tracking-[0.04em] text-[color:var(--color-ink)]">Feed reciente</h3>
+                        </div>
+                        @if (filled($siteSettings?->instagram_url))
+                            <a class="badge" href="{{ $siteSettings->instagram_url }}" target="_blank" rel="noreferrer">Abrir</a>
+                        @endif
+                    </div>
+                    <div class="mt-5 overflow-hidden rounded-3xl border border-white/8 bg-[rgba(255,255,255,0.03)] p-3 text-sm text-[color:var(--color-ink-soft)]">
+                        @if (filled($siteSettings?->instagram_embed))
+                            {!! $siteSettings->instagram_embed !!}
+                        @else
+                            <div class="flex min-h-56 items-center justify-center rounded-2xl border border-dashed border-white/10 px-6 text-center">
+                                Agrega desde admin el embed de Instagram para mostrar las ultimas publicaciones o un reel destacado.
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="rounded-[28px] border border-[rgba(255,85,130,0.18)] bg-[linear-gradient(180deg,rgba(37,18,30,0.98),rgba(24,16,22,0.96))] p-5 shadow-[0_18px_36px_rgba(0,0,0,0.24)]">
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[rgba(255,184,207,0.74)]">TikTok</p>
+                            <h3 class="mt-2 text-xl font-black uppercase tracking-[0.04em] text-[color:var(--color-ink)]">Videos recientes</h3>
+                        </div>
+                        @if (filled($siteSettings?->tiktok_url))
+                            <a class="badge" href="{{ $siteSettings->tiktok_url }}" target="_blank" rel="noreferrer">Abrir</a>
+                        @endif
+                    </div>
+                    <div class="mt-5 overflow-hidden rounded-3xl border border-white/8 bg-[rgba(255,255,255,0.03)] p-3 text-sm text-[color:var(--color-ink-soft)]">
+                        @if (filled($siteSettings?->tiktok_embed))
+                            {!! $siteSettings->tiktok_embed !!}
+                        @else
+                            <div class="flex min-h-56 items-center justify-center rounded-2xl border border-dashed border-white/10 px-6 text-center">
+                                Agrega desde admin el embed de TikTok para mostrar clips recientes y atraer visitas al perfil.
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="catalogo" class="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
         <div class="mb-6 flex flex-col gap-4 rounded-[32px] border border-[rgba(255,171,18,0.22)] bg-[linear-gradient(135deg,rgba(22,22,22,0.98),rgba(15,22,33,0.96))] px-6 py-6 shadow-[0_20px_50px_rgba(0,0,0,0.28)] lg:flex-row lg:items-end lg:justify-between lg:px-8">
             <div class="max-w-2xl">
