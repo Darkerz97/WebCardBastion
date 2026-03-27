@@ -31,10 +31,10 @@ $PHP_BIN artisan optimize:clear || true
 
 echo "== Prepare public_html =="
 mkdir -p public_html
-find public_html -mindepth 1 -maxdepth 1 ! -name 'storage' -exec rm -rf {} +
+find public_html -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 
 echo "== Copy public assets to public_html =="
-cp -r public/* public_html/
+rsync -av --delete public/ public_html/
 
 echo "== Sync storage to public_html =="
 rm -rf public_html/storage

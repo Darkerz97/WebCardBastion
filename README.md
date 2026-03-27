@@ -594,6 +594,44 @@ Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para 
 - el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
 - si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador
 
+## Ajuste reciente critico de deploy en Hostinger
+
+Se corrigio el despliegue para que `public_html` reciba todos los archivos reales de `public/`, incluyendo archivos ocultos necesarios para Apache como `.htaccess`.
+
+### Ajuste aplicado
+
+- reemplazo de la copia simple `cp -r public/* public_html/` por `rsync -av --delete public/ public_html/`
+- limpieza completa previa de `public_html` antes de reconstruirla
+- conservacion del flujo de sincronizacion de `storage/app/public` hacia `public_html/storage`
+
+### Archivo clave
+
+- `deploy.sh`
+
+### Consideraciones
+
+- este ajuste evita que el sitio quede sin reglas de reescritura por no copiar `.htaccess`
+- el siguiente deploy en Hostinger debe reconstruir correctamente la carpeta publica
+
+## Ajuste reciente critico de deploy en Hostinger
+
+Se corrigio el despliegue para que `public_html` reciba todos los archivos reales de `public/`, incluyendo archivos ocultos necesarios para Apache como `.htaccess`.
+
+### Ajuste aplicado
+
+- reemplazo de la copia simple `cp -r public/* public_html/` por `rsync -av --delete public/ public_html/`
+- limpieza completa previa de `public_html` antes de reconstruirla
+- conservacion del flujo de sincronizacion de `storage/app/public` hacia `public_html/storage`
+
+### Archivo clave
+
+- `deploy.sh`
+
+### Consideraciones
+
+- este ajuste evita que el sitio quede sin reglas de reescritura por no copiar `.htaccess`
+- el siguiente deploy en Hostinger debe reconstruir correctamente la carpeta publica
+
 ## Ajuste reciente de home y tienda separadas
 
 Se dividio la experiencia publica para que la portada principal ya no mezcle branding con catalogo y la tienda tenga ahora su propia vista dedicada.

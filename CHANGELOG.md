@@ -20,6 +20,7 @@
 - added public article comments for guests and registered users, plus admin-side comment deletion and editorial shortcuts in the dashboard
 - added social media settings for Facebook, Instagram, and TikTok embeds plus a new homepage community section with follow buttons
 - added a Hostinger-ready `deploy.sh` that syncs `storage/app/public` into `public_html/storage` without symlinks
+- fixed the Hostinger deploy script to sync the full `public/` directory into `public_html/`, including hidden Apache files such as `.htaccess`
 - restored the main public navigation on mobile with a dedicated small-screen menu in the header
 - improved social embed containers so Facebook, Instagram, and TikTok content uses more of the available viewport and behaves better on mobile
 - split the public homepage from the storefront so `/` focuses on brand/community while `/tienda` keeps catalog search, filters, and products
