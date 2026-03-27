@@ -594,6 +594,74 @@ Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para 
 - el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
 - si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador
 
+## Ajuste reciente de movimientos de inventario
+
+Se agrego una capa de trazabilidad completa para inventario, pensada para convivir con el POS local, el panel administrativo y las ventas del ecommerce sin perder auditoria historica.
+
+### Ajuste aplicado
+
+- nueva tabla `inventory_movements` con `uuid`, referencias opcionales a venta, dispositivo y usuario, y `sync_version`
+- cada venta completada ahora genera movimientos automaticos por producto dentro del flujo de `SaleService`
+- nuevo endpoint `POST /api/inventory-movements` para ajustes manuales auditados
+- nuevo endpoint `GET /api/inventory-movements` con filtros por producto, fechas, tipo, fuente y dispositivo
+- nuevo endpoint `POST /api/sync/upload-inventory-movements` con idempotencia por `uuid`
+- el endpoint de correccion de stock `PATCH /api/products/{product}/stock` ahora crea un movimiento auditado en lugar de cambiar stock sin rastro
+- se agregan logs en `sync_logs` para uploads de movimientos desde POS
+
+### Archivos clave
+
+- `database/migrations/2026_03_27_162000_create_inventory_movements_table.php`
+- `app/Models/InventoryMovement.php`
+- `app/Services/InventoryMovementService.php`
+- `app/Services/SaleService.php`
+- `app/Http/Controllers/Api/InventoryMovementController.php`
+- `app/Http/Controllers/Api/SyncInventoryMovementController.php`
+- `app/Http/Resources/InventoryMovementResource.php`
+- `app/Http/Requests/Inventory/StoreInventoryMovementRequest.php`
+- `app/Http/Requests/Inventory/InventoryMovementIndexRequest.php`
+- `app/Http/Requests/Sync/UploadInventoryMovementsRequest.php`
+- `tests/Feature/InventoryMovementTest.php`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para crear `inventory_movements`
+- las ventas existentes no generan movimientos retroactivos; el comportamiento aplica a partir de esta version
+- los tests del modulo quedaron agregados, pero en este entorno no fue posible ejecutarlos porque `php artisan test` no esta disponible y el binario de PHPUnit no viene expuesto en `vendor/bin`
+
+## Ajuste reciente de movimientos de inventario
+
+Se agrego una capa de trazabilidad completa para inventario, pensada para convivir con el POS local, el panel administrativo y las ventas del ecommerce sin perder auditoria historica.
+
+### Ajuste aplicado
+
+- nueva tabla `inventory_movements` con `uuid`, referencias opcionales a venta, dispositivo y usuario, y `sync_version`
+- cada venta completada ahora genera movimientos automaticos por producto dentro del flujo de `SaleService`
+- nuevo endpoint `POST /api/inventory-movements` para ajustes manuales auditados
+- nuevo endpoint `GET /api/inventory-movements` con filtros por producto, fechas, tipo, fuente y dispositivo
+- nuevo endpoint `POST /api/sync/upload-inventory-movements` con idempotencia por `uuid`
+- el endpoint de correccion de stock `PATCH /api/products/{product}/stock` ahora crea un movimiento auditado en lugar de cambiar stock sin rastro
+- se agregan logs en `sync_logs` para uploads de movimientos desde POS
+
+### Archivos clave
+
+- `database/migrations/2026_03_27_162000_create_inventory_movements_table.php`
+- `app/Models/InventoryMovement.php`
+- `app/Services/InventoryMovementService.php`
+- `app/Services/SaleService.php`
+- `app/Http/Controllers/Api/InventoryMovementController.php`
+- `app/Http/Controllers/Api/SyncInventoryMovementController.php`
+- `app/Http/Resources/InventoryMovementResource.php`
+- `app/Http/Requests/Inventory/StoreInventoryMovementRequest.php`
+- `app/Http/Requests/Inventory/InventoryMovementIndexRequest.php`
+- `app/Http/Requests/Sync/UploadInventoryMovementsRequest.php`
+- `tests/Feature/InventoryMovementTest.php`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para crear `inventory_movements`
+- las ventas existentes no generan movimientos retroactivos; el comportamiento aplica a partir de esta version
+- los tests del modulo quedaron agregados, pero en este entorno no fue posible ejecutarlos porque `php artisan test` no esta disponible y el binario de PHPUnit no viene expuesto en `vendor/bin`
+
 ## Ajuste reciente de sincronizacion batch de catalogo
 
 Se agrego un endpoint batch para que el POS pueda descargar el catalogo necesario en una sola llamada, con soporte para sincronizacion incremental y una respuesta compacta por entidad.

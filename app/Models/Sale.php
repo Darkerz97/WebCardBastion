@@ -80,6 +80,11 @@ class Sale extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function inventoryMovements(): HasMany
+    {
+        return $this->hasMany(InventoryMovement::class)->latest('occurred_at')->latest('id');
+    }
+
     public function scopeFilter(Builder $query, array $filters): Builder
     {
         return $query

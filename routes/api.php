@@ -4,9 +4,11 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\DeviceController;
+use App\Http\Controllers\Api\InventoryMovementController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\SyncController;
+use App\Http\Controllers\Api\SyncInventoryMovementController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function (): void {
@@ -47,6 +49,8 @@ Route::middleware(['auth:sanctum', 'api.role:admin,manager,cashier'])->group(fun
     Route::post('sales', [SaleController::class, 'store'])->name('api.sales.store')->middleware('api.ability:sales:write');
     Route::get('sales/{sale}', [SaleController::class, 'show'])->name('api.sales.show')->middleware('api.ability:sales:read');
     Route::post('sales/{sale}/payments', [SaleController::class, 'addPayment'])->middleware('api.ability:payments:write');
+    Route::get('inventory-movements', [InventoryMovementController::class, 'index'])->middleware('api.ability:inventory:read');
+    Route::post('inventory-movements', [InventoryMovementController::class, 'store'])->middleware('api.ability:inventory:write');
 
     Route::prefix('sync')->group(function (): void {
         Route::post('/heartbeat', [SyncController::class, 'heartbeat'])->middleware('api.ability:sync:heartbeat');
@@ -54,5 +58,6 @@ Route::middleware(['auth:sanctum', 'api.role:admin,manager,cashier'])->group(fun
         Route::get('/products', [SyncController::class, 'products'])->middleware('api.ability:sync:read');
         Route::get('/customers', [SyncController::class, 'customers'])->middleware('api.ability:sync:read');
         Route::post('/upload-sales', [SyncController::class, 'uploadSales'])->middleware('api.ability:sync:upload-sales');
+        Route::post('/upload-inventory-movements', [SyncInventoryMovementController::class, 'upload'])->middleware('api.ability:sync:upload-inventory-movements');
     });
 });

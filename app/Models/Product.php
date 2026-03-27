@@ -62,6 +62,11 @@ class Product extends Model
         return $this->hasMany(SaleItem::class);
     }
 
+    public function inventoryMovements(): HasMany
+    {
+        return $this->hasMany(InventoryMovement::class)->latest('occurred_at')->latest('id');
+    }
+
     public function scopeSearch(Builder $query, ?string $term): Builder
     {
         if (! $term) {

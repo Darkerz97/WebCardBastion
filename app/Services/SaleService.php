@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\SaleItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,10 @@ use InvalidArgumentException;
 
 class SaleService
 {
+    public function __construct(private readonly InventoryMovementService $inventoryMovementService)
+    {
+    }
+
     public function create(array $payload): Sale
     {
         return DB::transaction(function () use ($payload): Sale {
@@ -52,12 +57,14 @@ class SaleService
                 $quantity = (int) $item['quantity'];
                 $unitPrice = (float) ($item['unit_price'] ?? $product->price);
                 $lineTotal = $quantity * $unitPrice;
+                $stockBefore = (int) $product->stock;
 
                 if ($status === Sale::STATUS_COMPLETED && $product->stock < $quantity) {
                     throw new InvalidArgumentException("Stock insuficiente para {$product->name}.");
                 }
 
-                $sale->items()->create([
+                /** @var SaleItem $saleItem */
+                $saleItem = $sale->items()->create([
                     'product_id' => $product->id,
                     'quantity' => $quantity,
                     'unit_price' => $unitPrice,
@@ -66,6 +73,20 @@ class SaleService
 
                 if ($status === Sale::STATUS_COMPLETED) {
                     $product->decrement('stock', $quantity);
+                    $product->refresh();
+
+                    $this->inventoryMovementService->recordSaleItemMovement(
+                        $sale,
+                        $product,
+                        $saleItem,
+                        $stockBefore,
+                        (int) $product->stock,
+                        [
+                            'source' => Sale::CHANNEL_POS === $sale->order_channel
+                                ? \App\Models\InventoryMovement::SOURCE_SERVER
+                                : \App\Models\InventoryMovement::SOURCE_SYSTEM,
+                        ],
+                    );
                 }
 
                 $subtotal += $lineTotal;

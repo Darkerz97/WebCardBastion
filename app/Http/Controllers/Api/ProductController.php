@@ -7,8 +7,10 @@ use App\Http\Requests\Product\ProductRequest;
 use App\Http\Requests\Product\UpdateStockRequest;
 use App\Http\Requests\Sync\SyncIndexRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\InventoryMovement;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\InventoryMovementService;
 use App\Services\Sync\SyncQueryService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -19,8 +21,10 @@ class ProductController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private readonly SyncQueryService $syncQueryService)
-    {
+    public function __construct(
+        private readonly SyncQueryService $syncQueryService,
+        private readonly InventoryMovementService $inventoryMovementService,
+    ) {
     }
 
     public function index(SyncIndexRequest $request): JsonResponse
@@ -65,7 +69,16 @@ class ProductController extends Controller
 
     public function updateStock(UpdateStockRequest $request, Product $product): JsonResponse
     {
-        $product->update(['stock' => $request->integer('stock')]);
+        $this->inventoryMovementService->createManualAdjustment([
+            'product_id' => $product->id,
+            'user_id' => $request->user()?->id,
+            'movement_type' => InventoryMovement::TYPE_SYNC_CORRECTION,
+            'direction' => InventoryMovement::DIRECTION_ADJUSTMENT,
+            'quantity' => $request->integer('stock'),
+            'source' => InventoryMovement::SOURCE_SERVER,
+            'reference' => 'api.products.updateStock',
+            'notes' => 'Correccion de stock registrada desde el endpoint de stock.',
+        ]);
 
         return $this->successResponse(new ProductResource($product->refresh()), 'Stock actualizado correctamente.');
     }
