@@ -9,6 +9,7 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     --color-ink: #211818;
+    --color-ink-soft: #6d6258;
     --color-brand-50: #f7ede2;
     --color-brand-100: #f2dfcf;
     --color-brand-200: #e9c5aa;
@@ -19,6 +20,10 @@
     --color-brand-700: #5f280b;
     --color-night: #1f1411;
     --color-gold: #d9a441;
+    --color-sand: #f6f0e8;
+    --color-surface: #fffdf9;
+    --color-line: #e7d9ca;
+    --color-warm-accent: #eed8bf;
 }
 
 @layer base {
@@ -27,7 +32,7 @@
     }
 
     body {
-        @apply bg-stone-100 text-[color:var(--color-ink)] antialiased;
+        @apply bg-[color:var(--color-sand)] text-[color:var(--color-ink)] antialiased;
     }
 
     [x-cloak] {
@@ -41,15 +46,15 @@
 
 @layer components {
     .btn {
-        @apply inline-flex items-center justify-center rounded-xl border border-transparent px-4 py-2.5 text-sm font-semibold transition;
+        @apply inline-flex items-center justify-center rounded-2xl border border-transparent px-5 py-3 text-sm font-semibold transition duration-200;
     }
 
     .btn-primary {
-        @apply bg-[color:var(--color-brand-500)] text-white hover:bg-[color:var(--color-brand-600)];
+        @apply bg-[color:var(--color-brand-500)] text-white shadow-[0_12px_24px_rgba(145,71,26,0.18)] hover:-translate-y-0.5 hover:bg-[color:var(--color-brand-600)] hover:shadow-[0_16px_30px_rgba(145,71,26,0.24)];
     }
 
     .btn-secondary {
-        @apply border-stone-300 bg-white text-stone-700 hover:border-stone-400 hover:bg-stone-50;
+        @apply border-[color:var(--color-line)] bg-[color:var(--color-surface)] text-stone-700 shadow-[0_8px_20px_rgba(36,24,18,0.05)] hover:-translate-y-0.5 hover:border-[color:var(--color-brand-200)] hover:bg-white;
     }
 
     .btn-danger {
@@ -57,29 +62,33 @@
     }
 
     .panel {
-        @apply rounded-3xl border border-stone-200 bg-white/95 p-5 shadow-[0_14px_40px_rgba(36,24,18,0.08)];
+        @apply rounded-[28px] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-6 shadow-[0_18px_48px_rgba(36,24,18,0.08)];
+    }
+
+    .panel-muted {
+        @apply rounded-[28px] border border-[color:var(--color-line)] bg-[linear-gradient(180deg,rgba(255,253,249,0.98),rgba(246,240,232,0.9))] p-6 shadow-[0_16px_38px_rgba(36,24,18,0.06)];
     }
 
     .field {
-        @apply space-y-2;
+        @apply space-y-2.5;
     }
 
     .field label {
-        @apply text-sm font-medium text-stone-600;
+        @apply text-sm font-semibold text-stone-700;
     }
 
     .field input,
     .field select,
     .field textarea {
-        @apply w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[color:var(--color-brand-400)] focus:ring-4 focus:ring-[color:var(--color-brand-100)];
+        @apply w-full rounded-2xl border border-[color:var(--color-line)] bg-white px-4 py-3.5 text-sm text-stone-900 outline-none transition duration-200 placeholder:text-stone-400 focus:border-[color:var(--color-brand-400)] focus:ring-4 focus:ring-[color:var(--color-brand-100)];
     }
 
     .badge {
-        @apply inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-amber-800;
+        @apply inline-flex items-center rounded-full border border-[color:var(--color-brand-200)] bg-[color:var(--color-brand-50)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-brand-600)];
     }
 
     .metric-card {
-        @apply rounded-3xl border border-stone-200 bg-white p-5 shadow-[0_12px_34px_rgba(36,24,18,0.06)];
+        @apply rounded-[28px] border border-[color:var(--color-line)] bg-white p-5 shadow-[0_12px_34px_rgba(36,24,18,0.06)];
     }
 
     .actions {
@@ -107,7 +116,7 @@
     }
 
     .table-shell {
-        @apply overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-[0_12px_34px_rgba(36,24,18,0.06)];
+        @apply overflow-hidden rounded-[28px] border border-[color:var(--color-line)] bg-white shadow-[0_12px_34px_rgba(36,24,18,0.06)];
     }
 
     .data-table {
@@ -129,8 +138,29 @@
 
     .hero-glow {
         background:
-            radial-gradient(circle at top left, rgba(217, 164, 65, 0.25), transparent 30%),
-            radial-gradient(circle at top right, rgba(145, 71, 26, 0.18), transparent 35%),
-            linear-gradient(135deg, #fff7ee 0%, #f6efe6 48%, #efe1d0 100%);
+            radial-gradient(circle at top left, rgba(217, 164, 65, 0.18), transparent 28%),
+            radial-gradient(circle at top right, rgba(145, 71, 26, 0.14), transparent 32%),
+            linear-gradient(180deg, #fbf6ef 0%, #f6f0e8 52%, #f2e6d6 100%);
+    }
+
+    .section-kicker {
+        @apply text-xs font-semibold uppercase tracking-[0.32em] text-[color:var(--color-brand-500)];
+    }
+
+    .section-title {
+        @apply text-3xl font-black uppercase leading-none tracking-[0.05em] text-stone-900 sm:text-4xl;
+    }
+
+    .surface-outline {
+        @apply border border-[color:var(--color-line)] bg-white/70 backdrop-blur;
+    }
+
+    .catalog-card {
+        @apply rounded-[28px] border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4 shadow-[0_16px_40px_rgba(36,24,18,0.07)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_22px_48px_rgba(36,24,18,0.1)];
+    }
+
+    .eyebrow-dot::before {
+        content: '';
+        @apply mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--color-brand-400)] align-middle;
     }
 }

@@ -26,6 +26,7 @@ Plataforma Laravel 12 para `tienda virtual`, `portal de jugadores` y `panel admi
 - creacion de pedidos reutilizando `sales`
 - registro inicial de pagos en checkout
 - historial de compras en portal de jugador
+- rediseño premium de la home publica de la tienda con hero comercial, beneficios, filtros refinados y mejor jerarquia visual
 
 ### Siguientes fases pendientes
 
@@ -257,3 +258,30 @@ php artisan view:cache
 - Se agrego un acceso directo desde `login` hacia `registro` para que los jugadores nuevos puedan crear su cuenta mas facilmente.
 - La plantilla de autenticacion ahora muestra mensajes visibles de validacion y exito en `login` y `registro`.
 - Para los cambios de torneos y portal de jugador, es necesario ejecutar `php artisan migrate` para crear tablas como `tournament_registrations` y evitar errores SQL por tablas faltantes.
+
+## Rediseño reciente de storefront
+
+Se rehizo la vista principal del ecommerce para que Card Bastion se perciba como una tienda real, premium y especializada, manteniendo Blade, Tailwind y la logica funcional existente.
+
+### Mejoras visuales aplicadas
+
+- header publico mas elegante, con mejor separacion visual, carrito mas visible y CTA principal de registro
+- hero principal de dos columnas con copy comercial en español y mejor aprovechamiento del espacio
+- composicion de destacados para evitar vacios visuales en desktop
+- nueva seccion de beneficios enfocada en catalogo curado, comunidad y compra simple
+- bloque de catalogo con encabezado mas fuerte, metricas visuales y mejor jerarquia
+- sidebar de filtros refinado con inputs, focus states y CTA de limpiar filtros
+- tarjetas de producto con mejor presencia visual, precio mas protagonista y estados mas comerciales
+- empty state mas elegante para diferenciar entre catalogo sin coincidencias y catalogo en preparacion
+- sistema visual mas consistente en colores, bordes, radios, sombras y superficies reutilizables
+
+### Archivos tocados en el rediseño
+
+- `resources/views/store/index.blade.php`
+- `resources/views/layouts/public.blade.php`
+- `resources/css/app.css`
+
+### Validacion del cambio
+
+- `npm run build`
+- `php artisan view:cache`
