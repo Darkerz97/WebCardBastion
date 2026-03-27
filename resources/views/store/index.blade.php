@@ -29,20 +29,20 @@
                     </div>
 
                     <div class="mt-8 grid gap-3 sm:grid-cols-3">
-                        <div class="rounded-2xl border border-[color:var(--color-line)] bg-white/80 px-4 py-4">
-                            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">Seleccion</p>
-                            <p class="mt-2 text-2xl font-black text-stone-900">{{ $products->total() }}</p>
-                            <p class="mt-1 text-sm text-[color:var(--color-ink-soft)]">productos publicados</p>
+                        <div class="rounded-2xl border border-[rgba(255,171,18,0.28)] bg-[linear-gradient(180deg,rgba(70,45,10,0.95),rgba(43,29,8,0.94))] px-4 py-4 shadow-[0_16px_30px_rgba(0,0,0,0.2)]">
+                            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[rgba(255,214,153,0.72)]">Seleccion</p>
+                            <p class="mt-2 text-2xl font-black text-[color:var(--color-ink)]">{{ $products->total() }}</p>
+                            <p class="mt-1 text-sm text-[rgba(255,239,214,0.8)]">productos publicados</p>
                         </div>
-                        <div class="rounded-2xl border border-[color:var(--color-line)] bg-white/80 px-4 py-4">
-                            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">Categorias</p>
-                            <p class="mt-2 text-2xl font-black text-stone-900">{{ $categories->count() }}</p>
-                            <p class="mt-1 text-sm text-[color:var(--color-ink-soft)]">lineas activas en tienda</p>
+                        <div class="rounded-2xl border border-[rgba(99,179,237,0.2)] bg-[linear-gradient(180deg,rgba(18,39,63,0.96),rgba(14,27,44,0.94))] px-4 py-4 shadow-[0_16px_30px_rgba(0,0,0,0.2)]">
+                            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[rgba(173,216,255,0.72)]">Categorias</p>
+                            <p class="mt-2 text-2xl font-black text-[color:var(--color-ink)]">{{ $categories->count() }}</p>
+                            <p class="mt-1 text-sm text-[rgba(215,233,255,0.78)]">lineas activas en tienda</p>
                         </div>
-                        <div class="rounded-2xl border border-[color:var(--color-line)] bg-white/80 px-4 py-4">
-                            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">Envio</p>
-                            <p class="mt-2 text-2xl font-black text-stone-900">Simple</p>
-                            <p class="mt-1 text-sm text-[color:var(--color-ink-soft)]">compra clara y rapida</p>
+                        <div class="rounded-2xl border border-[rgba(196,156,90,0.2)] bg-[linear-gradient(180deg,rgba(46,36,28,0.96),rgba(31,26,22,0.94))] px-4 py-4 shadow-[0_16px_30px_rgba(0,0,0,0.2)]">
+                            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[rgba(232,205,160,0.72)]">Envio</p>
+                            <p class="mt-2 text-2xl font-black text-[color:var(--color-ink)]">Simple</p>
+                            <p class="mt-1 text-sm text-[rgba(235,223,205,0.78)]">compra clara y rapida</p>
                         </div>
                     </div>
                 </div>

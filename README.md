@@ -434,3 +434,31 @@ Se agrego una seccion administrativa para editar contenido visible del sitio sin
 
 - es necesario ejecutar `php artisan migrate` para crear la tabla `site_settings`
 - los cambios se reflejan en la tienda publica y en el branding base del sitio
+
+## Ajuste reciente de contraste en metricas del hero
+
+Se mejoro la legibilidad de las tarjetas de resumen dentro del hero principal de la tienda para que se distingan mejor del fondo oscuro y entre si.
+
+### Ajuste aplicado
+
+- tarjeta de seleccion con tono ambar oscuro
+- tarjeta de categorias con tono azul petroleo
+- tarjeta de envio con tono carbon calido
+
+### Archivo clave
+
+- `resources/views/store/index.blade.php`
+
+## Ajuste reciente de contraste en metricas del hero
+
+Se mejoro la legibilidad de las tarjetas de resumen dentro del hero principal de la tienda para que se distingan mejor del fondo oscuro y entre si.
+
+### Ajuste aplicado
+
+- tarjeta de seleccion con tono ambar oscuro
+- tarjeta de categorias con tono azul petroleo
+- tarjeta de envio con tono carbon calido
+
+### Archivo clave
+
+- `resources/views/store/index.blade.php`

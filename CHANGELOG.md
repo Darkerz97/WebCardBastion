@@ -13,6 +13,7 @@
 - removed demo account hints and visible test credentials from the login page to make the auth flow production-ready
 - expanded the player tournament portal with attendance history, current win streak, W/L rate, and tournament performance summaries
 - added an admin-only content customization area for site branding, hero copy, catalog messaging, and public-facing benefit sections
+- improved contrast and color separation for the three hero metric cards on the public storefront
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
