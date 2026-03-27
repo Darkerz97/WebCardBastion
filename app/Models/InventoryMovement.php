@@ -42,6 +42,8 @@ class InventoryMovement extends Model
         'notes',
         'source',
         'occurred_at',
+        'client_generated_at',
+        'received_at',
         'sync_version',
     ];
 
@@ -53,6 +55,8 @@ class InventoryMovement extends Model
             'stock_after' => 'int',
             'unit_cost' => 'decimal:2',
             'occurred_at' => 'datetime',
+            'client_generated_at' => 'datetime',
+            'received_at' => 'datetime',
             'sync_version' => 'int',
         ];
     }

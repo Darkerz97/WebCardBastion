@@ -61,6 +61,8 @@ class UploadInventoryMovementsRequest extends FormRequest
                 InventoryMovement::SOURCE_SYSTEM,
             ])],
             'movements.*.occurred_at' => ['nullable', 'date'],
+            'movements.*.client_generated_at' => ['nullable', 'date'],
+            'movements.*.received_at' => ['nullable', 'date'],
         ];
     }
 }

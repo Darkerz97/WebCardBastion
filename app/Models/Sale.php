@@ -41,6 +41,8 @@ class Sale extends Model
         'status',
         'payment_status',
         'sold_at',
+        'client_generated_at',
+        'received_at',
         'sync_version',
     ];
 
@@ -51,6 +53,8 @@ class Sale extends Model
             'discount' => 'decimal:2',
             'total' => 'decimal:2',
             'sold_at' => 'datetime',
+            'client_generated_at' => 'datetime',
+            'received_at' => 'datetime',
             'sync_version' => 'int',
         ];
     }

@@ -26,6 +26,8 @@ class InventoryMovementResource extends JsonResource
             'notes' => $this->notes,
             'source' => $this->source,
             'occurred_at' => $this->occurred_at?->toIso8601String(),
+            'client_generated_at' => $this->client_generated_at?->toIso8601String(),
+            'received_at' => $this->received_at?->toIso8601String(),
             'sync_version' => $this->sync_version,
             'product' => new ProductResource($this->whenLoaded('product')),
             'sale' => new SaleResource($this->whenLoaded('sale')),

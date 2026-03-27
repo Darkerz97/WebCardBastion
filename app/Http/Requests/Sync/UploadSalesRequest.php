@@ -59,6 +59,8 @@ class UploadSalesRequest extends FormRequest
                 Sale::STATUS_CANCELLED,
             ])],
             'sales.*.sold_at' => ['nullable', 'date'],
+            'sales.*.client_generated_at' => ['nullable', 'date'],
+            'sales.*.received_at' => ['nullable', 'date'],
             'sales.*.items' => ['required', 'array', 'min:1'],
             'sales.*.items.*.product_id' => ['nullable', 'exists:products,id', 'required_without_all:sales.*.items.*.product_uuid,sales.*.items.*.product_sku,sales.*.items.*.product_barcode'],
             'sales.*.items.*.product_uuid' => ['nullable', 'uuid', 'required_without_all:sales.*.items.*.product_id,sales.*.items.*.product_sku,sales.*.items.*.product_barcode'],

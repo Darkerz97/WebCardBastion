@@ -24,6 +24,8 @@ class SaleResource extends JsonResource
             'payment_status' => $this->payment_status,
             'sync_version' => $this->sync_version,
             'sold_at' => $this->sold_at?->toIso8601String(),
+            'client_generated_at' => $this->client_generated_at?->toIso8601String(),
+            'received_at' => $this->received_at?->toIso8601String(),
             'customer' => new CustomerResource($this->whenLoaded('customer')),
             'user' => new UserResource($this->whenLoaded('user')),
             'device' => new DeviceResource($this->whenLoaded('device')),

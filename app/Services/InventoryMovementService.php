@@ -9,7 +9,10 @@ use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Services\Sync\SyncBatchResultService;
+use App\Services\Sync\SyncConflictResolver;
+use App\Support\SyncConflictException;
+use App\Support\SyncReferenceException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +21,11 @@ use InvalidArgumentException;
 
 class InventoryMovementService
 {
-    public function __construct(private readonly SyncLogService $syncLogService)
-    {
+    public function __construct(
+        private readonly SyncLogService $syncLogService,
+        private readonly SyncBatchResultService $syncBatchResultService,
+        private readonly SyncConflictResolver $syncConflictResolver,
+    ) {
     }
 
     public function createManualAdjustment(array $payload): InventoryMovement
@@ -48,6 +54,8 @@ class InventoryMovementService
                 'notes' => Arr::get($payload, 'notes'),
                 'source' => Arr::get($payload, 'source', InventoryMovement::SOURCE_SERVER),
                 'occurred_at' => Carbon::parse(Arr::get($payload, 'occurred_at', now())),
+                'client_generated_at' => Arr::get($payload, 'client_generated_at'),
+                'received_at' => Arr::get($payload, 'received_at'),
             ])->load(['product', 'sale', 'device', 'user.role']);
         });
     }
@@ -70,6 +78,8 @@ class InventoryMovementService
             'notes' => Arr::get($context, 'notes', 'Movimiento generado automaticamente por venta completada.'),
             'source' => Arr::get($context, 'source', InventoryMovement::SOURCE_SERVER),
             'occurred_at' => Carbon::parse($sale->sold_at ?? now()),
+            'client_generated_at' => $sale->client_generated_at,
+            'received_at' => $sale->received_at,
         ]);
     }
 
@@ -78,36 +88,45 @@ class InventoryMovementService
         $results = [];
 
         foreach ($movements as $payload) {
-            $existingMovement = InventoryMovement::query()->where('uuid', $payload['uuid'])->first();
-
-            if ($existingMovement) {
-                $results[] = [
-                    'uuid' => $existingMovement->uuid,
-                    'status' => 'skipped',
-                    'message' => 'El movimiento ya habia sido sincronizado.',
-                    'movement' => (new InventoryMovementResource($existingMovement->loadMissing(['product', 'sale', 'device', 'user.role'])))->resolve(),
-                ];
-
-                $this->syncLogService->log($device, 'inventory_movement', $existingMovement->uuid, 'upload', 'skipped', $payload, 'Movimiento duplicado omitido.', now());
-
-                continue;
-            }
-
             try {
+                $existingMovement = InventoryMovement::query()->where('uuid', $payload['uuid'])->first();
+
+                if ($existingMovement) {
+                    $results[] = $this->syncBatchResultService->skipped(
+                        $existingMovement->uuid,
+                        'El movimiento ya habia sido sincronizado.',
+                        (new InventoryMovementResource($existingMovement->loadMissing(['product', 'sale', 'device', 'user.role'])))->resolve(),
+                    );
+
+                    $this->syncLogService->log($device, 'inventory_movement', $existingMovement->uuid, 'upload', 'skipped', $payload, 'Movimiento duplicado omitido.', now());
+
+                    continue;
+                }
+
+                $this->syncConflictResolver->ensureInventoryMovementCanBeUploaded($payload);
+
+                if (! $device) {
+                    throw new SyncReferenceException(
+                        'El dispositivo emisor no existe o esta inactivo en el servidor.',
+                        ['device_code' => ['No existe un dispositivo activo con el codigo enviado.']],
+                        'missing_device',
+                    );
+                }
+
                 $resolvedPayload = [
                     ...$this->resolveUploadPayload($payload),
-                    'device_id' => $device?->id ?? Arr::get($payload, 'device_id'),
+                    'device_id' => $device->id,
+                    'received_at' => $payload['received_at'] ?? now(),
                 ];
 
                 $existingSaleMovement = $this->findExistingSaleMovement($resolvedPayload);
 
                 if ($existingSaleMovement) {
-                    $results[] = [
-                        'uuid' => $payload['uuid'],
-                        'status' => 'skipped',
-                        'message' => 'El movimiento ya fue generado previamente por la venta asociada.',
-                        'movement' => (new InventoryMovementResource($existingSaleMovement->loadMissing(['product', 'sale', 'device', 'user.role'])))->resolve(),
-                    ];
+                    $results[] = $this->syncBatchResultService->skipped(
+                        $payload['uuid'],
+                        'El movimiento ya fue generado previamente por la venta asociada.',
+                        (new InventoryMovementResource($existingSaleMovement->loadMissing(['product', 'sale', 'device', 'user.role'])))->resolve(),
+                    );
 
                     $this->syncLogService->log($device, 'inventory_movement', $payload['uuid'], 'upload', 'skipped', $payload, 'Movimiento omitido por venta ya registrada.', now());
 
@@ -116,19 +135,34 @@ class InventoryMovementService
 
                 $movement = $this->createManualAdjustment($resolvedPayload);
 
-                $results[] = [
-                    'uuid' => $movement->uuid,
-                    'status' => 'created',
-                    'movement' => (new InventoryMovementResource($movement))->resolve(),
-                ];
+                $results[] = $this->syncBatchResultService->created(
+                    $movement->uuid,
+                    'Movimiento sincronizado correctamente.',
+                    (new InventoryMovementResource($movement))->resolve(),
+                );
 
                 $this->syncLogService->log($device, 'inventory_movement', $movement->uuid, 'upload', 'success', $payload, 'Movimiento sincronizado correctamente.', now());
+            } catch (SyncConflictException $exception) {
+                $existingMovement = InventoryMovement::query()->where('uuid', $payload['uuid'])->first();
+                $serverEntity = $existingMovement
+                    ? (new InventoryMovementResource($existingMovement->loadMissing(['product', 'sale', 'device', 'user.role'])))->resolve()
+                    : null;
+
+                $results[] = $this->syncBatchResultService->conflict(
+                    $payload['uuid'],
+                    $exception->getMessage(),
+                    $exception->errors(),
+                    $serverEntity,
+                    $exception->conflictCode(),
+                );
+
+                $this->syncLogService->log($device, 'inventory_movement', $payload['uuid'], 'upload', 'conflict', $payload, $exception->getMessage(), now());
             } catch (\Throwable $exception) {
-                $results[] = [
-                    'uuid' => $payload['uuid'],
-                    'status' => 'failed',
-                    'message' => $exception->getMessage(),
-                ];
+                $results[] = $this->syncBatchResultService->failed(
+                    $payload['uuid'],
+                    $exception->getMessage(),
+                    ['inventory_movement' => ['Ocurrio un error inesperado al procesar el movimiento.']],
+                );
 
                 $this->syncLogService->log($device, 'inventory_movement', $payload['uuid'], 'upload', 'failed', $payload, $exception->getMessage(), now());
             }
@@ -175,7 +209,11 @@ class InventoryMovementService
             }
         }
 
-        throw new ModelNotFoundException('No fue posible resolver el producto del movimiento.');
+        throw new SyncReferenceException(
+            'No fue posible resolver el producto del movimiento.',
+            ['product' => ['Debes enviar una referencia de producto valida.']],
+            'missing_product',
+        );
     }
 
     private function resolveSaleId(array $payload): ?int
@@ -190,6 +228,12 @@ class InventoryMovementService
             if ($saleId) {
                 return (int) $saleId;
             }
+
+            throw new SyncReferenceException(
+                'La venta indicada por UUID no existe en el servidor.',
+                ['sale_uuid' => ['No existe una venta con ese UUID.']],
+                'missing_sale',
+            );
         }
 
         return null;
@@ -207,6 +251,12 @@ class InventoryMovementService
             if ($userId) {
                 return (int) $userId;
             }
+
+            throw new SyncReferenceException(
+                'El usuario indicado por UUID no existe en el servidor.',
+                ['user_uuid' => ['No existe un usuario con ese UUID.']],
+                'missing_user',
+            );
         }
 
         return null;

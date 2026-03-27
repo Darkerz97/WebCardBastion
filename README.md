@@ -767,6 +767,47 @@ Se completo una base mas consistente para integrar el servidor con un POS local 
 - `GET /api/sync/products` y `GET /api/sync/customers` ahora aceptan filtros consistentes de sincronizacion
 - `POST /api/sync/upload-sales` sigue aceptando `product_id`, pero ahora tambien puede resolver productos por `product_uuid`, `product_sku` o `product_barcode`
 
+## Ajuste reciente de conflictos, bajas logicas e idempotencia avanzada
+
+Se endurecio la capa offline-first para que el POS pueda reintentar sincronizaciones sin duplicar datos, detectar bajas logicas y entender conflictos por item de forma clara.
+
+### Ajuste aplicado
+
+- `categories` ahora usa `soft deletes`, alineandose con `products` y `customers`
+- los recursos de sync para catalogo exponen `deleted_at`, `is_active`, `sync_version`, `client_generated_at` y `received_at` donde aplica
+- se centralizaron las reglas de conflicto en una capa dedicada para ventas y movimientos de inventario
+- los uploads batch ya regresan respuesta por item con `uuid`, `status`, `code`, `message`, `server_entity` y `errors`
+- los reintentos con el mismo `uuid` ahora regresan `skipped` de forma consistente
+- las referencias rotas a producto, cliente, usuario, venta o dispositivo se clasifican como conflicto sin tumbar el lote completo
+- las respuestas batch incluyen un resumen por estado para simplificar la logica del POS
+- la guia de integracion y reglas de autoridad/conflicto quedo documentada dentro del repo
+
+### Politicas de autoridad
+
+- catalogo: `server wins`
+- clientes descargados por sync: `server wins`
+- ventas subidas por POS: aceptadas si el `uuid` no existe en servidor
+- movimientos de inventario subidos por POS: aceptados si el `uuid` no existe en servidor
+
+### Archivos clave
+
+- `database/migrations/2026_03_27_163000_add_soft_deletes_to_categories_and_sync_receipts.php`
+- `app/Models/Concerns/HasSyncVersion.php`
+- `app/Services/Sync/SyncConflictResolver.php`
+- `app/Services/Sync/SyncBatchResultService.php`
+- `app/Services/Sync/SyncSaleUploadService.php`
+- `app/Services/InventoryMovementService.php`
+- `app/Support/SyncConflictException.php`
+- `app/Support/SyncReferenceException.php`
+- `docs/sync-conflict-rules.md`
+- `tests/Feature/SyncConflictTest.php`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para agregar `soft deletes` en `categories` y timestamps de sync en `sales` e `inventory_movements`
+- `php artisan test` no pudo ejecutarse en este entorno por restricciones del runner local y permisos sobre `storage/logs/laravel.log`
+- las reglas de conflicto para futuros cierres de caja quedaron preparadas en la capa de autoridad, pero aun no existe un endpoint real de `upload-cash-closures` en el proyecto
+
 ## Ajuste reciente de base de sincronizacion offline-first
 
 Se completo una base mas consistente para integrar el servidor con un POS local offline-first, manteniendo compatibilidad con los endpoints de sincronizacion ya existentes.

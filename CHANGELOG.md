@@ -29,6 +29,10 @@
 - added the first offline-first sync foundation with `sync_version`, uniform API envelopes, stable sync pagination/filtering, centralized sync services, and authority rules for catalog and uploaded POS sales
 - added `GET /api/sync/catalog` for one-call POS catalog downloads including products, categories, customers, optional settings, and global sync metadata
 - added inventory movement auditing with automatic sale-generated movements, manual adjustment APIs, POS sync upload by uuid, and stock corrections that now leave traceability
+- added advanced offline-first conflict handling with per-item batch statuses, classified conflict codes, and reusable sync conflict/batch result services
+- added soft deletes to synced categories plus consistent `deleted_at`, `client_generated_at`, and `received_at` fields for catalog, sales, and inventory movement reconciliation
+- improved POS idempotency so duplicate sale and inventory movement UUID uploads return `skipped` instead of creating duplicates, while broken references return classified `conflict` responses without aborting the whole batch
+- documented sync authority and conflict rules for POS integration in `docs/sync-conflict-rules.md`
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)

@@ -15,6 +15,7 @@ use App\Models\Customer;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use App\Services\Sync\SyncAuthorityService;
+use App\Services\Sync\SyncBatchResultService;
 use App\Services\Sync\SyncCatalogService;
 use App\Services\Sync\SyncHeartbeatService;
 use App\Services\Sync\SyncQueryService;
@@ -26,6 +27,7 @@ class SyncController extends Controller
 
     public function __construct(
         private readonly SyncAuthorityService $syncAuthorityService,
+        private readonly SyncBatchResultService $syncBatchResultService,
         private readonly SyncCatalogService $syncCatalogService,
         private readonly SyncHeartbeatService $syncHeartbeatService,
         private readonly SyncQueryService $syncQueryService,
@@ -79,7 +81,7 @@ class SyncController extends Controller
             CustomerResource::collection($result['records']),
             'Clientes listos para sincronizacion.',
             meta: [
-                ...$this->syncAuthorityService->forCatalog(),
+                ...$this->syncAuthorityService->forCustomers(),
                 ...$result['meta'],
             ],
         );
@@ -97,6 +99,10 @@ class SyncController extends Controller
         $device = $this->syncSaleUploadService->resolveDevice($request->validated('device_code'));
         $results = $this->syncSaleUploadService->upload($device, $request->validated('sales'));
 
-        return $this->successResponse($results, 'Proceso de sincronizacion completado.', meta: $this->syncAuthorityService->forSalesUpload());
+        return $this->successResponse($results, 'Proceso de sincronizacion completado.', meta: [
+            ...$this->syncAuthorityService->forSalesUpload(),
+            'summary' => $this->syncBatchResultService->summarize($results),
+            'server_time' => now()->toIso8601String(),
+        ]);
     }
 }

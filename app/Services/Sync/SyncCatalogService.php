@@ -38,6 +38,7 @@ class SyncCatalogService
 
         if (in_array('categories', $includes, true)) {
             $categories = Category::query()
+                ->withTrashed()
                 ->withCount('products')
                 ->when($updatedSince, fn ($query) => $query->where('updated_at', '>=', Carbon::parse((string) $updatedSince)))
                 ->orderBy('updated_at')

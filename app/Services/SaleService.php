@@ -48,6 +48,8 @@ class SaleService
                 'status' => $status,
                 'payment_status' => Sale::PAYMENT_STATUS_UNPAID,
                 'sold_at' => Carbon::parse($soldAt),
+                'client_generated_at' => Arr::get($payload, 'client_generated_at') ? Carbon::parse(Arr::get($payload, 'client_generated_at')) : null,
+                'received_at' => Arr::get($payload, 'received_at') ? Carbon::parse(Arr::get($payload, 'received_at')) : null,
             ]);
 
             $subtotal = 0.0;
