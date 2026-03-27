@@ -317,31 +317,16 @@ Se ajusto la identidad visual base del proyecto para acercarla a una referencia 
 
 - `npm run build`
 
-## Actualizacion reciente de paleta visual
+## Actualizacion reciente de branding en header
 
-Se ajusto la identidad visual base del proyecto para acercarla a una referencia de interfaz POS con tonos oscuros, dorados y alto contraste, sin cambiar la logica de negocio.
+Se integro la imagen de Card Bastion en el menu principal de la pagina publica para que el encabezado se acerque mas a la referencia visual del cliente.
 
-### Paleta aplicada
+### Ajustes aplicados
 
-- fondo principal en navy oscuro y charcoal
-- paneles y tarjetas con superficies oscuras reutilizables
-- acentos ambar/dorado para CTA, logo, estados activos y metricas
-- textos secundarios suavizados para mantener contraste sin perder legibilidad
+- logo usando `public/favicon.ico` dentro del bloque de marca principal
+- contenedor del branding con capsula oscura, borde suave y sombra para separarlo del header
+- mejor jerarquia visual entre icono, nombre `Card Bastion` y subtitulo comercial
 
-### Alcance del cambio
+### Archivo clave
 
-- panel administrativo
-- layout publico
-- pantallas de autenticacion
-- botones, inputs, tablas, tarjetas, badges y fondos globales
-
-### Archivos clave
-
-- `resources/css/app.css`
-- `resources/views/layouts/app.blade.php`
 - `resources/views/layouts/public.blade.php`
-- `resources/views/layouts/auth.blade.php`
-
-### Validacion aplicada
-
-- `npm run build`
