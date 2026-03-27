@@ -375,3 +375,49 @@ Se eliminaron del login las referencias visibles a cuentas demo y credenciales s
 ### Archivo clave
 
 - `resources/views/auth/login.blade.php`
+
+## Actualizacion reciente de vista de torneos del jugador
+
+Se expandio la seccion de torneos del portal del jugador para mostrar estadisticas reales de participacion y rendimiento con base en inscripciones y partidas confirmadas.
+
+### Datos visibles en la nueva vista
+
+- torneos asistidos
+- win streak actual
+- W/L rate
+- victorias, derrotas y empates acumulados
+- historial de torneos asistidos con record, puntos y OMW
+- torneos publicados disponibles para inscripcion
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/PlayerTournamentController.php`
+- `resources/views/account/tournaments.blade.php`
+
+### Validacion aplicada
+
+- `php -l app/Http/Controllers/Web/PlayerTournamentController.php`
+- `php artisan view:cache`
+
+## Actualizacion reciente de vista de torneos del jugador
+
+Se expandio la seccion de torneos del portal del jugador para mostrar estadisticas reales de participacion y rendimiento con base en inscripciones y partidas confirmadas.
+
+### Datos visibles en la nueva vista
+
+- torneos asistidos
+- win streak actual
+- W/L rate
+- victorias, derrotas y empates acumulados
+- historial de torneos asistidos con record, puntos y OMW
+- torneos publicados disponibles para inscripcion
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/PlayerTournamentController.php`
+- `resources/views/account/tournaments.blade.php`
+
+### Validacion aplicada
+
+- `php -l app/Http/Controllers/Web/PlayerTournamentController.php`
+- `php artisan view:cache`
