@@ -10,7 +10,12 @@ use Illuminate\View\View;
 
 class StorefrontController extends Controller
 {
-    public function index(Request $request): View
+    public function home(): View
+    {
+        return view('store.home');
+    }
+
+    public function catalog(Request $request): View
     {
         $selectedCategory = $request->string('category')->toString();
         $products = Product::query()

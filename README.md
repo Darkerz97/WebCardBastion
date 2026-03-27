@@ -594,6 +594,52 @@ Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para 
 - el resultado final sigue dependiendo del codigo embed que entregue cada plataforma
 - si una red inyecta scripts externos, puede requerir unos segundos para ajustar su alto real en el navegador
 
+## Ajuste reciente de home y tienda separadas
+
+Se dividio la experiencia publica para que la portada principal ya no mezcle branding con catalogo y la tienda tenga ahora su propia vista dedicada.
+
+### Ajuste aplicado
+
+- `/` ahora funciona como home institucional/comunidad
+- `/tienda` concentra catalogo, filtros, busqueda y productos
+- nueva vista publica exclusiva para la portada principal
+- el catalogo existente se mantiene sin perder funciones de carrito o detalle de producto
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/StorefrontController.php`
+- `routes/web.php`
+- `resources/views/store/home.blade.php`
+- `resources/views/store/index.blade.php`
+
+### Consideraciones
+
+- los enlaces principales siguen apuntando correctamente a `store.home` y `store.catalog`
+- no requiere migraciones nuevas
+
+## Ajuste reciente de home y tienda separadas
+
+Se dividio la experiencia publica para que la portada principal ya no mezcle branding con catalogo y la tienda tenga ahora su propia vista dedicada.
+
+### Ajuste aplicado
+
+- `/` ahora funciona como home institucional/comunidad
+- `/tienda` concentra catalogo, filtros, busqueda y productos
+- nueva vista publica exclusiva para la portada principal
+- el catalogo existente se mantiene sin perder funciones de carrito o detalle de producto
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/StorefrontController.php`
+- `routes/web.php`
+- `resources/views/store/home.blade.php`
+- `resources/views/store/index.blade.php`
+
+### Consideraciones
+
+- los enlaces principales siguen apuntando correctamente a `store.home` y `store.catalog`
+- no requiere migraciones nuevas
+
 ## Ajuste reciente de embeds sociales
 
 Se ajusto la ventana visible de los embeds de Facebook, Instagram y TikTok para que muestren mejor su contenido completo y se adapten mejor a movil.

@@ -22,9 +22,9 @@ use App\Http\Controllers\Web\PublicArticleController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [StorefrontController::class, 'index'])->name('store.home');
+Route::get('/', [StorefrontController::class, 'home'])->name('store.home');
 Route::get('/media/{path}', [PublicMediaController::class, 'show'])->where('path', '.*')->name('media.public');
-Route::get('/tienda', [StorefrontController::class, 'index'])->name('store.catalog');
+Route::get('/tienda', [StorefrontController::class, 'catalog'])->name('store.catalog');
 Route::get('/tienda/{product:slug}', [StorefrontController::class, 'show'])->name('store.products.show');
 Route::get('/articulos', [PublicArticleController::class, 'index'])->name('blog.index');
 Route::get('/articulos/{article:slug}', [PublicArticleController::class, 'show'])->name('blog.show');
