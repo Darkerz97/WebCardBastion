@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\AccountOrderController;
 use App\Http\Controllers\Web\AccountController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\CartController;
+use App\Http\Controllers\Web\CashClosureController;
 use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\CustomerController;
@@ -79,6 +80,12 @@ Route::middleware('auth')->group(function (): void {
         Route::get('preorders/{preorder}', [PreorderController::class, 'show'])->name('preorders.show');
         Route::post('preorders/{preorder}/payments', [PreorderController::class, 'addPayment'])->name('preorders.payments.store');
         Route::patch('preorders/{preorder}/status', [PreorderController::class, 'updateStatus'])->name('preorders.status.update');
+
+        Route::get('cash-closures', [CashClosureController::class, 'index'])->name('cash-closures.index');
+        Route::get('cash-closures/create', [CashClosureController::class, 'create'])->name('cash-closures.create');
+        Route::post('cash-closures', [CashClosureController::class, 'store'])->name('cash-closures.store');
+        Route::get('cash-closures/{cashClosure}', [CashClosureController::class, 'show'])->name('cash-closures.show');
+        Route::patch('cash-closures/{cashClosure}/status', [CashClosureController::class, 'updateStatus'])->name('cash-closures.status.update');
 
         Route::post('tournaments/{tournament}/rounds', [TournamentController::class, 'generateRound'])->name('tournaments.rounds.store')->middleware('role:'.User::ROLE_ADMIN.','.User::ROLE_MANAGER);
         Route::post('tournament-matches/{match}/report', [TournamentController::class, 'reportMatch'])->name('tournaments.matches.report')->middleware('role:'.User::ROLE_ADMIN.','.User::ROLE_MANAGER);

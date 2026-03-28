@@ -208,6 +208,45 @@ Se construyo la capa web/admin de preventas para que el equipo pueda crear reser
 - `php artisan view:cache`
 - `php artisan test`
 
+## Modulo reciente de cierres de caja en panel admin
+
+Se construyo la capa web/admin para consultar y registrar cierres de caja desde el panel, aprovechando la tabla `cash_closures` que ya existia por integracion POS.
+
+### Alcance del modulo
+
+- listado admin de cierres con filtros por dispositivo, usuario, estatus y rango de fechas
+- alta manual de cierres con montos de apertura, ventas por metodo, esperado, cierre y diferencia
+- vista detalle con dispositivo, usuario responsable, origen, timestamps de sync y notas
+- actualizacion de estatus de conciliacion (`open`, `closed`, `reconciled`)
+- acceso directo desde menu lateral y dashboard admin
+
+### Rutas web agregadas
+
+- `GET /cash-closures`
+- `GET /cash-closures/create`
+- `POST /cash-closures`
+- `GET /cash-closures/{cashClosure}`
+- `PATCH /cash-closures/{cashClosure}/status`
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/CashClosureController.php`
+- `app/Http/Requests/CashClosure/StoreCashClosureRequest.php`
+- `app/Http/Requests/CashClosure/UpdateCashClosureStatusRequest.php`
+- `routes/web.php`
+- `resources/views/cash-closures/index.blade.php`
+- `resources/views/cash-closures/create.blade.php`
+- `resources/views/cash-closures/show.blade.php`
+- `resources/views/layouts/app.blade.php`
+- `resources/views/dashboard/index.blade.php`
+- `app/Http/Controllers/Web/DashboardController.php`
+
+### Validacion aplicada
+
+- `php artisan route:list --name=cash-closures`
+- `php artisan view:cache`
+- `php artisan test`
+
 ## Credenciales demo
 
 Despues de sembrar la base:
