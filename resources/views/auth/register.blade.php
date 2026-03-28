@@ -5,7 +5,7 @@
     <h1 class="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-stone-900">Portal del jugador</h1>
     <p class="mt-3 text-sm leading-7 text-stone-600">Registra tu cuenta para comprar en la tienda y preparar tu historial competitivo.</p>
 
-    <form method="POST" action="{{ route('register.store') }}" class="mt-8 space-y-5">
+    <form method="POST" action="{{ route('register.store') }}" class="mt-8 space-y-5" data-auth-form="true">
         @csrf
         <div class="field">
             <label for="name">Nombre</label>

@@ -55,6 +55,9 @@
 - added customer-to-user linking in admin plus customer detail visibility for linked role and recent preorders
 - expanded manual sales capture and sales detail views with `order_channel`, contact fields, notes, and sync-related timestamps
 - verified the change set with `php artisan test` and `php artisan view:cache`
+- hardened the auth pages against intermittent dimmed-screen states by restoring stuck interaction styles on `DOMContentLoaded` and `pageshow`
+- changed login/register/recovery submits to disable only the submit button with a `Procesando...` state instead of leaving the whole screen visually blocked
+- rebuilt frontend assets with `npm run build` and re-cached Blade views with `php artisan view:cache`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
 

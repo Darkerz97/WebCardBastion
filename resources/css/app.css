@@ -81,6 +81,13 @@
         @apply bg-[color:var(--color-brand-500)] text-[color:var(--color-night)] shadow-[0_12px_28px_rgba(255,171,18,0.24)] hover:-translate-y-0.5 hover:bg-[color:var(--color-brand-600)] hover:shadow-[0_16px_36px_rgba(255,171,18,0.3)];
     }
 
+    .btn.is-submitting,
+    .btn:disabled {
+        @apply cursor-wait opacity-100;
+        transform: none !important;
+        filter: none !important;
+    }
+
     .btn-secondary {
         @apply border-[color:var(--color-line)] bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)] shadow-[0_8px_22px_rgba(0,0,0,0.22)] hover:-translate-y-0.5 hover:border-[color:var(--color-brand-300)] hover:bg-[color:var(--color-navy-soft)];
     }

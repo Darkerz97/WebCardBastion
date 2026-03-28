@@ -5,7 +5,7 @@
     <h1 class="mt-3 text-3xl font-black uppercase tracking-[0.06em] text-stone-900">Recuperar contrasena</h1>
     <p class="mt-3 text-sm leading-7 text-stone-600">Escribe el correo de tu cuenta y te enviaremos un enlace para restablecer el acceso.</p>
 
-    <form method="POST" action="{{ route('password.email') }}" class="mt-8 space-y-5">
+    <form method="POST" action="{{ route('password.email') }}" class="mt-8 space-y-5" data-auth-form="true">
         @csrf
         <div class="field">
             <label for="email">Correo</label>

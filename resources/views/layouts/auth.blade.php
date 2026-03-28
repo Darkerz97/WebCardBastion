@@ -6,7 +6,7 @@
     <title>{{ $title ?? 'Acceso | '.($siteSettings?->site_name ?? 'Card Bastion') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="hero-glow min-h-screen">
+<body class="hero-glow min-h-screen" data-auth-page="true">
     <main class="mx-auto grid min-h-screen max-w-7xl items-center px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
         <section class="hidden pr-12 lg:block">
             <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[color:var(--color-brand-500)]">{{ $siteSettings?->site_name ?? 'Card Bastion' }} Platform</p>

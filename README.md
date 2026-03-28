@@ -141,6 +141,32 @@ Se alineo el panel administrativo con campos y relaciones que ya existian en la 
 - `php artisan test`
 - `php artisan view:cache`
 
+## Ajuste reciente de estabilidad visual en autenticacion
+
+Se reforzo la experiencia visual de login, registro y recuperacion para evitar que la pantalla quede atenuada u oscurecida de forma intermitente al enviar formularios o regresar desde el historial del navegador.
+
+### Ajuste aplicado
+
+- limpieza adicional de estados visuales globales en `pageshow` y `DOMContentLoaded`
+- restauracion forzada de `opacity`, `filter`, `pointer-events` y `overflow` cuando la pagina auth se reactiva
+- manejo mas seguro del submit en formularios de autenticacion para desactivar solo el boton mientras procesa
+- nuevo estado visual `Procesando...` sin oscurecer toda la vista
+
+### Archivos clave
+
+- `resources/js/app.js`
+- `resources/css/app.css`
+- `resources/views/layouts/auth.blade.php`
+- `resources/views/auth/login.blade.php`
+- `resources/views/auth/register.blade.php`
+- `resources/views/auth/forgot-password.blade.php`
+- `resources/views/auth/reset-password.blade.php`
+
+### Validacion aplicada
+
+- `npm run build`
+- `php artisan view:cache`
+
 ## Credenciales demo
 
 Despues de sembrar la base:
