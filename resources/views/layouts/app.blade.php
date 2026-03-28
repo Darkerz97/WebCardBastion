@@ -30,6 +30,7 @@
                 @endif
                 <a class="block rounded-2xl border px-4 py-3 transition {{ request()->routeIs('customers.*') ? 'border-[color:var(--color-brand-300)] bg-[color:var(--color-brand-500)] text-[color:var(--color-night)]' : 'border-transparent bg-white/5 text-stone-300 hover:border-[color:var(--color-line)] hover:bg-white/10 hover:text-white' }}" href="{{ route('customers.index') }}">Clientes</a>
                 <a class="block rounded-2xl border px-4 py-3 transition {{ request()->routeIs('sales.*') ? 'border-[color:var(--color-brand-300)] bg-[color:var(--color-brand-500)] text-[color:var(--color-night)]' : 'border-transparent bg-white/5 text-stone-300 hover:border-[color:var(--color-line)] hover:bg-white/10 hover:text-white' }}" href="{{ route('sales.index') }}">Ventas</a>
+                <a class="block rounded-2xl border px-4 py-3 transition {{ request()->routeIs('preorders.*') ? 'border-[color:var(--color-brand-300)] bg-[color:var(--color-brand-500)] text-[color:var(--color-night)]' : 'border-transparent bg-white/5 text-stone-300 hover:border-[color:var(--color-line)] hover:bg-white/10 hover:text-white' }}" href="{{ route('preorders.index') }}">Preventas</a>
                 <a class="block rounded-2xl border border-transparent bg-white/5 px-4 py-3 text-stone-300 transition hover:border-[color:var(--color-line)] hover:bg-white/10 hover:text-white" href="{{ route('store.home') }}">Ver tienda</a>
             </nav>
 

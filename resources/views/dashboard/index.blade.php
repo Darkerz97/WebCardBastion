@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'Dashboard', 'heading' => 'Dashboard', 'subheading' => 'Operacion central para tienda, jugadores y panel administrativo.'])
 
 @section('content')
-    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         <article class="metric-card">
             <p class="text-xs uppercase tracking-[0.24em] text-stone-500">Categorias</p>
             <p class="mt-3 text-3xl font-black text-stone-900">{{ $metrics['categories'] }}</p>
@@ -19,6 +19,10 @@
         <article class="metric-card">
             <p class="text-xs uppercase tracking-[0.24em] text-stone-500">Clientes</p>
             <p class="mt-3 text-3xl font-black text-stone-900">{{ $metrics['customers'] }}</p>
+        </article>
+        <article class="metric-card">
+            <p class="text-xs uppercase tracking-[0.24em] text-stone-500">Preventas</p>
+            <p class="mt-3 text-3xl font-black text-stone-900">{{ $metrics['preorders'] }}</p>
         </article>
     </section>
 
@@ -114,6 +118,18 @@
                             </p>
                         </div>
                         <a class="btn btn-primary" href="{{ route('site-settings.edit') }}#social-media">Configurar redes</a>
+                    </div>
+                </div>
+                <div class="panel xl:col-span-2">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <p class="section-kicker">Preventas</p>
+                            <h2 class="mt-2 text-2xl font-black uppercase tracking-[0.05em] text-stone-900">Reserva productos y registra abonos</h2>
+                            <p class="mt-3 max-w-3xl text-sm leading-7 text-stone-600">
+                                Crea preventas ligadas a clientes, consulta saldo pendiente, registra nuevos abonos y lleva seguimiento de entrega desde una sola pantalla.
+                            </p>
+                        </div>
+                        <a class="btn btn-primary" href="{{ route('preorders.index') }}">Gestionar preventas</a>
                     </div>
                 </div>
             </div>

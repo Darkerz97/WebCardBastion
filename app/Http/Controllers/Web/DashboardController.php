@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\Preorder;
 use App\Models\Product;
 use App\Models\Sale;
 use Illuminate\View\View;
@@ -21,6 +22,7 @@ class DashboardController extends Controller
                 'products' => Product::query()->count(),
                 'published_products' => Product::query()->published()->count(),
                 'customers' => Customer::query()->count(),
+                'preorders' => Preorder::query()->count(),
                 'sales' => Sale::query()->count(),
                 'sales_today' => (clone $todaySales)->count(),
                 'amount_today' => (float) (clone $todaySales)->sum('total'),

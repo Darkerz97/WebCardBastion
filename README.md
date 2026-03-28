@@ -167,6 +167,47 @@ Se reforzo la experiencia visual de login, registro y recuperacion para evitar q
 - `npm run build`
 - `php artisan view:cache`
 
+## Modulo reciente de preventas en panel admin
+
+Se construyo la capa web/admin de preventas para que el equipo pueda crear reservas, asignarlas a clientes y dar seguimiento de abonos sin depender solo de la API.
+
+### Alcance del modulo
+
+- listado admin de preventas con filtros por cliente, estatus y fechas
+- alta manual de preventas con cliente, productos y abono inicial opcional
+- vista detalle con cliente asociado, cuenta vinculada, items reservados, total, abonado y saldo pendiente
+- registro de nuevos abonos desde el detalle
+- actualizacion de estatus para seguimiento operativo (`pending`, `partially_paid`, `paid`, `delivered`, `cancelled`)
+- acceso directo desde menu lateral y dashboard admin
+
+### Rutas web agregadas
+
+- `GET /preorders`
+- `GET /preorders/create`
+- `POST /preorders`
+- `GET /preorders/{preorder}`
+- `POST /preorders/{preorder}/payments`
+- `PATCH /preorders/{preorder}/status`
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/PreorderController.php`
+- `app/Http/Requests/Preorder/UpdatePreorderStatusRequest.php`
+- `routes/web.php`
+- `resources/views/preorders/_form.blade.php`
+- `resources/views/preorders/create.blade.php`
+- `resources/views/preorders/index.blade.php`
+- `resources/views/preorders/show.blade.php`
+- `resources/views/layouts/app.blade.php`
+- `resources/views/dashboard/index.blade.php`
+- `app/Http/Controllers/Web/DashboardController.php`
+
+### Validacion aplicada
+
+- `php artisan route:list --name=preorders`
+- `php artisan view:cache`
+- `php artisan test`
+
 ## Credenciales demo
 
 Despues de sembrar la base:

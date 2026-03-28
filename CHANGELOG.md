@@ -58,6 +58,10 @@
 - hardened the auth pages against intermittent dimmed-screen states by restoring stuck interaction styles on `DOMContentLoaded` and `pageshow`
 - changed login/register/recovery submits to disable only the submit button with a `Procesando...` state instead of leaving the whole screen visually blocked
 - rebuilt frontend assets with `npm run build` and re-cached Blade views with `php artisan view:cache`
+- added the full web/admin preorder module with routes, controller, Blade screens, and dashboard/navigation entry points
+- added admin-side preorder creation with customer assignment, reserved items, optional initial payment, and detail tracking for balances and payment history
+- added follow-up actions to register new preorder payments and update preorder status from the admin detail screen
+- verified the preorder backoffice with `php artisan route:list --name=preorders`, `php artisan view:cache`, and `php artisan test`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
 
