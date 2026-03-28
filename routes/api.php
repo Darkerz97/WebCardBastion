@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\SyncCashClosureController;
 use App\Http\Controllers\Api\SyncController;
 use App\Http\Controllers\Api\SyncInventoryMovementController;
+use App\Http\Controllers\Api\SyncProductsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function (): void {
@@ -65,6 +66,7 @@ Route::middleware(['auth:sanctum', 'api.role:admin,manager,cashier'])->group(fun
         Route::get('/customers', [SyncController::class, 'customers'])->middleware('api.ability:sync:read');
         Route::get('/preorders', [SyncController::class, 'preorders'])->middleware('api.ability:sync:read');
         Route::post('/upload-sales', [SyncController::class, 'uploadSales'])->middleware('api.ability:sync:upload-sales');
+        Route::post('/upload-products', [SyncProductsController::class, 'upload'])->middleware('api.ability:sync:upload-products');
         Route::post('/upload-cash-closures', [SyncCashClosureController::class, 'upload'])->middleware('api.ability:sync:upload-cash-closures');
         Route::post('/upload-inventory-movements', [SyncInventoryMovementController::class, 'upload'])->middleware('api.ability:sync:upload-inventory-movements');
     });

@@ -2,7 +2,7 @@
 
 ## Proposito
 
-Este modulo expone la capa de sincronizacion entre el servidor `cardbastion-server` y un POS local offline-first. El servidor es la fuente maestra del catalogo y acepta cargas operativas del POS por lotes cuando los `uuid` no existen previamente.
+Este modulo expone la capa de sincronizacion entre el servidor `cardbastion-server` y un POS local offline-first. El servidor sigue siendo la fuente maestra del catalogo para descargas, pero ahora tambien acepta cargas bidireccionales de productos desde el POS por lote mediante referencias estables.
 
 ## Flujo general
 
@@ -10,8 +10,8 @@ Este modulo expone la capa de sincronizacion entre el servidor `cardbastion-serv
 2. Guarda el bearer token de Sanctum.
 3. Reporta presencia con `POST /api/sync/heartbeat`.
 4. Descarga catalogo con `GET /api/sync/catalog` o por recurso con `GET /api/sync/products` y `GET /api/sync/customers`.
-5. Sube ventas, cierres y movimientos en lotes con sus `uuid` propios.
-6. Interpreta `created`, `skipped`, `conflict` y `failed` por item.
+5. Sube productos, ventas, cierres y movimientos en lotes.
+6. Interpreta la respuesta por item segun el dominio sincronizado.
 
 ## Auth
 
@@ -80,6 +80,103 @@ Si no se manda `include`, devuelve `products`, `categories` y `customers`.
           "unit_price": 120
         }
       ]
+    }
+  ]
+}
+```
+
+### `POST /api/sync/upload-products`
+
+Este endpoint trata al POS como emisor maestro de altas y cambios de producto. Cada item se procesa de forma independiente y responde con `local_id`, `remote_id` y una copia resumida del producto persistido en servidor.
+
+Orden exacto de matching por item:
+
+1. `product.remote_id`
+2. `product.sku`
+3. `product.barcode`
+4. si no hay coincidencia, se crea el producto
+
+Si `active = 0`, el producto no se elimina: solo se marca como inactivo.
+
+```json
+{
+  "store_id": "sucursal-centro",
+  "device_code": "POS-LOCAL-01",
+  "products": [
+    {
+      "local_id": 12,
+      "event_type": "product.create",
+      "action": "create",
+      "product": {
+        "remote_id": null,
+        "sku": "ABC-123",
+        "barcode": "7501234567890",
+        "name": "Producto ejemplo",
+        "category": "Accesorios",
+        "price": 99,
+        "cost": 50,
+        "stock": 10,
+        "min_stock": 2,
+        "image": null,
+        "active": 1,
+        "product_type": "normal",
+        "game": null,
+        "card_name": null,
+        "set_name": null,
+        "set_code": null,
+        "collector_number": null,
+        "finish": null,
+        "language": null,
+        "card_condition": null,
+        "created_at": "2026-03-28T10:00:00Z",
+        "updated_at": "2026-03-28T10:00:00Z"
+      }
+    }
+  ]
+}
+```
+
+Respuesta esperada:
+
+```json
+{
+  "success": true,
+  "results": [
+    {
+      "status": "created",
+      "local_id": 12,
+      "remote_id": 345,
+      "product": {
+        "id": 345,
+        "remote_id": 345,
+        "sku": "ABC-123",
+        "barcode": "7501234567890",
+        "name": "Producto ejemplo",
+        "category": "Accesorios",
+        "price": 99,
+        "cost": 50,
+        "stock": 10,
+        "min_stock": 2,
+        "active": 1,
+        "product_type": "normal",
+        "updated_at": "2026-03-28T10:00:05Z"
+      }
+    }
+  ]
+}
+```
+
+Error por item:
+
+```json
+{
+  "success": true,
+  "results": [
+    {
+      "status": "error",
+      "local_id": 12,
+      "remote_id": null,
+      "message": "SQLSTATE[23000]: Integrity constraint violation ..."
     }
   ]
 }
@@ -162,6 +259,7 @@ Si no se manda `include`, devuelve `products`, `categories` y `customers`.
 
 - Catalogo: `server wins`
 - Clientes descargados por sync: `server wins`
+- Productos subidos por POS: se actualizan o crean por `remote_id`, `sku`, `barcode`
 - Ventas subidas por POS: aceptadas si el `uuid` no existe
 - Cierres subidos por POS: aceptados si el `uuid` no existe
 - Movimientos subidos por POS: aceptados si el `uuid` no existe
@@ -175,6 +273,14 @@ Si no se manda `include`, devuelve `products`, `categories` y `customers`.
 | `skipped` | El `uuid` ya existia | No reintentar |
 | `conflict` | Regla de negocio o referencia rota | Corregir y reintentar |
 | `failed` | Error inesperado servidor | Reintentar tecnicamente |
+
+### Status de `upload-products`
+
+| Status | Significado | Accion POS |
+| --- | --- | --- |
+| `created` | El producto no existia y fue creado | Guardar `remote_id` |
+| `updated` | El producto se encontro y fue actualizado | Actualizar referencia local |
+| `error` | Ese item fallo, pero el lote siguio | Corregir y reenviar solo el item fallido |
 
 ## Referencias y conflictos comunes
 
@@ -194,5 +300,6 @@ Si no se manda `include`, devuelve `products`, `categories` y `customers`.
 - Descargar catalogo incremental con `updated_since`.
 - Tratar `deleted_at != null` como baja logica remota.
 - Tratar `is_active = false` como desactivacion.
+- Guardar `remote_id` devuelto por `POST /api/sync/upload-products`.
 - No reintentar items `skipped`.
 - Si llega `conflict`, revisar `code`, `errors` y `server_entity`.

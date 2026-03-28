@@ -74,6 +74,7 @@ Plataforma Laravel 12 para `tienda virtual`, `portal de jugadores` y `panel admi
 - `GET /api/products`
 - `GET /api/categories`
 - endpoints previos de clientes, ventas, dispositivos y sync
+- `POST /api/sync/upload-products` para altas y cambios bidireccionales de productos desde POS
 
 ## Base de datos agregada
 
@@ -1120,6 +1121,39 @@ Se reforzo la API para dejar el servidor mejor preparado para sincronizar con un
 - no requiere migraciones nuevas
 - el POS debe autenticarse primero y reutilizar el bearer token en `heartbeat`, lecturas de sync y `upload-sales`
 - para una sincronizacion todavia mas avanzada de inventario entre multiples nodos, en una siguiente fase conviene agregar versionado o ledger de movimientos
+
+## Ajuste reciente de sincronizacion bidireccional de productos POS
+
+Se agrego el endpoint servidor `POST /api/sync/upload-products` para que el POS local pueda crear o actualizar productos y recibir de vuelta el `remote_id` persistido en Laravel.
+
+### Regla de matching aplicada
+
+- primero intenta por `remote_id`
+- si no existe, intenta por `sku`
+- si no existe, intenta por `barcode`
+- si no hay match, crea el producto
+
+### Comportamiento clave
+
+- cada item del lote se procesa de forma independiente
+- si `active = 0`, el producto solo se marca como inactivo
+- la respuesta devuelve `local_id`, `remote_id` y `product.id`
+- errores por item responden `status = error` sin romper el lote completo
+
+### Archivos clave
+
+- `routes/api.php`
+- `app/Http/Controllers/Api/SyncProductsController.php`
+- `app/Http/Requests/Sync/UploadProductsRequest.php`
+- `app/Services/Sync/SyncProductUploadService.php`
+- `app/Models/Product.php`
+- `database/migrations/2026_03_28_120000_add_pos_sync_fields_to_products_table.php`
+- `docs/pos-sync-api.md`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para agregar los nuevos campos de producto orientados a POS
+- los tokens existentes deben incluir la ability `sync:upload-products` para usar el nuevo endpoint
 
 ## Ajuste reciente del modulo admin de torneos
 

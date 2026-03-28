@@ -42,6 +42,14 @@
 - fixed the public player registration flow so the validated `name` field is stored correctly and no longer triggers `Column 'name' cannot be null`
 - rebuilt production assets with `npm run build`
 
+### 2026-03-28
+
+- added `POST /api/sync/upload-products` so the local POS can create and update products on Laravel using the matching order `remote_id -> sku -> barcode`
+- made product uploads return one result per item with `local_id`, `remote_id`, and a summarized `product` payload for local POS reference storage
+- added safe per-item error handling for product sync batches so one bad item no longer aborts the full upload
+- added POS-oriented product fields such as `min_stock`, `product_type`, `game`, `card_name`, `set_name`, `set_code`, `collector_number`, `finish`, `language`, and `card_condition`
+- documented the new bidirectional product sync contract in `docs/pos-sync-api.md` and summarized the operational impact in `README.md`
+
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
 
 ## [v12.12.1](https://github.com/laravel/laravel/compare/v12.12.0...v12.12.1) - 2026-03-10
