@@ -39,6 +39,7 @@
 - improved sync observability by emitting clearer application logs from `SyncLogService` for success, skipped, conflict, and failed operations
 - fixed the historical `site_settings` migration seed path so the automated test suite can boot against sqlite memory without schema drift
 - added a preorder and partial-payment backend with `preorders`, `preorder_items`, `preorder_payments`, automatic balance recalculation, and API endpoints for listing, creating, viewing, paying, and syncing preorders
+- fixed the public player registration flow so the validated `name` field is stored correctly and no longer triggers `Column 'name' cannot be null`
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)

@@ -921,6 +921,23 @@ Se agrego un modulo backend de preventas para reservar productos, registrar abon
 - requiere ejecutar `php artisan migrate` para crear las tablas de preventas
 - no se corrio la suite completa despues de este modulo en este entorno, asi que conviene validar con `php artisan test`
 
+## Ajuste reciente de registro web de jugadores
+
+Se corrigio el alta publica de cuentas de jugador para que el campo `name` del formulario llegue correctamente al modelo `User` y deje de fallar con `Column 'name' cannot be null`.
+
+### Ajuste aplicado
+
+- correccion del mapeo del campo validado en el controlador web de autenticacion
+- el registro ahora usa `name` en lugar de un typo que estaba leyendo `namee`
+
+### Archivo clave
+
+- `app/Http/Controllers/Web/AuthController.php`
+
+### Validacion aplicada
+
+- `php -l app/Http/Controllers/Web/AuthController.php`
+
 ## Ajuste reciente de preventas y abonos
 
 Se agrego un modulo backend de preventas para reservar productos, registrar abonos parciales y dejar el dominio listo para integracion futura con POS local y tienda web.

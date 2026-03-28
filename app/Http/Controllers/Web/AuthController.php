@@ -52,7 +52,7 @@ class AuthController extends Controller
 
         $user = User::query()->create([
             'uuid' => (string) Str::uuid(),
-            'name' => $request->validated('namee'),
+            'name' => $request->validated('name'),
             'email' => $request->validated('email'),
             'phone' => $request->validated('phone'),
             'password' => $request->validated('password'),
