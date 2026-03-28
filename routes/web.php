@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\CustomerController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\InventoryMovementController;
 use App\Http\Controllers\Web\ArticleCommentController;
 use App\Http\Controllers\Web\ArticleController;
 use App\Http\Controllers\Web\ProductController;
@@ -86,6 +87,11 @@ Route::middleware('auth')->group(function (): void {
         Route::post('cash-closures', [CashClosureController::class, 'store'])->name('cash-closures.store');
         Route::get('cash-closures/{cashClosure}', [CashClosureController::class, 'show'])->name('cash-closures.show');
         Route::patch('cash-closures/{cashClosure}/status', [CashClosureController::class, 'updateStatus'])->name('cash-closures.status.update');
+
+        Route::get('inventory-movements', [InventoryMovementController::class, 'index'])->name('inventory-movements.index');
+        Route::get('inventory-movements/create', [InventoryMovementController::class, 'create'])->name('inventory-movements.create');
+        Route::post('inventory-movements', [InventoryMovementController::class, 'store'])->name('inventory-movements.store');
+        Route::get('inventory-movements/{inventoryMovement}', [InventoryMovementController::class, 'show'])->name('inventory-movements.show');
 
         Route::post('tournaments/{tournament}/rounds', [TournamentController::class, 'generateRound'])->name('tournaments.rounds.store')->middleware('role:'.User::ROLE_ADMIN.','.User::ROLE_MANAGER);
         Route::post('tournament-matches/{match}/report', [TournamentController::class, 'reportMatch'])->name('tournaments.matches.report')->middleware('role:'.User::ROLE_ADMIN.','.User::ROLE_MANAGER);

@@ -268,6 +268,43 @@ Se corrigio la configuracion horaria para que los registros generados por Larave
 - bootstrap manual de Laravel confirmando `config('app.timezone') = America/Mexico_City`
 - bootstrap manual de Laravel confirmando `now()` con offset `-06:00`
 
+## Modulo reciente de movimientos de inventario en panel admin
+
+Se construyo la capa web/admin para consultar y auditar el historial de inventario desde el panel, aprovechando la tabla `inventory_movements` y el servicio de ajustes manuales que ya existian en backend.
+
+### Alcance del modulo
+
+- listado admin de movimientos con filtros por producto, usuario, tipo, direccion, origen y rango de fechas
+- alta manual de movimientos para reabasto, ajuste manual, devolucion y correccion de sincronizacion
+- vista detalle con producto, stock antes y despues, responsable, dispositivo, referencia y timestamps
+- panel lateral de auditoria con productos a revisar por stock bajo o actividad reciente
+- accesos directos desde el menu admin, dashboard y detalle de producto para revisar historial o registrar un ajuste
+
+### Rutas web agregadas
+
+- `GET /inventory-movements`
+- `GET /inventory-movements/create`
+- `POST /inventory-movements`
+- `GET /inventory-movements/{inventoryMovement}`
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/InventoryMovementController.php`
+- `app/Http/Requests/Inventory/StoreAdminInventoryMovementRequest.php`
+- `routes/web.php`
+- `resources/views/inventory-movements/index.blade.php`
+- `resources/views/inventory-movements/create.blade.php`
+- `resources/views/inventory-movements/show.blade.php`
+- `resources/views/products/show.blade.php`
+- `resources/views/dashboard/index.blade.php`
+- `resources/views/layouts/app.blade.php`
+
+### Validacion aplicada
+
+- `php artisan route:list --name=inventory-movements`
+- `php artisan view:cache`
+- `php artisan test`
+
 ## Credenciales demo
 
 Despues de sembrar la base:

@@ -233,7 +233,11 @@ class ProductController extends Controller
 
     public function show(Product $product): View
     {
-        $product->load(['categoryModel', 'images']);
+        $product->load([
+            'categoryModel',
+            'images',
+            'inventoryMovements' => fn ($query) => $query->with(['sale', 'device', 'user.role'])->limit(8),
+        ]);
 
         return view('products.show', compact('product'));
     }

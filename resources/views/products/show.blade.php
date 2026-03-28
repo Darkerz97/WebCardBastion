@@ -57,10 +57,56 @@
 
             <div class="mt-6 flex flex-wrap gap-3">
                 <a class="btn btn-primary" href="{{ route('products.edit', $product) }}">Editar producto</a>
+                <a class="btn btn-secondary" href="{{ route('inventory-movements.index', ['product_id' => $product->id]) }}">Auditar inventario</a>
+                <a class="btn btn-secondary" href="{{ route('inventory-movements.create', ['product_id' => $product->id]) }}">Registrar movimiento</a>
                 @if ($product->publish_to_store)
                     <a class="btn btn-secondary" href="{{ route('store.products.show', $product) }}" target="_blank">Ver en tienda</a>
                 @endif
             </div>
+        </div>
+    </div>
+
+    <div class="mt-6 panel">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <p class="section-kicker">Inventario</p>
+                <h2 class="mt-2 text-2xl font-black uppercase tracking-[0.05em] text-stone-900">Historial reciente del producto</h2>
+                <p class="mt-3 text-sm leading-7 text-stone-600">
+                    Revisa rapidamente los ultimos movimientos que afectaron el stock de este articulo y entra al detalle cuando necesites auditarlo.
+                </p>
+            </div>
+            <a class="btn btn-primary" href="{{ route('inventory-movements.index', ['product_id' => $product->id]) }}">Ver historial completo</a>
+        </div>
+
+        <div class="mt-6 table-shell">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Antes / despues</th>
+                        <th>Responsable</th>
+                        <th>Referencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($product->inventoryMovements as $movement)
+                        <tr>
+                            <td>
+                                <a class="font-semibold text-[color:var(--color-brand-600)]" href="{{ route('inventory-movements.show', $movement) }}">{{ optional($movement->occurred_at)->format('d/m/Y H:i') }}</a>
+                            </td>
+                            <td>{{ $movement->movement_type }} · {{ $movement->direction }}</td>
+                            <td>{{ $movement->stock_before }} -> {{ $movement->stock_after }}</td>
+                            <td>{{ $movement->user?->name ?? 'Sistema' }}</td>
+                            <td>{{ $movement->reference ?: 'Sin referencia' }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-stone-500">Este producto aun no tiene movimientos registrados.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 @endsection

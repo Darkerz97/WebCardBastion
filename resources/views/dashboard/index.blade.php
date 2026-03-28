@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'Dashboard', 'heading' => 'Dashboard', 'subheading' => 'Operacion central para tienda, jugadores y panel administrativo.'])
 
 @section('content')
-    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
+    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-7">
         <article class="metric-card">
             <p class="text-xs uppercase tracking-[0.24em] text-stone-500">Categorias</p>
             <p class="mt-3 text-3xl font-black text-stone-900">{{ $metrics['categories'] }}</p>
@@ -27,6 +27,10 @@
         <article class="metric-card">
             <p class="text-xs uppercase tracking-[0.24em] text-stone-500">Cierres</p>
             <p class="mt-3 text-3xl font-black text-stone-900">{{ $metrics['cash_closures'] }}</p>
+        </article>
+        <article class="metric-card">
+            <p class="text-xs uppercase tracking-[0.24em] text-stone-500">Movimientos</p>
+            <p class="mt-3 text-3xl font-black text-stone-900">{{ $metrics['inventory_movements'] }}</p>
         </article>
     </section>
 
@@ -80,6 +84,41 @@
                     </div>
                 @empty
                     <p class="text-sm text-stone-500">No hay alertas de inventario por ahora.</p>
+                @endforelse
+            </div>
+        </div>
+    </section>
+
+    <section class="mt-6">
+        <div class="panel">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                    <p class="section-kicker">Inventario</p>
+                    <h2 class="mt-2 text-2xl font-black uppercase tracking-[0.05em] text-stone-900">Auditoria reciente de movimientos</h2>
+                    <p class="mt-3 max-w-3xl text-sm leading-7 text-stone-600">
+                        Revisa quien hizo cambios de stock, el antes y despues de cada ajuste, y entra directo al historial por producto cuando algo no cuadre.
+                    </p>
+                </div>
+                <a class="btn btn-primary" href="{{ route('inventory-movements.index') }}">Auditar inventario</a>
+            </div>
+
+            <div class="mt-6 grid gap-4 xl:grid-cols-3">
+                @forelse ($recentInventoryMovements as $movement)
+                    <div class="rounded-2xl border border-stone-200 px-4 py-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="font-semibold text-stone-900">{{ $movement->product?->name ?? 'Producto eliminado' }}</p>
+                                <p class="mt-1 text-sm text-stone-500">{{ $movement->movement_type }} · {{ $movement->direction }}</p>
+                            </div>
+                            <span class="badge">{{ $movement->stock_before }} -> {{ $movement->stock_after }}</span>
+                        </div>
+                        <p class="mt-3 text-sm text-stone-500">{{ $movement->user?->name ?? 'Sistema' }} · {{ optional($movement->occurred_at)->format('d/m/Y H:i') }}</p>
+                        <div class="mt-3">
+                            <a class="font-semibold text-[color:var(--color-brand-600)]" href="{{ route('inventory-movements.show', $movement) }}">Abrir detalle</a>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-sm text-stone-500 xl:col-span-3">No hay movimientos recientes de inventario.</p>
                 @endforelse
             </div>
         </div>
@@ -146,6 +185,18 @@
                             </p>
                         </div>
                         <a class="btn btn-primary" href="{{ route('cash-closures.index') }}">Gestionar cierres</a>
+                    </div>
+                </div>
+                <div class="panel xl:col-span-2">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <p class="section-kicker">Inventario</p>
+                            <h2 class="mt-2 text-2xl font-black uppercase tracking-[0.05em] text-stone-900">Audita el historial de productos</h2>
+                            <p class="mt-3 max-w-3xl text-sm leading-7 text-stone-600">
+                                Consulta entradas, salidas y ajustes con stock antes y despues, responsable, referencia y producto afectado desde una vista centralizada.
+                            </p>
+                        </div>
+                        <a class="btn btn-primary" href="{{ route('inventory-movements.index') }}">Gestionar movimientos</a>
                     </div>
                 </div>
             </div>
