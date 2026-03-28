@@ -247,6 +247,27 @@ Se construyo la capa web/admin para consultar y registrar cierres de caja desde 
 - `php artisan view:cache`
 - `php artisan test`
 
+## Ajuste reciente de zona horaria del servidor
+
+Se corrigio la configuracion horaria para que los registros generados por Laravel usen la hora de Mexico en lugar de `UTC`, evitando desfases en `created_at`, `updated_at`, cierres, ventas, preventas y eventos de sincronizacion creados con `now()`.
+
+### Ajuste aplicado
+
+- `config/app.php` ahora toma la zona horaria desde `APP_TIMEZONE`
+- `.env.example` define `APP_TIMEZONE=America/Mexico_City` como valor base recomendado
+- el entorno local quedo configurado con `America/Mexico_City` para que nuevos registros del servidor ya salgan en horario de Mexico
+
+### Archivos clave
+
+- `config/app.php`
+- `.env.example`
+
+### Validacion aplicada
+
+- `php artisan config:clear`
+- bootstrap manual de Laravel confirmando `config('app.timezone') = America/Mexico_City`
+- bootstrap manual de Laravel confirmando `now()` con offset `-06:00`
+
 ## Credenciales demo
 
 Despues de sembrar la base:

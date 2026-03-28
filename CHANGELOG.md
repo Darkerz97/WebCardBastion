@@ -66,6 +66,7 @@
 - added manual cash-closure capture with device, user, opening amount, sales totals, expected amount, closing amount, and difference fields
 - added admin cash-closure detail and status updates for reconciliation follow-up across `open`, `closed`, and `reconciled`
 - verified the cash-closure backoffice with `php artisan route:list --name=cash-closures`, `php artisan view:cache`, and `php artisan test`
+- changed the Laravel application timezone config from fixed `UTC` to `APP_TIMEZONE`, defaulting project environments to `America/Mexico_City` for server-side timestamps generated with `now()`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
 
