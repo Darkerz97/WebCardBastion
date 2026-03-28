@@ -17,7 +17,7 @@
             </div>
         </div>
         <form method="GET" class="search-bar">
-            <div class="field" style="margin:0;"><label for="search">Buscar</label><input id="search" type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, teléfono o correo"></div>
+            <div class="field" style="margin:0;"><label for="search">Buscar</label><input id="search" type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, telefono o correo"></div>
             <div class="field" style="margin:0;">
                 <label for="active">Estado</label>
                 <select id="active" name="active">
@@ -30,11 +30,12 @@
         </form>
         <div class="actions" style="justify-content:flex-end; margin-bottom:14px;"><a class="btn" href="{{ route('customers.create') }}">Nuevo cliente</a></div>
         <table>
-            <thead><tr><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Saldo</th><th>Compras</th><th></th></tr></thead>
+            <thead><tr><th>Nombre</th><th>Cuenta</th><th>Telefono</th><th>Correo</th><th>Saldo</th><th>Compras</th><th></th></tr></thead>
             <tbody>
             @forelse ($customers as $customer)
                 <tr>
                     <td><a href="{{ route('customers.show', $customer) }}">{{ $customer->name }}</a></td>
+                    <td>{{ $customer->user_id ? 'Vinculada' : 'Sin cuenta' }}</td>
                     <td>{{ $customer->phone ?: 'N/D' }}</td>
                     <td>{{ $customer->email ?: 'N/D' }}</td>
                     <td>${{ number_format($customer->credit_balance, 2) }}</td>
@@ -45,7 +46,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="6" class="muted">No hay clientes registrados.</td></tr>
+                <tr><td colspan="7" class="muted">No hay clientes registrados.</td></tr>
             @endforelse
             </tbody>
         </table>

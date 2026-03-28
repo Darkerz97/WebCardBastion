@@ -41,19 +41,20 @@
         </form>
         <div class="actions" style="justify-content:flex-end; margin-bottom:14px;"><a class="btn" href="{{ route('sales.create') }}">Nueva venta</a></div>
         <table>
-            <thead><tr><th>Folio</th><th>Cliente</th><th>Usuario</th><th>Total</th><th>Pago</th><th>Fecha</th></tr></thead>
+            <thead><tr><th>Folio</th><th>Canal</th><th>Cliente</th><th>Usuario</th><th>Total</th><th>Pago</th><th>Fecha</th></tr></thead>
             <tbody>
             @forelse ($sales as $sale)
                 <tr>
                     <td><a href="{{ route('sales.show', $sale) }}">{{ $sale->sale_number }}</a></td>
-                    <td>{{ $sale->customer?->name ?? 'Público general' }}</td>
+                    <td>{{ $sale->order_channel }}</td>
+                    <td>{{ $sale->customer?->name ?? 'Publico general' }}</td>
                     <td>{{ $sale->user?->name ?? 'N/D' }}</td>
                     <td>${{ number_format($sale->total, 2) }}</td>
                     <td><span class="badge">{{ $sale->payment_status }}</span></td>
                     <td>{{ optional($sale->sold_at)->format('d/m/Y H:i') }}</td>
                 </tr>
             @empty
-                <tr><td colspan="6" class="muted">No hay ventas registradas.</td></tr>
+                <tr><td colspan="7" class="muted">No hay ventas registradas.</td></tr>
             @endforelse
             </tbody>
         </table>

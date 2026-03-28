@@ -28,15 +28,29 @@
                 @if ($product->featured)
                     <span class="badge">Destacado</span>
                 @endif
+                @if ($product->stock <= ($product->min_stock ?? 0))
+                    <span class="badge">Stock bajo</span>
+                @endif
             </div>
 
             <dl class="mt-6 grid gap-4 text-sm">
+                <div><dt class="font-semibold text-stone-500">Tipo</dt><dd class="mt-1 text-stone-900">{{ $product->product_type ?: 'normal' }}</dd></div>
                 <div><dt class="font-semibold text-stone-500">Categoria</dt><dd class="mt-1 text-stone-900">{{ $product->categoryModel?->name ?? 'Sin categoria' }}</dd></div>
                 <div><dt class="font-semibold text-stone-500">SKU</dt><dd class="mt-1 text-stone-900">{{ $product->sku }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Codigo de barras</dt><dd class="mt-1 text-stone-900">{{ $product->barcode ?: 'Sin barcode' }}</dd></div>
                 <div><dt class="font-semibold text-stone-500">Slug</dt><dd class="mt-1 text-stone-900">{{ $product->slug }}</dd></div>
                 <div><dt class="font-semibold text-stone-500">Precio</dt><dd class="mt-1 text-stone-900">${{ number_format($product->price, 2) }}</dd></div>
                 <div><dt class="font-semibold text-stone-500">Costo</dt><dd class="mt-1 text-stone-900">${{ number_format($product->cost, 2) }}</dd></div>
                 <div><dt class="font-semibold text-stone-500">Stock</dt><dd class="mt-1 text-stone-900">{{ $product->stock }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Stock minimo</dt><dd class="mt-1 text-stone-900">{{ $product->min_stock }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Juego</dt><dd class="mt-1 text-stone-900">{{ $product->game ?: 'No definido' }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Nombre de carta</dt><dd class="mt-1 text-stone-900">{{ $product->card_name ?: 'No aplica' }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Set</dt><dd class="mt-1 text-stone-900">{{ $product->set_name ?: 'No definido' }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Codigo set</dt><dd class="mt-1 text-stone-900">{{ $product->set_code ?: 'No definido' }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Numero coleccion</dt><dd class="mt-1 text-stone-900">{{ $product->collector_number ?: 'No definido' }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Acabado</dt><dd class="mt-1 text-stone-900">{{ $product->finish ?: 'No definido' }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Idioma</dt><dd class="mt-1 text-stone-900">{{ $product->language ?: 'No definido' }}</dd></div>
+                <div><dt class="font-semibold text-stone-500">Condicion</dt><dd class="mt-1 text-stone-900">{{ $product->card_condition ?: 'No definida' }}</dd></div>
                 <div><dt class="font-semibold text-stone-500">Resumen</dt><dd class="mt-1 text-stone-900">{{ $product->short_description ?: 'Sin resumen corto' }}</dd></div>
                 <div><dt class="font-semibold text-stone-500">Descripcion</dt><dd class="mt-1 text-stone-900">{{ $product->description ?: 'Sin descripcion' }}</dd></div>
             </dl>

@@ -49,6 +49,12 @@
 - added safe per-item error handling for product sync batches so one bad item no longer aborts the full upload
 - added POS-oriented product fields such as `min_stock`, `product_type`, `game`, `card_name`, `set_name`, `set_code`, `collector_number`, `finish`, `language`, and `card_condition`
 - documented the new bidirectional product sync contract in `docs/pos-sync-api.md` and summarized the operational impact in `README.md`
+- aligned the admin backoffice with database-backed product, customer, and sale fields so POS metadata is editable and visible from Blade admin screens
+- updated the product admin form, list, and detail screens to expose TCG/POS attributes and low-stock warnings driven by `min_stock`
+- updated the admin dashboard to compute low-stock alerts from `stock <= min_stock` instead of a hardcoded threshold
+- added customer-to-user linking in admin plus customer detail visibility for linked role and recent preorders
+- expanded manual sales capture and sales detail views with `order_channel`, contact fields, notes, and sync-related timestamps
+- verified the change set with `php artisan test` and `php artisan view:cache`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
 

@@ -31,7 +31,8 @@ class DashboardController extends Controller
                 ->limit(8)
                 ->get(),
             'lowStockProducts' => Product::query()
-                ->where('stock', '<=', 10)
+                ->whereColumn('stock', '<=', 'min_stock')
+                ->where('active', true)
                 ->orderBy('stock')
                 ->limit(6)
                 ->get(),

@@ -93,6 +93,53 @@ Plataforma Laravel 12 para `tienda virtual`, `portal de jugadores` y `panel admi
   - `short_description`
   - `featured`
   - `publish_to_store`
+  - `min_stock`
+  - `product_type`
+  - `game`
+  - `card_name`
+  - `set_name`
+  - `set_code`
+  - `collector_number`
+  - `finish`
+  - `language`
+  - `card_condition`
+
+## Ajuste reciente del panel admin segun base de datos
+
+Se alineo el panel administrativo con campos y relaciones que ya existian en la base para reducir huecos entre datos persistidos y lo visible en backoffice.
+
+### Ajuste aplicado
+
+- productos ahora permite capturar y editar `min_stock`, `product_type`, `game`, `card_name`, `set_name`, `set_code`, `collector_number`, `finish`, `language` y `card_condition`
+- listados y detalle de productos ahora muestran metadata TCG/POS y alertas de stock bajo usando `min_stock`
+- el dashboard admin ya calcula alertas de inventario con `stock <= min_stock` en lugar de un umbral fijo
+- clientes ahora pueden vincular una cuenta `user` existente del sistema
+- detalle de cliente ahora muestra cuenta vinculada, rol y preventas recientes
+- ventas manuales ahora permiten capturar `order_channel`, datos de contacto y `notes`
+- listados y detalle de ventas ahora muestran canal, contacto y timestamps de sincronizacion cuando existen
+
+### Archivos clave
+
+- `app/Http/Controllers/Web/ProductController.php`
+- `app/Http/Requests/Product/AdminProductRequest.php`
+- `resources/views/products/_form.blade.php`
+- `resources/views/products/index.blade.php`
+- `resources/views/products/show.blade.php`
+- `app/Http/Controllers/Web/DashboardController.php`
+- `app/Http/Controllers/Web/CustomerController.php`
+- `app/Http/Requests/Customer/CustomerRequest.php`
+- `resources/views/customers/_form.blade.php`
+- `resources/views/customers/index.blade.php`
+- `resources/views/customers/show.blade.php`
+- `app/Http/Requests/Sale/StoreSaleRequest.php`
+- `resources/views/sales/create.blade.php`
+- `resources/views/sales/index.blade.php`
+- `resources/views/sales/show.blade.php`
+
+### Validacion aplicada
+
+- `php artisan test`
+- `php artisan view:cache`
 
 ## Credenciales demo
 

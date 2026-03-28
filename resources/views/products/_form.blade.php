@@ -25,8 +25,51 @@
         </select>
     </div>
     <div class="field">
+        <label for="product_type">Tipo de producto</label>
+        <select id="product_type" name="product_type" required>
+            @php($selectedType = old('product_type', $product->product_type ?? 'normal'))
+            <option value="normal" @selected($selectedType === 'normal')>Normal</option>
+            <option value="single_card" @selected($selectedType === 'single_card')>Carta individual</option>
+            <option value="sealed" @selected($selectedType === 'sealed')>Sellado</option>
+            <option value="accessory" @selected($selectedType === 'accessory')>Accesorio</option>
+            <option value="service" @selected($selectedType === 'service')>Servicio</option>
+        </select>
+    </div>
+    <div class="field">
         <label for="short_description">Resumen corto</label>
         <input id="short_description" type="text" maxlength="280" name="short_description" value="{{ old('short_description', $product->short_description) }}">
+    </div>
+    <div class="field">
+        <label for="game">Juego</label>
+        <input id="game" type="text" name="game" value="{{ old('game', $product->game) }}" placeholder="Magic, Pokemon, One Piece...">
+    </div>
+    <div class="field">
+        <label for="card_name">Nombre de carta</label>
+        <input id="card_name" type="text" name="card_name" value="{{ old('card_name', $product->card_name) }}">
+    </div>
+    <div class="field">
+        <label for="set_name">Expansion / set</label>
+        <input id="set_name" type="text" name="set_name" value="{{ old('set_name', $product->set_name) }}">
+    </div>
+    <div class="field">
+        <label for="set_code">Codigo de set</label>
+        <input id="set_code" type="text" name="set_code" value="{{ old('set_code', $product->set_code) }}">
+    </div>
+    <div class="field">
+        <label for="collector_number">Numero de coleccion</label>
+        <input id="collector_number" type="text" name="collector_number" value="{{ old('collector_number', $product->collector_number) }}">
+    </div>
+    <div class="field">
+        <label for="finish">Acabado</label>
+        <input id="finish" type="text" name="finish" value="{{ old('finish', $product->finish) }}" placeholder="Foil, Non-foil...">
+    </div>
+    <div class="field">
+        <label for="language">Idioma</label>
+        <input id="language" type="text" name="language" value="{{ old('language', $product->language) }}">
+    </div>
+    <div class="field">
+        <label for="card_condition">Condicion</label>
+        <input id="card_condition" type="text" name="card_condition" value="{{ old('card_condition', $product->card_condition) }}" placeholder="NM, LP, MP...">
     </div>
     <div class="field">
         <label for="cost">Costo</label>
@@ -39,6 +82,10 @@
     <div class="field">
         <label for="stock">Stock</label>
         <input id="stock" type="number" min="0" name="stock" value="{{ old('stock', $product->stock ?? 0) }}" required>
+    </div>
+    <div class="field">
+        <label for="min_stock">Stock minimo</label>
+        <input id="min_stock" type="number" min="0" name="min_stock" value="{{ old('min_stock', $product->min_stock ?? 0) }}">
     </div>
     <div class="field">
         <label for="cover_image">Imagen portada</label>
@@ -77,8 +124,8 @@
 
 @if ($product->exists && $product->images->isNotEmpty())
     <div class="mt-6">
-            <h3 class="text-sm font-semibold uppercase tracking-[0.22em] text-stone-500">Galeria actual</h3>
-            <div class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.22em] text-stone-500">Galeria actual</h3>
+        <div class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
             @foreach ($product->images as $image)
                 <img class="aspect-square w-full rounded-2xl border border-stone-200 object-cover" src="{{ $image->url }}" alt="{{ $image->alt_text ?: $product->name }}">
             @endforeach

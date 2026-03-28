@@ -18,6 +18,7 @@ class CustomerRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            'user_id' => ['nullable', 'exists:users,id', Rule::unique('customers', 'user_id')->ignore($customerId)],
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:255', Rule::unique('customers', 'email')->ignore($customerId)],
             'notes' => ['nullable', 'string'],

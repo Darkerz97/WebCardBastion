@@ -23,7 +23,7 @@
             <form method="GET" class="grid gap-4 lg:grid-cols-[1fr_240px_220px_auto]">
                 <div class="field">
                     <label for="search">Buscar</label>
-                    <input id="search" type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, slug, SKU o descripcion">
+                    <input id="search" type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, slug, SKU, carta o set">
                 </div>
                 <div class="field">
                     <label for="category_id">Categoria</label>
@@ -51,6 +51,7 @@
                 <thead>
                     <tr>
                         <th>Producto</th>
+                        <th>Tipo</th>
                         <th>Categoria</th>
                         <th>Precio</th>
                         <th>Stock</th>
@@ -64,10 +65,19 @@
                             <td>
                                 <a class="font-semibold text-[color:var(--color-brand-600)]" href="{{ route('products.show', $product) }}">{{ $product->name }}</a>
                                 <p class="mt-1 text-sm text-stone-500">{{ $product->sku }} · {{ $product->slug }}</p>
+                                @if ($product->card_name || $product->game || $product->set_name)
+                                    <p class="mt-1 text-sm text-stone-500">{{ $product->card_name ?: $product->name }}{{ $product->game ? ' · '.$product->game : '' }}{{ $product->set_name ? ' · '.$product->set_name : '' }}</p>
+                                @endif
                             </td>
+                            <td>{{ $product->product_type ?: 'normal' }}</td>
                             <td>{{ $product->categoryModel?->name ?? 'Sin categoria' }}</td>
                             <td>${{ number_format($product->price, 2) }}</td>
-                            <td>{{ $product->stock }}</td>
+                            <td>
+                                {{ $product->stock }}
+                                @if ($product->stock <= ($product->min_stock ?? 0))
+                                    <p class="mt-1 text-xs text-amber-700">Min: {{ $product->min_stock }}</p>
+                                @endif
+                            </td>
                             <td>
                                 <div class="flex flex-wrap gap-2">
                                     @if ($product->publish_to_store)
@@ -75,6 +85,9 @@
                                     @endif
                                     @if ($product->featured)
                                         <span class="badge">Destacado</span>
+                                    @endif
+                                    @if ($product->stock <= ($product->min_stock ?? 0))
+                                        <span class="badge">Stock bajo</span>
                                     @endif
                                 </div>
                             </td>
@@ -91,7 +104,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-stone-500">No hay productos registrados.</td>
+                            <td colspan="7" class="text-stone-500">No hay productos registrados.</td>
                         </tr>
                     @endforelse
                 </tbody>

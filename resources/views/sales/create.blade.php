@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Nueva venta', 'heading' => 'Nueva venta', 'subheading' => 'Registro manual de venta con ítems y pagos iniciales.'])
+@extends('layouts.app', ['title' => 'Nueva venta', 'heading' => 'Nueva venta', 'subheading' => 'Registro manual de venta con items y pagos iniciales.'])
 
 @section('content')
     <div class="panel">
@@ -8,7 +8,7 @@
                 <div class="field">
                     <label for="customer_id">Cliente</label>
                     <select id="customer_id" name="customer_id">
-                        <option value="">Público general</option>
+                        <option value="">Publico general</option>
                         @foreach ($customers as $customer)
                             <option value="{{ $customer->id }}" @selected(old('customer_id') == $customer->id)>{{ $customer->name }}</option>
                         @endforeach
@@ -24,6 +24,13 @@
                     </select>
                 </div>
                 <div class="field">
+                    <label for="order_channel">Canal</label>
+                    <select id="order_channel" name="order_channel">
+                        <option value="pos" @selected(old('order_channel', 'pos') === 'pos')>POS</option>
+                        <option value="storefront" @selected(old('order_channel') === 'storefront')>Tienda en linea</option>
+                    </select>
+                </div>
+                <div class="field">
                     <label for="status">Estatus</label>
                     <select id="status" name="status" required>
                         <option value="completed" @selected(old('status', 'completed') === 'completed')>Completed</option>
@@ -32,8 +39,16 @@
                     </select>
                 </div>
                 <div class="field"><label for="discount">Descuento</label><input id="discount" type="number" name="discount" step="0.01" min="0" value="{{ old('discount', 0) }}"></div>
+                <div class="field"><label for="sold_at">Fecha de venta</label><input id="sold_at" type="datetime-local" name="sold_at" value="{{ old('sold_at', now()->format('Y-m-d\\TH:i')) }}"></div>
+                <div class="field"><label for="contact_name">Nombre de contacto</label><input id="contact_name" type="text" name="contact_name" value="{{ old('contact_name') }}"></div>
+                <div class="field"><label for="contact_email">Correo de contacto</label><input id="contact_email" type="email" name="contact_email" value="{{ old('contact_email') }}"></div>
+                <div class="field"><label for="contact_phone">Telefono de contacto</label><input id="contact_phone" type="text" name="contact_phone" value="{{ old('contact_phone') }}"></div>
             </div>
-            <h3>Ítems</h3>
+            <div class="field">
+                <label for="notes">Notas de la venta</label>
+                <textarea id="notes" name="notes" rows="4">{{ old('notes') }}</textarea>
+            </div>
+            <h3>Items</h3>
             @for ($i = 0; $i < 3; $i++)
                 <div class="grid grid-2" style="margin-bottom: 12px; padding: 12px; border: 1px dashed #d8c7b3; border-radius: 12px;">
                     <div class="field" style="margin:0;">
@@ -52,7 +67,7 @@
             <h3>Pago inicial</h3>
             <div class="grid grid-2">
                 <div class="field">
-                    <label for="payment_method">Método</label>
+                    <label for="payment_method">Metodo</label>
                     <select id="payment_method" name="payments[0][method]">
                         <option value="">Sin pago inicial</option>
                         <option value="cash" @selected(old('payments.0.method') === 'cash')>Cash</option>

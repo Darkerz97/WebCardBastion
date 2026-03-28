@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CustomerRequest;
 use App\Models\Customer;
+use App\Models\User;
 use App\Support\CsvReader;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,7 +33,10 @@ class CustomerController extends Controller
 
     public function create(): View
     {
-        return view('customers.create', ['customer' => new Customer()]);
+        return view('customers.create', [
+            'customer' => new Customer(),
+            'users' => $this->availableUsers(),
+        ]);
     }
 
     public function template(): StreamedResponse
@@ -157,14 +161,21 @@ class CustomerController extends Controller
 
     public function show(Customer $customer): View
     {
-        $customer->load(['sales' => fn ($query) => $query->latest('sold_at')->limit(10)]);
+        $customer->load([
+            'user.role',
+            'sales' => fn ($query) => $query->latest('sold_at')->limit(10),
+            'preorders' => fn ($query) => $query->latest()->limit(10),
+        ]);
 
         return view('customers.show', compact('customer'));
     }
 
     public function edit(Customer $customer): View
     {
-        return view('customers.edit', compact('customer'));
+        return view('customers.edit', [
+            'customer' => $customer,
+            'users' => $this->availableUsers($customer),
+        ]);
     }
 
     public function update(CustomerRequest $request, Customer $customer): RedirectResponse
@@ -209,5 +220,20 @@ class CustomerController extends Controller
             '0', 'false', 'no', 'inactivo' => false,
             default => throw new InvalidArgumentException("Fila {$line}: el campo active debe ser 1 o 0."),
         };
+    }
+
+    private function availableUsers(?Customer $customer = null)
+    {
+        return User::query()
+            ->with('role')
+            ->where(function ($query) use ($customer): void {
+                $query->whereDoesntHave('customer');
+
+                if ($customer?->user_id) {
+                    $query->orWhere('id', $customer->user_id);
+                }
+            })
+            ->orderBy('name')
+            ->get();
     }
 }

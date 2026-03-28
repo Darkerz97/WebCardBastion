@@ -41,16 +41,48 @@ class ProductController extends Controller
     public function create(): View
     {
         return view('products.create', [
-            'product' => new Product(['active' => true, 'featured' => false, 'publish_to_store' => true]),
+            'product' => new Product([
+                'active' => true,
+                'featured' => false,
+                'publish_to_store' => true,
+                'product_type' => 'normal',
+                'min_stock' => 0,
+            ]),
             'categories' => Category::query()->active()->orderBy('sort_order')->orderBy('name')->get(),
         ]);
     }
 
     public function template(): StreamedResponse
     {
-        $headers = ['name', 'slug', 'sku', 'barcode', 'category', 'short_description', 'description', 'cost', 'price', 'stock', 'image_path', 'active', 'featured', 'publish_to_store'];
+        $headers = [
+            'name',
+            'slug',
+            'sku',
+            'barcode',
+            'category',
+            'short_description',
+            'description',
+            'cost',
+            'price',
+            'stock',
+            'min_stock',
+            'product_type',
+            'game',
+            'card_name',
+            'set_name',
+            'set_code',
+            'collector_number',
+            'finish',
+            'language',
+            'card_condition',
+            'image_path',
+            'active',
+            'featured',
+            'publish_to_store',
+        ];
         $rows = [
-            ['Mica templada', 'mica-templada', 'MIC-001', '750100000001', 'Accesorios', 'Proteccion premium para el frente del display.', 'Proteccion frontal premium', '35.00', '89.00', '25', '', '1', '1', '1'],
+            ['Mica templada', 'mica-templada', 'MIC-001', '750100000001', 'Accesorios', 'Proteccion premium para el frente del display.', 'Proteccion frontal premium', '35.00', '89.00', '25', '5', 'normal', '', '', '', '', '', '', '', '', '', '1', '1', '1'],
+            ['Lightning Bolt NM', 'lightning-bolt-nm', 'MTG-001', '', 'Singles', 'Carta individual lista para vitrina.', 'Lightning Bolt de coleccion para jugadores y coleccionistas.', '120.00', '180.00', '3', '2', 'single_card', 'Magic: The Gathering', 'Lightning Bolt', 'Revised Edition', '3ED', '161', 'Non-foil', 'English', 'NM', '', '1', '0', '1'],
         ];
 
         return response()->streamDownload(function () use ($headers, $rows): void {
@@ -98,6 +130,16 @@ class ProductController extends Controller
                         'cost' => ['required', 'numeric', 'min:0'],
                         'price' => ['required', 'numeric', 'min:0'],
                         'stock' => ['required', 'integer', 'min:0'],
+                        'min_stock' => ['nullable', 'integer', 'min:0'],
+                        'product_type' => ['nullable', 'string', 'max:50'],
+                        'game' => ['nullable', 'string', 'max:255'],
+                        'card_name' => ['nullable', 'string', 'max:255'],
+                        'set_name' => ['nullable', 'string', 'max:255'],
+                        'set_code' => ['nullable', 'string', 'max:100'],
+                        'collector_number' => ['nullable', 'string', 'max:100'],
+                        'finish' => ['nullable', 'string', 'max:100'],
+                        'language' => ['nullable', 'string', 'max:100'],
+                        'card_condition' => ['nullable', 'string', 'max:100'],
                         'image_path' => ['nullable', 'string', 'max:255'],
                         'active' => ['nullable'],
                         'featured' => ['nullable'],
@@ -138,6 +180,16 @@ class ProductController extends Controller
                         'cost' => $data['cost'],
                         'price' => $data['price'],
                         'stock' => $data['stock'],
+                        'min_stock' => $data['min_stock'] ?? 0,
+                        'product_type' => $data['product_type'] ?: 'normal',
+                        'game' => $data['game'] ?: null,
+                        'card_name' => $data['card_name'] ?: null,
+                        'set_name' => $data['set_name'] ?: null,
+                        'set_code' => $data['set_code'] ?: null,
+                        'collector_number' => $data['collector_number'] ?: null,
+                        'finish' => $data['finish'] ?: null,
+                        'language' => $data['language'] ?: null,
+                        'card_condition' => $data['card_condition'] ?: null,
                         'image_path' => $data['image_path'] ?: null,
                         'active' => $active,
                         'featured' => $featured,
@@ -237,6 +289,16 @@ class ProductController extends Controller
             'cost' => $data['cost'],
             'price' => $data['price'],
             'stock' => $data['stock'],
+            'min_stock' => $data['min_stock'] ?? 0,
+            'product_type' => $data['product_type'],
+            'game' => $data['game'] ?? null,
+            'card_name' => $data['card_name'] ?? null,
+            'set_name' => $data['set_name'] ?? null,
+            'set_code' => $data['set_code'] ?? null,
+            'collector_number' => $data['collector_number'] ?? null,
+            'finish' => $data['finish'] ?? null,
+            'language' => $data['language'] ?? null,
+            'card_condition' => $data['card_condition'] ?? null,
             'image_path' => $imagePath,
             'active' => (bool) $data['active'],
             'featured' => (bool) $data['featured'],

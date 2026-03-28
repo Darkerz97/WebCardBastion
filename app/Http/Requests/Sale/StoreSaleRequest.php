@@ -40,6 +40,14 @@ class StoreSaleRequest extends FormRequest
             'user_id' => ['nullable', 'exists:users,id'],
             'device_id' => ['nullable', 'exists:devices,id'],
             'sale_number' => ['nullable', 'string', 'max:100', 'unique:sales,sale_number'],
+            'order_channel' => ['nullable', Rule::in([
+                Sale::CHANNEL_POS,
+                Sale::CHANNEL_STOREFRONT,
+            ])],
+            'contact_name' => ['nullable', 'string', 'max:255'],
+            'contact_email' => ['nullable', 'email', 'max:255'],
+            'contact_phone' => ['nullable', 'string', 'max:50'],
+            'notes' => ['nullable', 'string'],
             'discount' => ['nullable', 'numeric', 'min:0'],
             'status' => ['required', Rule::in([
                 Sale::STATUS_DRAFT,

@@ -95,6 +95,15 @@ class Product extends Model
                 ->orWhere('slug', 'like', "%{$term}%")
                 ->orWhere('sku', 'like', "%{$term}%")
                 ->orWhere('barcode', 'like', "%{$term}%")
+                ->orWhere('product_type', 'like', "%{$term}%")
+                ->orWhere('game', 'like', "%{$term}%")
+                ->orWhere('card_name', 'like', "%{$term}%")
+                ->orWhere('set_name', 'like', "%{$term}%")
+                ->orWhere('set_code', 'like', "%{$term}%")
+                ->orWhere('collector_number', 'like', "%{$term}%")
+                ->orWhere('finish', 'like', "%{$term}%")
+                ->orWhere('language', 'like', "%{$term}%")
+                ->orWhere('card_condition', 'like', "%{$term}%")
                 ->orWhere('short_description', 'like', "%{$term}%")
                 ->orWhere('description', 'like', "%{$term}%");
         });
