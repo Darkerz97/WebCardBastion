@@ -865,6 +865,118 @@ Se completo el lado servidor para pruebas reales de integracion con POS local, a
 - el backend ya queda con pruebas verdes para los flujos clave de integracion POS
 - todavia conviene limpiar warnings de autoload ambiguo en `vendor` en una pasada de mantenimiento aparte
 
+## Ajuste reciente de preventas y abonos
+
+Se agrego un modulo backend de preventas para reservar productos, registrar abonos parciales y dejar el dominio listo para integracion futura con POS local y tienda web.
+
+### Ajuste aplicado
+
+- nuevas tablas `preorders`, `preorder_items` y `preorder_payments`
+- cada preventa usa `uuid`, `preorder_number`, `source` y `sync_version`
+- soporte para multiples items por preventa con snapshot de producto (`product_name`, `product_uuid`, `product_sku`)
+- registro de abonos parciales con `method`, `amount`, `reference`, `notes` y `paid_at`
+- recalculo automatico de `amount_paid`, `amount_due` y `status`
+- endpoint de sync de lectura `GET /api/sync/preorders` para futura consulta incremental desde POS
+
+### Estados soportados
+
+- `pending`
+- `partially_paid`
+- `paid`
+- `cancelled`
+- `delivered`
+
+### Endpoints agregados
+
+- `GET /api/preorders`
+- `POST /api/preorders`
+- `GET /api/preorders/{preorder}`
+- `POST /api/preorders/{preorder}/payments`
+- `GET /api/sync/preorders`
+
+### Archivos clave
+
+- `database/migrations/2026_03_27_165000_create_preorders_tables.php`
+- `app/Models/Preorder.php`
+- `app/Models/PreorderItem.php`
+- `app/Models/PreorderPayment.php`
+- `app/Services/PreorderService.php`
+- `app/Http/Controllers/Api/PreorderController.php`
+- `app/Http/Requests/Preorder/StorePreorderRequest.php`
+- `app/Http/Requests/Preorder/StorePreorderPaymentRequest.php`
+- `app/Http/Resources/PreorderResource.php`
+- `app/Http/Resources/PreorderItemResource.php`
+- `app/Http/Resources/PreorderPaymentResource.php`
+- `app/Http/Controllers/Api/SyncController.php`
+- `routes/api.php`
+
+### Validacion aplicada
+
+- `php -l` en migracion, modelos, requests, resources, servicio y controladores
+- `php artisan route:list --path=api/preorders`
+- `php artisan route:list --path=api/sync`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para crear las tablas de preventas
+- no se corrio la suite completa despues de este modulo en este entorno, asi que conviene validar con `php artisan test`
+
+## Ajuste reciente de preventas y abonos
+
+Se agrego un modulo backend de preventas para reservar productos, registrar abonos parciales y dejar el dominio listo para integracion futura con POS local y tienda web.
+
+### Ajuste aplicado
+
+- nuevas tablas `preorders`, `preorder_items` y `preorder_payments`
+- cada preventa usa `uuid`, `preorder_number`, `source` y `sync_version`
+- soporte para multiples items por preventa con snapshot de producto (`product_name`, `product_uuid`, `product_sku`)
+- registro de abonos parciales con `method`, `amount`, `reference`, `notes` y `paid_at`
+- recalculo automatico de `amount_paid`, `amount_due` y `status`
+- endpoint de sync de lectura `GET /api/sync/preorders` para futura consulta incremental desde POS
+
+### Estados soportados
+
+- `pending`
+- `partially_paid`
+- `paid`
+- `cancelled`
+- `delivered`
+
+### Endpoints agregados
+
+- `GET /api/preorders`
+- `POST /api/preorders`
+- `GET /api/preorders/{preorder}`
+- `POST /api/preorders/{preorder}/payments`
+- `GET /api/sync/preorders`
+
+### Archivos clave
+
+- `database/migrations/2026_03_27_165000_create_preorders_tables.php`
+- `app/Models/Preorder.php`
+- `app/Models/PreorderItem.php`
+- `app/Models/PreorderPayment.php`
+- `app/Services/PreorderService.php`
+- `app/Http/Controllers/Api/PreorderController.php`
+- `app/Http/Requests/Preorder/StorePreorderRequest.php`
+- `app/Http/Requests/Preorder/StorePreorderPaymentRequest.php`
+- `app/Http/Resources/PreorderResource.php`
+- `app/Http/Resources/PreorderItemResource.php`
+- `app/Http/Resources/PreorderPaymentResource.php`
+- `app/Http/Controllers/Api/SyncController.php`
+- `routes/api.php`
+
+### Validacion aplicada
+
+- `php -l` en migracion, modelos, requests, resources, servicio y controladores
+- `php artisan route:list --path=api/preorders`
+- `php artisan route:list --path=api/sync`
+
+### Consideraciones
+
+- requiere ejecutar `php artisan migrate` para crear las tablas de preventas
+- no se corrio la suite completa despues de este modulo en este entorno, asi que conviene validar con `php artisan test`
+
 ## Ajuste reciente de cierre QA para integracion POS
 
 Se completo el lado servidor para pruebas reales de integracion con POS local, agregando cobertura automatizada, observabilidad coherente y documentacion tecnica operativa.

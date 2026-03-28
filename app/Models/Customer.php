@@ -45,6 +45,11 @@ class Customer extends Model
         return $this->hasMany(Sale::class);
     }
 
+    public function preorders(): HasMany
+    {
+        return $this->hasMany(Preorder::class);
+    }
+
     public function scopeSearch(Builder $query, ?string $term): Builder
     {
         if (! $term) {

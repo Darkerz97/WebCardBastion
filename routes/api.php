@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\InventoryMovementController;
+use App\Http\Controllers\Api\PreorderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\SyncCashClosureController;
@@ -50,6 +51,10 @@ Route::middleware(['auth:sanctum', 'api.role:admin,manager,cashier'])->group(fun
     Route::post('sales', [SaleController::class, 'store'])->name('api.sales.store')->middleware('api.ability:sales:write');
     Route::get('sales/{sale}', [SaleController::class, 'show'])->name('api.sales.show')->middleware('api.ability:sales:read');
     Route::post('sales/{sale}/payments', [SaleController::class, 'addPayment'])->middleware('api.ability:payments:write');
+    Route::get('preorders', [PreorderController::class, 'index'])->middleware('api.ability:preorders:read');
+    Route::post('preorders', [PreorderController::class, 'store'])->middleware('api.ability:preorders:write');
+    Route::get('preorders/{preorder}', [PreorderController::class, 'show'])->middleware('api.ability:preorders:read');
+    Route::post('preorders/{preorder}/payments', [PreorderController::class, 'addPayment'])->middleware('api.ability:preorders:write');
     Route::get('inventory-movements', [InventoryMovementController::class, 'index'])->middleware('api.ability:inventory:read');
     Route::post('inventory-movements', [InventoryMovementController::class, 'store'])->middleware('api.ability:inventory:write');
 
@@ -58,6 +63,7 @@ Route::middleware(['auth:sanctum', 'api.role:admin,manager,cashier'])->group(fun
         Route::get('/catalog', [SyncController::class, 'catalog'])->middleware('api.ability:sync:read');
         Route::get('/products', [SyncController::class, 'products'])->middleware('api.ability:sync:read');
         Route::get('/customers', [SyncController::class, 'customers'])->middleware('api.ability:sync:read');
+        Route::get('/preorders', [SyncController::class, 'preorders'])->middleware('api.ability:sync:read');
         Route::post('/upload-sales', [SyncController::class, 'uploadSales'])->middleware('api.ability:sync:upload-sales');
         Route::post('/upload-cash-closures', [SyncCashClosureController::class, 'upload'])->middleware('api.ability:sync:upload-cash-closures');
         Route::post('/upload-inventory-movements', [SyncInventoryMovementController::class, 'upload'])->middleware('api.ability:sync:upload-inventory-movements');

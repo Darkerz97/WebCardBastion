@@ -9,9 +9,11 @@ use App\Http\Requests\Sync\SyncIndexRequest;
 use App\Http\Requests\Sync\UploadSalesRequest;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\DeviceResource;
+use App\Http\Resources\PreorderResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Models\Preorder;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use App\Services\Sync\SyncAuthorityService;
@@ -82,6 +84,30 @@ class SyncController extends Controller
             'Clientes listos para sincronizacion.',
             meta: [
                 ...$this->syncAuthorityService->forCustomers(),
+                ...$result['meta'],
+            ],
+        );
+    }
+
+    public function preorders(SyncIndexRequest $request): JsonResponse
+    {
+        $query = Preorder::query()
+            ->with(['customer', 'items.product', 'payments'])
+            ->filter($request->only(['customer_id', 'status', 'date_from', 'date_to']));
+
+        $result = $this->syncQueryService->resolve($query, $request, [
+            'supports_soft_deletes' => false,
+            'prefer_cursor' => true,
+            'default_per_page' => 100,
+        ]);
+
+        return $this->successResponse(
+            PreorderResource::collection($result['records']),
+            'Preventas listas para sincronizacion.',
+            meta: [
+                'domain' => 'preorders',
+                'winner' => 'server',
+                'rule' => 'server_preorder_state_is_authoritative',
                 ...$result['meta'],
             ],
         );

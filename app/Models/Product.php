@@ -62,6 +62,11 @@ class Product extends Model
         return $this->hasMany(SaleItem::class);
     }
 
+    public function preorderItems(): HasMany
+    {
+        return $this->hasMany(PreorderItem::class)->latest('id');
+    }
+
     public function inventoryMovements(): HasMany
     {
         return $this->hasMany(InventoryMovement::class)->latest('occurred_at')->latest('id');

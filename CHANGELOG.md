@@ -38,6 +38,7 @@
 - added feature coverage for Sanctum auth, sync reads, sales uploads, cash closure uploads, inventory movement uploads, conflict handling, and updated-since filtering
 - improved sync observability by emitting clearer application logs from `SyncLogService` for success, skipped, conflict, and failed operations
 - fixed the historical `site_settings` migration seed path so the automated test suite can boot against sqlite memory without schema drift
+- added a preorder and partial-payment backend with `preorders`, `preorder_items`, `preorder_payments`, automatic balance recalculation, and API endpoints for listing, creating, viewing, paying, and syncing preorders
 - rebuilt production assets with `npm run build`
 
 ## [Unreleased](https://github.com/laravel/laravel/compare/v12.12.1...12.x)
